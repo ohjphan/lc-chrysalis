@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Light — crisp grey borders, white canvas */
+:root {
+  --ring-offset-background: #ffffff;
+  --background: #ffffff;
+  /* Primary body / UI text */
+  --foreground: #55554e;
+  --heading: #000000;
+  /* Supporting copy: derived from body so it stays a touch lighter than `--foreground` */
+  --muted-foreground: color-mix(in srgb, #55554e 72%, #ffffff);
+  --surface: #fafafa;
+  --field-bg: #faf9f8;
+  --sidebar-bg: #faf9f8;
+  --border-subtle: #ccc9c6;
+  --border-stroke: 1.5px;
+  --nav-active: #ebebeb;
+  --nav-link-active: #e8e8e8;
+  --nav-active-icon: #16a34a;
+  --nav-link-idle: #525252;
+  --accent-green: #16a34a;
+  --accent-green-muted: color-mix(in srgb, var(--accent-green) 14%, transparent);
+  --destructive: #dc2626;
+  --destructive-muted: color-mix(in srgb, var(--destructive) 12%, transparent);
+  --modal-bg: #1a1a1a;
+  --modal-border: #ccc9c6;
+}
+
+/* Dark — developer dashboard (#121212 / #1a1a1a) */
+.dark {
+  --background: #121212;
+  --foreground: #fafafa;
+  --heading: #ffffff;
+  --muted-foreground: #888888;
+  --surface: #121212;
+  --field-bg: #1c1c1c;
+  --sidebar-bg: #1a1a1a;
+  /* Match light token so DevTools always resolve stroke width in dark mode */
+  --border-stroke: 1.5px;
+  /* All UI borders / strokes in dark mode */
+  --border-subtle: #55554e;
+  --nav-active: #262626;
+  --nav-link-active: #2a2a2a;
+  --nav-active-icon: #4ade80;
+  --nav-link-idle: #a3a3a3;
+  --accent-green: #2ecc71;
+  --accent-green-muted: color-mix(in srgb, var(--accent-green) 22%, #121212);
+  --destructive: #f87171;
+  --destructive-muted: color-mix(in srgb, var(--destructive) 16%, #121212);
+  --modal-bg: #1c1c1c;
+  --modal-border: #55554e;
+  --ring-offset-background: var(--background);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-heading: var(--heading);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-surface: var(--surface);
+  --color-field-bg: var(--field-bg);
+  --color-sidebar: var(--sidebar-bg);
+  --color-border-subtle: var(--border-subtle);
+  --color-nav-active: var(--nav-active);
+  --color-nav-link-active: var(--nav-link-active);
+  --color-nav-active-icon: var(--nav-active-icon);
+  --color-nav-link-idle: var(--nav-link-idle);
+  --color-accent-green: var(--accent-green);
+  --color-accent-green-muted: var(--accent-green-muted);
+  --color-destructive: var(--destructive);
+  --color-destructive-muted: var(--destructive-muted);
+  --color-modal-bg: var(--modal-bg);
+  --color-modal-border: var(--modal-border);
+  --font-sans: var(--font-sans-app);
+  --font-mono: var(--font-jetbrains-mono);
+  --radius-xs: 4px;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 6px;
+  --radius-4xl: 6px;
+  /* Smoother UI motion: ease-in-out curve + slightly longer duration for all transition-* utilities */
+  --default-transition-duration: 220ms;
+  --default-transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+@utility font-nav-eyebrow {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  letter-spacing: 0.04em;
+}
+
+/** Section labels in the app sidebar (Workspace, Evaluators, …): JetBrains Mono Medium 12px, 5% tracking */
+@utility font-nav-sidebar-eyebrow {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 5%;
+}
+
+/** In-page section titles (`<h2>`): JetBrains Mono, caps, 16px regular, 5% tracking, 112% line-height, #242423 */
+@utility font-page-h2 {
+  margin: 0;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 5%;
+  line-height: 1.12;
+  text-transform: uppercase;
+  color: #242423;
+}
+
+.dark .font-page-h2 {
+  color: var(--foreground);
+}
+
+/** Label + input / textarea / select stacks */
+@utility stack-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@utility font-parabolica {
+  font-family: var(--font-parabolica-stack);
+}
+
+/** Left sidebar nav: #242423 at 4% (hover / active); not tied to global `--nav-active`. */
+@utility bg-sidebar-nav-intent {
+  background-color: rgb(36 36 35 / 0.04);
+}
+
+/** App-wide hairline: use with `border-border-subtle` (or other `border-*` color). */
+@utility border-app {
+  border-style: solid;
+  border-width: var(--border-stroke);
+}
+
+@utility border-app-t {
+  border-top-style: solid;
+  border-top-width: var(--border-stroke);
+}
+
+@utility border-app-r {
+  border-right-style: solid;
+  border-right-width: var(--border-stroke);
+}
+
+@utility border-app-b {
+  border-bottom-style: solid;
+  border-bottom-width: var(--border-stroke);
+}
+
+@utility border-app-l {
+  border-left-style: solid;
+  border-left-width: var(--border-stroke);
+}
+
+@utility border-app-y {
+  border-block-style: solid;
+  border-block-width: var(--border-stroke);
+}
+
+html {
+  /* Root rem size: `text-base` and other rem-based type scale from here */
+  font-size: 14px;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans-app), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+}

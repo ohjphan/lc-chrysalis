@@ -11,7 +11,7 @@
  *
  * Important: the mask PNG from canvas is opaque in alpha. The veil must use
  * luminance masking (`mask-mode` / `-webkit-mask-source-type`) so dark pixels
- * punch through; alpha-only masks would keep the veil solid everywhere.
+ * punch through; alpha-only masks would keep the veil solid everywhere.  
  */
 
 import * as React from "react";

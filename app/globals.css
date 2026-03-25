@@ -7,10 +7,10 @@
   --ring-offset-background: #ffffff;
   --background: #ffffff;
   /* Primary body / UI text */
-  --foreground: #55554e;
+  --foreground: #242423;
   --heading: #000000;
   /* Supporting copy: derived from body so it stays a touch lighter than `--foreground` */
-  --muted-foreground: color-mix(in srgb, #55554e 72%, #ffffff);
+  --muted-foreground: color-mix(in srgb, #242423 68%, #ffffff);
   --surface: #fafafa;
   --field-bg: #faf9f8;
   --sidebar-bg: #faf9f8;
@@ -28,29 +28,29 @@
   --modal-border: #ccc9c6;
 }
 
-/* Dark — developer dashboard (#121212 / #1a1a1a) */
+/* Dark — soft warm base #242423 (surfaces stepped slightly for depth) */
 .dark {
-  --background: #121212;
+  --background: #242423;
   --foreground: #fafafa;
   --heading: #ffffff;
   --muted-foreground: #888888;
-  --surface: #121212;
-  --field-bg: #1c1c1c;
-  --sidebar-bg: #1a1a1a;
+  --surface: #242423;
+  --field-bg: #2e2e2c;
+  --sidebar-bg: #2a2a28;
   /* Match light token so DevTools always resolve stroke width in dark mode */
   --border-stroke: 1.5px;
   /* All UI borders / strokes in dark mode */
-  --border-subtle: #55554e;
-  --nav-active: #262626;
-  --nav-link-active: #2a2a2a;
+  --border-subtle: #5c5c58;
+  --nav-active: #32322f;
+  --nav-link-active: #383835;
   --nav-active-icon: #4ade80;
   --nav-link-idle: #a3a3a3;
   --accent-green: #2ecc71;
-  --accent-green-muted: color-mix(in srgb, var(--accent-green) 22%, #121212);
+  --accent-green-muted: color-mix(in srgb, var(--accent-green) 22%, #242423);
   --destructive: #f87171;
-  --destructive-muted: color-mix(in srgb, var(--destructive) 16%, #121212);
-  --modal-bg: #1c1c1c;
-  --modal-border: #55554e;
+  --destructive-muted: color-mix(in srgb, var(--destructive) 16%, #242423);
+  --modal-bg: #2e2e2c;
+  --modal-border: #5c5c58;
   --ring-offset-background: var(--background);
 }
 

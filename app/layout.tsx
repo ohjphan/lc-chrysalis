@@ -42,7 +42,10 @@ export default function RootLayout({
           }
         `}</style>
       </head>
-      <body className="min-h-full bg-background font-sans text-base font-normal text-foreground antialiased">
+      <body
+        className="min-h-full bg-background font-sans text-base font-normal text-foreground antialiased"
+        suppressHydrationWarning
+      >
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

@@ -16,6 +16,7 @@ import { StickyTableProvider } from "@/components/dashboard/sticky-table-provide
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageTitle } from "@/components/ui/page-title";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -277,40 +278,30 @@ function DatasetFilterDropdown({
   );
 }
 
-export function DatasetsView() {
-  const [scope, setScope] = React.useState<DatasetScope>("all");
-  const [query, setQuery] = React.useState("");
-  const [accessFilter, setAccessFilter] =
-    React.useState<AccessFilterValue>("all");
-  const [selectedSubjects, setSelectedSubjects] = React.useState<Set<string>>(
-    () => new Set(),
-  );
-  const [selectedFormats, setSelectedFormats] = React.useState<Set<string>>(
-    () => new Set(),
-  );
-  const [selectedProviders, setSelectedProviders] = React.useState<
-    Set<string>
-  >(() => new Set());
+const td =
+  "border-app-b border-border-subtle px-4 py-6 align-top";
 
-  const [requestOpen, setRequestOpen] = React.useState(false);
-  const [requestTarget, setRequestTarget] =
-    React.useState<DatasetRequestTarget | null>(null);
+type DatasetsTabPanelProps = {
+  scope: DatasetScope;
+  query: string;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  accessFilter: AccessFilterValue;
+  selectedSubjects: Set<string>;
+  selectedFormats: Set<string>;
+  selectedProviders: Set<string>;
+  openRequest: (row: DatasetRow) => void;
+};
 
-  const formatOptions = React.useMemo(() => {
-    const u = [...new Set(MOCK_DATASETS.map((d) => d.fileFormat))].sort();
-    return u.map((v) => ({ value: v, label: v }));
-  }, []);
-
-  const providerOptions = React.useMemo(() => {
-    const u = [...new Set(MOCK_DATASETS.map((d) => d.providerName))].sort();
-    return u.map((v) => ({ value: v, label: v }));
-  }, []);
-
-  const subjectOptions = SUBJECT_SLUGS.map((s) => ({
-    value: s,
-    label: SUBJECT_LABELS[s],
-  }));
-
+function DatasetsTabPanel({
+  scope,
+  query,
+  setQuery,
+  accessFilter,
+  selectedSubjects,
+  selectedFormats,
+  selectedProviders,
+  openRequest,
+}: DatasetsTabPanelProps) {
   const scopedDatasets = React.useMemo(() => {
     if (scope === "all") return MOCK_DATASETS;
     if (scope === "downloaded")
@@ -361,6 +352,176 @@ export function DatasetsView() {
     selectedProviders,
   ]);
 
+  return (
+    <div className="space-y-4">
+      <div className="relative max-w-full">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          className="h-11 border-border-subtle bg-transparent pl-9"
+          placeholder="Search datasets…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Search datasets"
+        />
+      </div>
+
+      <div className="overflow-hidden border-app-y border-border-subtle">
+        <StickyTableProvider>
+          <table className="min-w-[960px] w-full border-collapse text-base">
+            <caption className="sr-only">
+              Dataset catalog with actions
+            </caption>
+            <thead>
+              <tr>
+                <th className={tableHeadStickyCellClasses()}>Dataset</th>
+                <th className={tableHeadStickyCellClasses("min-w-[220px]")}>
+                  Description
+                </th>
+                <th className={tableHeadStickyCellClasses()}>Type</th>
+                <th className={tableHeadStickyCellClasses()}>Version</th>
+                <th className={tableHeadStickyCellClasses()}>License</th>
+                <th className={tableHeadStickyCellClasses("text-right")}>
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="border-app-b border-border-subtle"
+                >
+                  <td className={td}>
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={cn(
+                          "flex size-10 shrink-0 items-center justify-center rounded-md text-xs font-semibold text-white",
+                          row.avatarClassName,
+                        )}
+                      >
+                        {row.initials}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-nav-eyebrow text-[10px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+                          {row.providerName}
+                        </p>
+                        <p className="mt-1 font-medium text-foreground">
+                          {row.datasetName}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className={cn(td, "max-w-xs text-muted-foreground")}>
+                    <span className="line-clamp-3">{row.description}</span>
+                  </td>
+                  <td className={td}>
+                    <TypeBadge type={row.type} />
+                  </td>
+                  <td
+                    className={cn(
+                      td,
+                      "font-mono text-xs text-muted-foreground",
+                    )}
+                  >
+                    {row.version}
+                  </td>
+                  <td
+                    className={cn(
+                      td,
+                      "font-nav-eyebrow text-[10px] uppercase text-muted-foreground",
+                    )}
+                  >
+                    {row.license}
+                  </td>
+                  <td className={cn(td, "text-right")}>
+                    {row.primaryAction === "download" ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            className="h-9 gap-1.5 border-border-subtle bg-transparent"
+                          >
+                            <Download className="size-3.5" />
+                            Download
+                            <ChevronDown className="size-3.5 opacity-70" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuLabel className="font-nav-eyebrow text-[10px] uppercase">
+                            Format
+                          </DropdownMenuLabel>
+                          {(row.downloadFormats ?? [row.fileFormat]).map(
+                            (fmt) => (
+                              <DropdownMenuItem key={fmt}>{fmt}</DropdownMenuItem>
+                            ),
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="primary"
+                        size="sm"
+                        className="h-9 gap-1.5"
+                        onClick={() => openRequest(row)}
+                      >
+                        <Lock className="size-3.5" />
+                        Request access
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </StickyTableProvider>
+      </div>
+
+      {rows.length === 0 ? (
+        <p className="text-center text-base font-normal text-muted-foreground">
+          No datasets match your filters.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export function DatasetsView() {
+  const [scope, setScope] = React.useState<DatasetScope>("all");
+  const [query, setQuery] = React.useState("");
+  const [accessFilter, setAccessFilter] =
+    React.useState<AccessFilterValue>("all");
+  const [selectedSubjects, setSelectedSubjects] = React.useState<Set<string>>(
+    () => new Set(),
+  );
+  const [selectedFormats, setSelectedFormats] = React.useState<Set<string>>(
+    () => new Set(),
+  );
+  const [selectedProviders, setSelectedProviders] = React.useState<
+    Set<string>
+  >(() => new Set());
+
+  const [requestOpen, setRequestOpen] = React.useState(false);
+  const [requestTarget, setRequestTarget] =
+    React.useState<DatasetRequestTarget | null>(null);
+
+  const formatOptions = React.useMemo(() => {
+    const u = [...new Set(MOCK_DATASETS.map((d) => d.fileFormat))].sort();
+    return u.map((v) => ({ value: v, label: v }));
+  }, []);
+
+  const providerOptions = React.useMemo(() => {
+    const u = [...new Set(MOCK_DATASETS.map((d) => d.providerName))].sort();
+    return u.map((v) => ({ value: v, label: v }));
+  }, []);
+
+  const subjectOptions = SUBJECT_SLUGS.map((s) => ({
+    value: s,
+    label: SUBJECT_LABELS[s],
+  }));
+
   const hasActiveFilters =
     accessFilter !== "all" ||
     selectedSubjects.size > 0 ||
@@ -386,25 +547,15 @@ export function DatasetsView() {
     setRequestOpen(true);
   }
 
-  const td =
-    "border-app-b border-border-subtle px-4 py-6 align-top";
-
-  const tabBtn = (value: DatasetScope, label: React.ReactNode) => (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={scope === value}
-      onClick={() => setScope(value)}
-      className={cn(
-        "border-app-b pb-2.5 font-nav-eyebrow text-xs font-medium uppercase tracking-[0.04em] transition-colors",
-        scope === value
-          ? "border-foreground text-foreground"
-          : "border-transparent text-muted-foreground hover:text-foreground",
-      )}
-    >
-      {label}
-    </button>
-  );
+  const sharedPanelProps = {
+    query,
+    setQuery,
+    accessFilter,
+    selectedSubjects,
+    selectedFormats,
+    selectedProviders,
+    openRequest,
+  } as const;
 
   return (
     <>
@@ -416,203 +567,97 @@ export function DatasetsView() {
           </p>
         </div>
 
-        <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div
-            className="flex flex-wrap gap-6"
-            role="tablist"
-            aria-label="Dataset scope"
+        <Tabs
+          value={scope}
+          onValueChange={(v) => setScope(v as DatasetScope)}
+          className="mt-8"
+        >
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <TabsList
+              aria-label="Dataset scope"
+              className="h-auto min-h-10 w-full flex-wrap justify-start gap-1 rounded-md bg-nav-active/50 p-1 dark:bg-nav-active/30 lg:w-auto"
+            >
+              <TabsTrigger value="all">All datasets</TabsTrigger>
+              <TabsTrigger value="downloaded">
+                Downloaded ({MOCK_DOWNLOADED_DATASET_IDS.size})
+              </TabsTrigger>
+              <TabsTrigger value="pending">
+                Pending requests ({MOCK_PENDING_REQUEST_DATASET_IDS.size})
+              </TabsTrigger>
+            </TabsList>
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <DatasetAccessDropdown
+                value={accessFilter}
+                onValueChange={setAccessFilter}
+              />
+              <DatasetFilterDropdown
+                label="Subjects"
+                options={subjectOptions}
+                selected={selectedSubjects}
+                onToggle={(v, c) => {
+                  setSelectedSubjects((prev) => {
+                    const next = new Set(prev);
+                    if (c) next.add(v);
+                    else next.delete(v);
+                    return next;
+                  });
+                }}
+              />
+              <DatasetFilterDropdown
+                label="Formats"
+                options={formatOptions}
+                selected={selectedFormats}
+                onToggle={(v, c) => {
+                  setSelectedFormats((prev) => {
+                    const next = new Set(prev);
+                    if (c) next.add(v);
+                    else next.delete(v);
+                    return next;
+                  });
+                }}
+              />
+              <DatasetFilterDropdown
+                label="Providers"
+                options={providerOptions}
+                selected={selectedProviders}
+                onToggle={(v, c) => {
+                  setSelectedProviders((prev) => {
+                    const next = new Set(prev);
+                    if (c) next.add(v);
+                    else next.delete(v);
+                    return next;
+                  });
+                }}
+              />
+              {hasActiveFilters ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-10 text-muted-foreground"
+                  onClick={clearFilters}
+                >
+                  Clear filters
+                </Button>
+              ) : null}
+            </div>
+          </div>
+
+          <TabsContent value="all" className="mt-6 focus-visible:outline-none">
+            <DatasetsTabPanel scope="all" {...sharedPanelProps} />
+          </TabsContent>
+          <TabsContent
+            value="downloaded"
+            className="mt-6 focus-visible:outline-none"
           >
-            {tabBtn("all", "All datasets")}
-            {tabBtn(
-              "downloaded",
-              <>Downloaded ({MOCK_DOWNLOADED_DATASET_IDS.size})</>,
-            )}
-            {tabBtn(
-              "pending",
-              <>Pending requests ({MOCK_PENDING_REQUEST_DATASET_IDS.size})</>,
-            )}
-          </div>
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <DatasetAccessDropdown
-              value={accessFilter}
-              onValueChange={setAccessFilter}
-            />
-            <DatasetFilterDropdown
-              label="Subjects"
-              options={subjectOptions}
-              selected={selectedSubjects}
-              onToggle={(v, c) => {
-                setSelectedSubjects((prev) => {
-                  const next = new Set(prev);
-                  if (c) next.add(v);
-                  else next.delete(v);
-                  return next;
-                });
-              }}
-            />
-            <DatasetFilterDropdown
-              label="Formats"
-              options={formatOptions}
-              selected={selectedFormats}
-              onToggle={(v, c) => {
-                setSelectedFormats((prev) => {
-                  const next = new Set(prev);
-                  if (c) next.add(v);
-                  else next.delete(v);
-                  return next;
-                });
-              }}
-            />
-            <DatasetFilterDropdown
-              label="Providers"
-              options={providerOptions}
-              selected={selectedProviders}
-              onToggle={(v, c) => {
-                setSelectedProviders((prev) => {
-                  const next = new Set(prev);
-                  if (c) next.add(v);
-                  else next.delete(v);
-                  return next;
-                });
-              }}
-            />
-            {hasActiveFilters ? (
-              <Button
-                type="button"
-                variant="ghost"
-                className="h-10 text-muted-foreground"
-                onClick={clearFilters}
-              >
-                Clear filters
-              </Button>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="mt-6 space-y-4" role="tabpanel">
-          <div className="relative max-w-full">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              className="h-11 border-border-subtle bg-transparent pl-9"
-              placeholder="Search datasets…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search datasets"
-            />
-          </div>
-
-          <div className="overflow-hidden border-app-y border-border-subtle">
-            <StickyTableProvider>
-              <table className="min-w-[960px] w-full border-collapse text-base">
-                <caption className="sr-only">
-                  Dataset catalog with actions
-                </caption>
-                <thead>
-                  <tr>
-                    <th className={tableHeadStickyCellClasses()}>Dataset</th>
-                    <th className={tableHeadStickyCellClasses("min-w-[220px]")}>
-                      Description
-                    </th>
-                    <th className={tableHeadStickyCellClasses()}>Type</th>
-                    <th className={tableHeadStickyCellClasses()}>Version</th>
-                    <th className={tableHeadStickyCellClasses()}>License</th>
-                    <th className={tableHeadStickyCellClasses("text-right")}>
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="border-app-b border-border-subtle"
-                    >
-                      <td className={td}>
-                        <div className="flex items-start gap-3">
-                          <div
-                            className={cn(
-                              "flex size-10 shrink-0 items-center justify-center rounded-md text-xs font-semibold text-white",
-                              row.avatarClassName,
-                            )}
-                          >
-                            {row.initials}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-nav-eyebrow text-[10px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
-                              {row.providerName}
-                            </p>
-                            <p className="mt-1 font-medium text-foreground">
-                              {row.datasetName}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className={cn(td, "max-w-xs text-muted-foreground")}>
-                        <span className="line-clamp-3">{row.description}</span>
-                      </td>
-                      <td className={td}>
-                        <TypeBadge type={row.type} />
-                      </td>
-                      <td className={cn(td, "font-mono text-xs text-muted-foreground")}>
-                        {row.version}
-                      </td>
-                      <td className={cn(td, "font-nav-eyebrow text-[10px] uppercase text-muted-foreground")}>
-                        {row.license}
-                      </td>
-                      <td className={cn(td, "text-right")}>
-                        {row.primaryAction === "download" ? (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="secondary"
-                                size="sm"
-                                className="h-9 gap-1.5 border-border-subtle bg-transparent"
-                              >
-                                <Download className="size-3.5" />
-                                Download
-                                <ChevronDown className="size-3.5 opacity-70" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                              <DropdownMenuLabel className="font-nav-eyebrow text-[10px] uppercase">
-                                Format
-                              </DropdownMenuLabel>
-                              {(row.downloadFormats ?? [
-                                row.fileFormat,
-                              ]).map((fmt) => (
-                                <DropdownMenuItem key={fmt}>
-                                  {fmt}
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        ) : (
-                          <Button
-                            type="button"
-                            variant="primary"
-                            size="sm"
-                            className="h-9 gap-1.5"
-                            onClick={() => openRequest(row)}
-                          >
-                            <Lock className="size-3.5" />
-                            Request access
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </StickyTableProvider>
-          </div>
-
-          {rows.length === 0 ? (
-            <p className="text-center text-base font-normal text-muted-foreground">
-              No datasets match your filters.
-            </p>
-          ) : null}
-        </div>
+            <DatasetsTabPanel scope="downloaded" {...sharedPanelProps} />
+          </TabsContent>
+          <TabsContent
+            value="pending"
+            className="mt-6 focus-visible:outline-none"
+          >
+            <DatasetsTabPanel scope="pending" {...sharedPanelProps} />
+          </TabsContent>
+        </Tabs>
       </PageContainer>
 
       <RequestAccessModal

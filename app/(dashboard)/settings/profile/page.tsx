@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/dashboard/placeholder-page";
+import { ProfileSettingsView } from "@/components/dashboard/settings/profile-settings-view";
 
 export const metadata: Metadata = {
   title: "Profile",
 };
 
 export default function ProfileSettingsPage() {
-  return (
-    <PlaceholderPage
-      title="Profile settings"
-      description="Update your name, email visibility, and security preferences."
-    />
-  );
+  return <ProfileSettingsView />;
 }

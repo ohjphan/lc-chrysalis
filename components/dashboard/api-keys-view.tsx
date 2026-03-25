@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { MoreHorizontal, Plus } from "lucide-react";
+import { CreateApiKeyDialog } from "@/components/dashboard/create-api-key-dialog";
 import { PageContainer } from "@/components/dashboard/page-container";
 import { StickyTableProvider } from "@/components/dashboard/sticky-table-provider";
 import { Button } from "@/components/ui/button";
@@ -52,28 +53,39 @@ const SEED: KeyRow[] = [
   },
 ];
 
+function maskedFromFullSecret(fullSecret: string): string {
+  const tail = fullSecret.slice(-4);
+  return `lc_live_••••••••${tail}`;
+}
+
 export function ApiKeysView() {
   const [rows, setRows] = React.useState<KeyRow[]>(SEED);
+  const [createKeyOpen, setCreateKeyOpen] = React.useState(false);
 
-  function createKey() {
-    const n = rows.length + 1;
-    setRows((r) => [
-      ...r,
-      {
-        id: String(n),
-        name: `Key ${n}`,
-        masked: `lc_live_••••••••${Math.random().toString(36).slice(2, 6)}`,
-        createdByName: "You",
-        createdByEmail: "you@magicschool.edu",
-        created: new Date().toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        }),
-        lastUsed: "Never",
-        disabled: false,
-      },
-    ]);
+  function appendKeyFromDialog(payload: {
+    name: string;
+    fullSecret: string;
+  }) {
+    setRows((r) => {
+      const n = r.length + 1;
+      return [
+        ...r,
+        {
+          id: String(n),
+          name: payload.name,
+          masked: maskedFromFullSecret(payload.fullSecret),
+          createdByName: "You",
+          createdByEmail: "you@magicschool.edu",
+          created: new Date().toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          lastUsed: "Never",
+          disabled: false,
+        },
+      ];
+    });
   }
 
   return (
@@ -89,12 +101,18 @@ export function ApiKeysView() {
           type="button"
           variant="primary"
           className="h-10 shrink-0 gap-2 px-4"
-          onClick={createKey}
+          onClick={() => setCreateKeyOpen(true)}
         >
           <Plus className="size-4" />
           Create new key
         </Button>
       </div>
+
+      <CreateApiKeyDialog
+        open={createKeyOpen}
+        onOpenChange={setCreateKeyOpen}
+        onCreated={appendKeyFromDialog}
+      />
 
       <div className="mt-10 overflow-hidden border-app-y border-border-subtle bg-transparent">
         <StickyTableProvider>

@@ -34,7 +34,7 @@ const ORG_SIZE_OPTIONS = [
 
 function ModalFieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <label className="block font-mono text-[11px] font-medium uppercase tracking-[0.04em] text-zinc-500">
+    <label className="block font-mono text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground dark:text-zinc-500">
       {children}
     </label>
   );
@@ -42,7 +42,7 @@ function ModalFieldLabel({ children }: { children: React.ReactNode }) {
 
 function modalInputClass(extra?: string) {
   return cn(
-    "w-full rounded-md border-app border-border-subtle bg-[#141414] px-3 py-2.5 text-base font-normal text-zinc-100 placeholder:text-zinc-600 focus:border-border-subtle focus:outline-none focus:ring-1 focus:ring-border-subtle",
+    "w-full rounded-md border-app border-border-subtle bg-field-bg px-3 py-2.5 text-base font-normal text-foreground placeholder:text-muted-foreground focus:border-border-subtle focus:outline-none focus:ring-1 focus:ring-border-subtle dark:bg-[#141414] dark:text-zinc-100 dark:placeholder:text-zinc-600",
     extra,
   );
 }
@@ -96,14 +96,15 @@ export function RequestAccessModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[min(90dvh,720px)] overflow-y-auto sm:max-w-[480px]">
-        <div className="h-1 w-full bg-zinc-800">
+      <DialogContent className="flex max-h-[min(90dvh,720px)] flex-col gap-0 overflow-hidden">
+        <div className="h-1 w-full shrink-0 bg-nav-active dark:bg-zinc-800">
           <div
             className="h-full bg-accent-green transition-[width] duration-300 ease-in-out"
             style={{ width: `${progressPct}%` }}
           />
         </div>
 
+        <div className="min-h-0 flex-1 overflow-y-auto">
         {step < 2 ? (
           <>
             <DialogHeader>
@@ -116,7 +117,7 @@ export function RequestAccessModal({
             </DialogHeader>
 
             <div className="px-6 pb-2">
-              <div className="mb-6 flex items-start gap-3 rounded-md border-app border-border-subtle bg-[#141414] p-4">
+              <div className="mb-6 flex items-start gap-3 rounded-md border-app border-border-subtle bg-field-bg p-4 dark:bg-[#141414]">
                 <div
                   className={cn(
                     "flex size-10 shrink-0 items-center justify-center rounded-md text-xs font-semibold text-white",
@@ -126,14 +127,14 @@ export function RequestAccessModal({
                   {dataset.initials}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-nav-eyebrow text-[10px] font-medium uppercase tracking-[0.04em] text-zinc-500">
+                  <p className="font-nav-eyebrow text-[10px] font-medium uppercase tracking-[0.04em] text-muted-foreground dark:text-zinc-500">
                     {dataset.providerKey}
                   </p>
-                  <p className="mt-0.5 text-base font-medium text-white">
+                  <p className="mt-0.5 text-base font-medium text-heading dark:text-white">
                     {dataset.datasetName}
                   </p>
                 </div>
-                <span className="shrink-0 font-mono text-[10px] uppercase tracking-wide text-zinc-500">
+                <span className="shrink-0 font-mono text-[10px] uppercase tracking-wide text-muted-foreground dark:text-zinc-500">
                   {dataset.license}
                 </span>
               </div>
@@ -152,12 +153,12 @@ export function RequestAccessModal({
                   </div>
                   <div className="stack-field">
                     <ModalFieldLabel>Organization URL</ModalFieldLabel>
-                    <div className="flex rounded-md border-app border-border-subtle bg-[#141414] focus-within:border-border-subtle focus-within:ring-1 focus-within:ring-border-subtle">
-                      <span className="flex shrink-0 items-center border-app-r border-border-subtle px-3 text-xs text-zinc-500">
+                    <div className="flex rounded-md border-app border-border-subtle bg-field-bg focus-within:border-border-subtle focus-within:ring-1 focus-within:ring-border-subtle dark:bg-[#141414]">
+                      <span className="flex shrink-0 items-center border-app-r border-border-subtle px-3 text-xs text-muted-foreground dark:text-zinc-500">
                         https://
                       </span>
                       <input
-                        className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-base font-normal text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+                        className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-base font-normal text-foreground placeholder:text-muted-foreground focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-600"
                         placeholder="yoursite.com"
                         value={orgUrl}
                         onChange={(e) => setOrgUrl(e.target.value)}
@@ -167,7 +168,7 @@ export function RequestAccessModal({
                   <div className="stack-field">
                     <ModalFieldLabel>Org count</ModalFieldLabel>
                     <select
-                      className={modalInputClass("cursor-pointer appearance-none bg-[#141414]")}
+                      className={modalInputClass("cursor-pointer appearance-none")}
                       value={orgSize}
                       onChange={(e) => setOrgSize(e.target.value)}
                     >
@@ -217,10 +218,15 @@ export function RequestAccessModal({
                       onCheckedChange={(v) => setAgreed(Boolean(v))}
                       className="mt-0.5"
                     />
-                    <span className="text-base font-normal leading-snug text-zinc-400">
+                    <span className="text-base font-normal leading-snug text-muted-foreground dark:text-zinc-400">
                       I agree on behalf of{" "}
-                      <span className="text-zinc-200">{orgName}</span> to the{" "}
-                      <span className="text-zinc-200">{dataset.datasetName}</span>{" "}
+                      <span className="text-foreground dark:text-zinc-200">
+                        {orgName}
+                      </span>{" "}
+                      to the{" "}
+                      <span className="text-foreground dark:text-zinc-200">
+                        {dataset.datasetName}
+                      </span>{" "}
                       terms.
                     </span>
                   </label>
@@ -232,7 +238,7 @@ export function RequestAccessModal({
               <Button
                 type="button"
                 variant="ghost"
-                className="text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                className="text-foreground hover:bg-nav-active dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white"
                 onClick={() =>
                   step === 0 ? onOpenChange(false) : setStep(0)
                 }
@@ -267,10 +273,12 @@ export function RequestAccessModal({
                   <Check className="size-6 stroke-[2.5]" />
                 </div>
               </div>
-              <p className="max-w-sm text-center text-base font-normal leading-relaxed text-zinc-300">
+              <p className="max-w-sm text-center text-base font-normal leading-relaxed text-muted-foreground dark:text-zinc-300">
                 We&apos;ve received your access request for{" "}
-                <span className="text-white">{dataset.datasetName}</span>.
-                Watch your inbox for updates.
+                <span className="text-heading dark:text-white">
+                  {dataset.datasetName}
+                </span>
+                . Watch your inbox for updates.
               </p>
             </div>
             <DialogFooter className="justify-center sm:justify-center">
@@ -285,6 +293,7 @@ export function RequestAccessModal({
             </DialogFooter>
           </>
         )}
+        </div>
       </DialogContent>
     </Dialog>
   );

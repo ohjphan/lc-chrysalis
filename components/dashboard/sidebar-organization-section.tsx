@@ -141,7 +141,7 @@ export function SidebarOrganizationSection({
 
         <DropdownMenuItem asChild className={cn(popoverItemClass, "p-0")}>
           <Link
-            href="/settings/organization"
+            href="/settings"
             className="flex w-full cursor-pointer items-center rounded-md px-2 py-2 text-sm outline-none"
             onClick={() => onNavigate?.()}
           >

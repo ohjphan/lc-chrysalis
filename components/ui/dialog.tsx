@@ -36,7 +36,8 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-0 rounded-lg border-app border-border-subtle bg-[#1c1c1c] p-0 text-zinc-100 shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+        // Platform-wide modal width; override with className when a dialog must differ.
+        "fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-0 rounded-lg border-app border-border-subtle bg-background p-0 text-foreground shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 dark:bg-modal-bg dark:text-zinc-100 sm:max-w-xl",
         className,
       )}
       {...props}
@@ -46,7 +47,7 @@ const DialogContent = React.forwardRef<
           className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-subtle disabled:pointer-events-none"
           aria-label="Close"
         >
-          <X className="size-4 text-zinc-500" />
+          <X className="size-4 text-muted-foreground dark:text-zinc-500" />
         </DialogPrimitive.Close>
       ) : null}
       {children}
@@ -74,7 +75,7 @@ function DialogFooter({
   return (
     <div
       className={cn(
-        "flex flex-col-reverse gap-2 border-app-t border-border-subtle px-6 py-4 sm:flex-row sm:justify-end",
+        "mt-4 flex flex-col-reverse gap-2 border-app-t border-border-subtle px-6 pt-5 pb-4 sm:flex-row sm:justify-end",
         className,
       )}
       {...props}
@@ -89,7 +90,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "font-mono text-lg font-light uppercase tracking-[0.04em] text-white",
+      "font-mono text-lg font-light uppercase tracking-[0.04em] text-heading dark:text-white",
       className,
     )}
     {...props}
@@ -103,7 +104,10 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-base font-normal leading-relaxed text-zinc-400", className)}
+    className={cn(
+      "text-base font-normal leading-relaxed text-muted-foreground dark:text-zinc-400",
+      className,
+    )}
     {...props}
   />
 ));

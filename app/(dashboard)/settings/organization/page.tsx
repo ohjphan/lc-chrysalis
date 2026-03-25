@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/dashboard/placeholder-page";
+import { OrganizationSettingsView } from "@/components/dashboard/settings/organization-settings-view";
 
 export const metadata: Metadata = {
   title: "Organization settings",
 };
 
 export default function SettingsOrganizationPage() {
-  return (
-    <PlaceholderPage
-      title="Organization settings"
-      description="Branding, SSO, and audit policy for your workspace."
-    />
-  );
+  return <OrganizationSettingsView />;
 }

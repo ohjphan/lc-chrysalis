@@ -19,7 +19,7 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col border-app-r border-border-subtle bg-sidebar">
-      <div className="flex h-14 items-center pl-5 pr-3">
+      <div className="flex h-16 items-start pl-5 pr-3 pt-6">
         <Link
           href="/"
           onClick={onNavigate}
@@ -31,7 +31,7 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
               alt="Learning Commons"
               width={179}
               height={18}
-              className="h-[calc(15.4px*1.12)] w-auto max-w-full object-left object-contain"
+              className="h-[18px] w-auto max-w-full object-left object-contain"
             />
           </span>
           <span className="hidden min-w-0 flex-1 dark:block">
@@ -40,18 +40,22 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
               alt="Learning Commons"
               width={179}
               height={18}
-              className="h-[calc(15.4px*1.12)] w-auto max-w-full object-left object-contain"
+              className="h-[18px] w-auto max-w-full object-left object-contain"
             />
           </span>
         </Link>
       </div>
 
       <nav className="min-h-0 flex-1 space-y-8 overflow-y-auto overflow-x-hidden p-3">
-        {navGroups.map((group) => (
-          <div key={group.label}>
-            <p className="mb-1.5 px-2 font-nav-sidebar-eyebrow uppercase text-muted-foreground">
-              {group.label}
-            </p>
+        {navGroups.map((group, index) => (
+          <div
+            key={group.label ?? group.items[0]?.href ?? `nav-${index}`}
+          >
+            {group.label ? (
+              <p className="mb-1.5 px-2 font-nav-sidebar-eyebrow uppercase text-muted-foreground">
+                {group.label}
+              </p>
+            ) : null}
             <ul className="space-y-0.5">
               {group.items.map((item) => {
                 const active = isActive(item.href);
@@ -77,7 +81,7 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
                             "absolute left-1/2 top-1/2 size-[16px] -translate-x-1/2 -translate-y-1/2 stroke-[1.5] transition-[transform,opacity] duration-200 ease-out",
                             active
                               ? "scale-0 opacity-0"
-                              : "scale-100 opacity-100 text-muted-foreground group-hover:text-foreground",
+                              : "scale-100 opacity-100 text-nav-link-idle group-hover:text-foreground",
                           )}
                         />
                         <span

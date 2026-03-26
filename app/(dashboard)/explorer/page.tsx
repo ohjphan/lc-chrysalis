@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/dashboard/placeholder-page";
+import { ExplorerPageClient } from "./explorer-page-client";
 
 export const metadata: Metadata = {
-  title: "Explorer",
+  title: "Knowledge Graph Explorer",
+  description:
+    "Explore standards relationships in the knowledge graph. Early release preview.",
 };
 
 export default function ExplorerPage() {
-  return (
-    <PlaceholderPage
-      title="Explorer"
-      description="Browse graph structures and evaluator assets. This page is a placeholder for upcoming explorer tooling."
-    />
-  );
+  return <ExplorerPageClient />;
 }

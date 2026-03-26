@@ -34,13 +34,18 @@ export function DashboardLayoutClient({
   }, [pathname]);
 
   const isLanding = pathname === "/";
+  const isProfileSetup = pathname === "/profile-setup";
+  const isFullBleed = isLanding || isProfileSetup;
+  const useFlatMainSurface = isLanding || isProfileSetup;
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="sticky top-0 z-20 hidden h-svh max-h-svh w-64 shrink-0 self-start md:block">
-        <AppSidebar />
-      </aside>
-      {mobileOpen ? (
+      {!isProfileSetup ? (
+        <aside className="sticky top-0 z-20 hidden h-svh max-h-svh w-64 shrink-0 self-start md:block">
+          <AppSidebar />
+        </aside>
+      ) : null}
+      {mobileOpen && !isProfileSetup ? (
         <div className="fixed inset-0 z-50 md:hidden">
           <button
             type="button"
@@ -66,26 +71,33 @@ export function DashboardLayoutClient({
         </div>
       ) : null}
       <div className="relative flex min-h-screen min-w-0 flex-1 flex-col">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="fixed left-4 top-[max(1rem,env(safe-area-inset-top,0px))] z-30 md:hidden"
-          aria-label="Open menu"
-          onClick={() => setMobileOpen(true)}
-        >
-          <Menu className="size-5" />
-        </Button>
+        {!isProfileSetup ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="fixed left-4 top-[max(1rem,env(safe-area-inset-top,0px))] z-30 md:hidden"
+            aria-label="Open menu"
+            onClick={() => setMobileOpen(true)}
+          >
+            <Menu className="size-5" />
+          </Button>
+        ) : null}
         <main
           key={pathname}
           className={cn(
-            "relative flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden",
-            isLanding
-              ? "bg-white dark:bg-background"
-              : "bg-background",
+            // `overflow-x-hidden` pairs with `overflow-y: visible` → computed `overflow-y: auto`,
+            // which breaks `position: sticky` for descendants. `clip` clips horizontally without
+            // that side effect (see CSS Overflow 3).
+            "relative flex min-h-0 min-w-0 flex-1 flex-col overflow-x-clip",
+            isProfileSetup
+              ? "bg-[#faf9f8] dark:bg-background"
+              : useFlatMainSurface
+                ? "bg-white dark:bg-background"
+                : "bg-background",
           )}
           style={
-            !isLanding
+            !useFlatMainSurface
               ? {
                   // Top-right radial + bottom linear + bottom-edge radial (full-width art) so dark/light both ease into --background.
                   backgroundImage: [
@@ -106,8 +118,9 @@ export function DashboardLayoutClient({
         >
           <div
             className={cn(
-              "relative box-border flex min-h-0 min-w-0 flex-1 flex-col pb-12 pt-14 md:pt-0",
-              isLanding
+              "relative box-border flex min-h-0 min-w-0 flex-1 flex-col pb-12 md:pt-0",
+              isProfileSetup ? "pt-6" : "pt-14",
+              isFullBleed
                 ? "w-full max-w-none px-0"
                 : DASHBOARD_CONTENT_WIDTH_CLASS,
             )}

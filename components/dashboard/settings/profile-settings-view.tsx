@@ -33,7 +33,7 @@ export function ProfileSettingsView() {
 
   return (
     <div className="space-y-10">
-      <section className="space-y-6">
+      <section className="flex flex-col gap-10">
         <h2 className={sectionTitleClass()}>Profile</h2>
         <div className="grid gap-8 lg:grid-cols-[1fr_min(240px,100%)] lg:items-start">
           <div className="space-y-6">
@@ -93,6 +93,7 @@ export function ProfileSettingsView() {
         <Button
           type="button"
           variant="primary"
+          className="w-fit"
           disabled={!dirty}
           onClick={save}
         >

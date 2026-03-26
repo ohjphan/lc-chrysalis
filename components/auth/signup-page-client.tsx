@@ -165,16 +165,16 @@ export function SignupPageClient() {
           <div className="flex flex-col gap-3">
             <Button
               type="button"
-              variant="secondary"
-              className="h-11 w-full justify-center gap-3 font-sans text-sm font-medium"
+              variant="primary"
+              className="h-11 w-full justify-center gap-3"
             >
               <GoogleMark />
               Continue with Google
             </Button>
             <Button
               type="button"
-              variant="secondary"
-              className="h-11 w-full justify-center gap-3 font-sans text-sm font-medium"
+              variant="primary"
+              className="h-11 w-full justify-center gap-3"
             >
               <Github className="size-5 shrink-0" aria-hidden />
               Continue with GitHub
@@ -222,7 +222,7 @@ export function SignupPageClient() {
                   <Button
                     type="submit"
                     variant="primary"
-                    className="h-11 w-full font-sans text-sm font-medium"
+                    className="h-11 w-full"
                   >
                     Sign in
                   </Button>
@@ -320,7 +320,7 @@ export function SignupPageClient() {
                   <Button
                     type="submit"
                     variant="primary"
-                    className="h-11 w-full font-sans text-sm font-medium"
+                    className="h-11 w-full"
                   >
                     Create account
                   </Button>

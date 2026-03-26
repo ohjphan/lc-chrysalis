@@ -31,10 +31,12 @@ const USER_EMAIL = "jphan@magicschool.edu";
 
 /** Light popover panel (matches reference) — stays light in dark dashboard. */
 const popoverContentClass =
-  "z-[60] min-w-[17.5rem] max-w-[min(calc(100vw-2rem),20rem)] rounded-lg border-app border-zinc-200 bg-white p-2 text-zinc-900 shadow-lg";
+  "z-[60] min-w-[17.5rem] max-w-[min(calc(100vw-2rem),20rem)] rounded-lg border-app border-[#CCC9C6] bg-[#FAF9F8] p-2 text-zinc-900 shadow-lg";
+
+const popoverSeparatorClass = "my-2 bg-[#CCC9C6]";
 
 const popoverItemClass =
-  "cursor-pointer gap-2 rounded-md px-2 py-2 text-sm font-normal text-zinc-800 focus:bg-zinc-100 focus:text-zinc-900 data-[highlighted]:bg-zinc-100 data-[highlighted]:text-zinc-900";
+  "cursor-pointer gap-2 rounded-md px-2 py-2 text-sm font-normal text-zinc-800 focus:bg-[#EFEBE7] focus:text-zinc-900 data-[highlighted]:bg-[#EFEBE7] data-[highlighted]:text-zinc-900";
 
 /** Matches copyright line in org menu footer */
 const orgMenuFooterCopyClass =
@@ -125,7 +127,7 @@ export function SidebarOrganizationSection({
           );
         })}
         <DropdownMenuItem
-          className={cn(
+            className={cn(
             popoverItemClass,
             "text-emerald-600 focus:text-emerald-700 data-[highlighted]:text-emerald-700",
           )}
@@ -137,7 +139,7 @@ export function SidebarOrganizationSection({
           <span className="font-medium">New organization</span>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="my-2 bg-zinc-200" />
+        <DropdownMenuSeparator className={popoverSeparatorClass} />
 
         <DropdownMenuItem asChild className={cn(popoverItemClass, "p-0")}>
           <Link
@@ -158,7 +160,7 @@ export function SidebarOrganizationSection({
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="my-2 bg-zinc-200" />
+        <DropdownMenuSeparator className={popoverSeparatorClass} />
 
         <DropdownMenuItem
           className={popoverItemClass}
@@ -167,7 +169,7 @@ export function SidebarOrganizationSection({
           Sign out
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="my-2 bg-zinc-200" />
+        <DropdownMenuSeparator className={popoverSeparatorClass} />
 
         <div className="px-2 pb-3 pt-1">
           <div
@@ -178,7 +180,7 @@ export function SidebarOrganizationSection({
           >
             <Link
               href="/terms-of-use"
-              className="rounded-sm outline-none hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+              className="rounded-sm outline-none hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-[#CCC9C6] focus-visible:ring-offset-1 focus-visible:ring-offset-white"
               onClick={() => onNavigate?.()}
             >
               Terms of Use
@@ -188,7 +190,7 @@ export function SidebarOrganizationSection({
             </span>
             <Link
               href="/privacy-policy"
-              className="rounded-sm outline-none hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+              className="rounded-sm outline-none hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-[#CCC9C6] focus-visible:ring-offset-1 focus-visible:ring-offset-white"
               onClick={() => onNavigate?.()}
             >
               Privacy Policy

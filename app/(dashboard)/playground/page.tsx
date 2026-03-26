@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/dashboard/placeholder-page";
+import { PlaygroundView } from "@/components/dashboard/playground-view";
 
 export const metadata: Metadata = {
-  title: "Playground",
+  title: "Evaluator Playground",
 };
 
 export default function PlaygroundPage() {
-  return (
-    <PlaceholderPage
-      title="Playground"
-      description="Try API calls and inspect responses in a safe sandbox. This route is a UI stub until the playground is wired up."
-    />
-  );
+  return <PlaygroundView />;
 }

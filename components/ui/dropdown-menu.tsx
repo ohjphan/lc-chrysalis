@@ -19,7 +19,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      "flex cursor-default select-none items-center gap-2 rounded-md px-2 py-1.5 text-base font-normal outline-none focus:bg-nav-link-active data-[state=open]:bg-nav-link-active",
+      "flex cursor-default select-none items-center gap-2 rounded-md px-2 py-1.5 text-base font-normal outline-none data-[highlighted]:bg-[#EFEBE7] data-[state=open]:bg-[#EFEBE7] dark:data-[highlighted]:bg-nav-link-active dark:data-[state=open]:bg-nav-link-active",
       className,
     )}
     {...props}
@@ -35,7 +35,7 @@ const DropdownMenuSubContent = React.forwardRef<
   <DropdownMenuPrimitive.SubContent
     ref={ref}
     className={cn(
-      "z-50 min-w-[10rem] overflow-hidden rounded-md border-app border-border-subtle bg-surface p-1 text-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out",
+      "z-50 min-w-[10rem] overflow-hidden rounded-md border-app border-border-subtle bg-[#FAF9F8] p-1 text-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out dark:bg-background",
       className,
     )}
     {...props}
@@ -53,7 +53,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-50 max-h-[min(24rem,var(--radix-dropdown-menu-content-available-height))] min-w-[12rem] overflow-y-auto rounded-md border-app border-border-subtle bg-surface p-1 text-foreground shadow-md",
+        "z-50 max-h-[min(24rem,var(--radix-dropdown-menu-content-available-height))] min-w-[12rem] overflow-y-auto rounded-md border-app border-border-subtle bg-[#FAF9F8] p-1 text-foreground shadow-md dark:bg-background",
         className,
       )}
       {...props}
@@ -71,7 +71,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-1.5 text-base font-normal outline-none transition-colors focus:bg-nav-link-active data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-1.5 text-base font-normal outline-none transition-colors data-[highlighted]:bg-[#EFEBE7] dark:data-[highlighted]:bg-nav-link-active data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       inset && "pl-8",
       className,
     )}
@@ -89,7 +89,7 @@ const DropdownMenuLabel = React.forwardRef<
   <DropdownMenuPrimitive.Label
     ref={ref}
     className={cn(
-      "px-2 py-1.5 text-xs font-semibold text-muted-foreground",
+      "px-2 py-1.5 font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground",
       inset && "pl-8",
       className,
     )}
@@ -121,12 +121,12 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-base font-normal outline-none transition-colors focus:bg-nav-link-active data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-1.5 text-base font-normal outline-none transition-colors data-[highlighted]:bg-[#EFEBE7] dark:data-[highlighted]:bg-nav-link-active data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
     {...props}
   >
-    <span className="absolute left-2 flex size-3.5 items-center justify-center">
+    <span className="flex size-3.5 shrink-0 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
         <span className="size-2 rounded-full bg-foreground dark:bg-white" />
       </DropdownMenuPrimitive.ItemIndicator>
@@ -144,13 +144,13 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-base font-normal outline-none transition-colors focus:bg-nav-link-active data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default select-none items-center gap-2 rounded-md px-2 py-1.5 text-base font-normal outline-none transition-colors data-[highlighted]:bg-[#EFEBE7] dark:data-[highlighted]:bg-nav-link-active data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
     checked={checked}
     {...props}
   >
-    <span className="absolute left-2 flex size-3.5 items-center justify-center text-foreground">
+    <span className="flex size-3.5 shrink-0 items-center justify-center text-foreground">
       <DropdownMenuPrimitive.ItemIndicator>
         <Check className="size-4" />
       </DropdownMenuPrimitive.ItemIndicator>

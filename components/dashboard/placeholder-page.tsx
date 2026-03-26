@@ -10,7 +10,7 @@ export function PlaceholderPage({
 }) {
   return (
     <PageContainer>
-      <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[8px]">
         <PageTitle>{title}</PageTitle>
         <p className="max-w-2xl text-base font-normal leading-relaxed text-muted-foreground">
           {description}

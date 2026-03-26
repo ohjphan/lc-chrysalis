@@ -13,9 +13,9 @@ import {
 import { PageContainer } from "@/components/dashboard/page-container";
 import { StickyTableProvider } from "@/components/dashboard/sticky-table-provider";
 import { Button } from "@/components/ui/button";
+import { ColorBadge } from "@/components/ui/color-badge";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { PageTitle } from "@/components/ui/page-title";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { brandAvatarClassesForId } from "@/lib/brand-avatar-colors";
 import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
 import {
@@ -92,25 +93,59 @@ const SEED_ROWS: MemberRow[] = [
     invitedAt: "Mar 22, 2025",
     role: "Admin",
   },
+  {
+    kind: "member",
+    id: "m5",
+    name: "Priya Sharma",
+    email: "priya@example.com",
+    joined: "Feb 12, 2024",
+  },
+  {
+    kind: "member",
+    id: "m6",
+    name: "Marcus Chen",
+    email: "marcus@example.com",
+    joined: "Aug 3, 2023",
+  },
+  {
+    kind: "member",
+    id: "m7",
+    name: "Elena Vasquez",
+    email: "elena@example.com",
+    joined: "Sep 20, 2024",
+  },
+  {
+    kind: "member",
+    id: "m8",
+    name: "Noah Andersen",
+    email: "noah@example.com",
+    joined: "Jul 7, 2024",
+  },
+  {
+    kind: "member",
+    id: "m9",
+    name: "Amara Osei",
+    email: "amara@example.com",
+    joined: "Dec 1, 2023",
+  },
 ];
-
-type StatusFilter = "all" | "active" | "pending";
 
 function rowStatus(row: MemberRow): "active" | "pending" {
   return row.kind === "member" ? "active" : "pending";
 }
 
 function StatusBadge({ status }: { status: "active" | "pending" }) {
+  if (status === "active") {
+    return <ColorBadge variant="green">Active</ColorBadge>;
+  }
   return (
     <span
       className={cn(
         "inline-flex rounded-full px-2 py-0.5 font-nav-eyebrow text-[11px] font-medium uppercase",
-        status === "active"
-          ? "bg-accent-green-muted text-accent-green"
-          : "bg-nav-active text-muted-foreground",
+        "bg-nav-active text-muted-foreground",
       )}
     >
-      {status === "active" ? "Active" : "Pending"}
+      Pending
     </span>
   );
 }
@@ -122,13 +157,47 @@ function selectClassName() {
   );
 }
 
+function initialsFromName(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) {
+    const w = parts[0];
+    if (!w) return "?";
+    return w.length >= 2
+      ? w.slice(0, 2).toUpperCase()
+      : (w[0] + w[0]).toUpperCase();
+  }
+  const first = parts[0][0] ?? "";
+  const last = parts[parts.length - 1][0] ?? "";
+  return (first + last).toUpperCase();
+}
+
+function initialsFromEmail(email: string): string {
+  const local = email.split("@")[0] ?? "";
+  const cleaned = local.replace(/[^a-zA-Z0-9]/g, "");
+  if (cleaned.length >= 2) return cleaned.slice(0, 2).toUpperCase();
+  if (cleaned.length === 1) return (cleaned[0] + cleaned[0]).toUpperCase();
+  return "??";
+}
+
+function memberRowInitials(row: MemberRow): string {
+  return row.kind === "member"
+    ? initialsFromName(row.name)
+    : initialsFromEmail(row.email);
+}
+
+function memberRowDisplayName(row: MemberRow): string {
+  if (row.kind === "member") return row.name;
+  const local = row.email.split("@")[0];
+  return local || row.email;
+}
+
 let inviteIdSeq = 100;
 
 export function TeamMembersView() {
   const [rows, setRows] = React.useState<MemberRow[]>(SEED_ROWS);
   const [query, setQuery] = React.useState("");
   const [statusSort, setStatusSort] = React.useState<"asc" | "desc">("asc");
-  const [statusFilter, setStatusFilter] = React.useState<StatusFilter>("all");
 
   const [inviteOpen, setInviteOpen] = React.useState(false);
   const [inviteEmail, setInviteEmail] = React.useState("");
@@ -138,13 +207,9 @@ export function TeamMembersView() {
     null,
   );
 
-  const pendingCount = rows.filter((r) => r.kind === "invite").length;
-
   const members = React.useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = rows.filter((r) => {
-      if (statusFilter === "active" && r.kind !== "member") return false;
-      if (statusFilter === "pending" && r.kind !== "invite") return false;
       if (!q) return true;
       if (r.kind === "member") {
         return (
@@ -161,7 +226,7 @@ export function TeamMembersView() {
         : rank(rowStatus(b)) - rank(rowStatus(a)),
     );
     return list;
-  }, [query, statusSort, statusFilter, rows]);
+  }, [query, statusSort, rows]);
 
   function openInvite() {
     setInviteEmail("");
@@ -218,19 +283,12 @@ export function TeamMembersView() {
   return (
     <PageContainer className="py-0">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex flex-col gap-[12px]">
-          <PageTitle>Team members</PageTitle>
+        <div className="flex flex-col gap-[8px]">
+          <h2 className="font-page-h2 text-heading dark:text-foreground">
+            Team members
+          </h2>
           <p className="max-w-xl text-base font-normal text-muted-foreground">
             Invite colleagues and manage access to this organization.
-            {pendingCount > 0 ? (
-              <>
-                {" "}
-                <span className="text-foreground">
-                  {pendingCount} pending invitation
-                  {pendingCount === 1 ? "" : "s"}.
-                </span>
-              </>
-            ) : null}
           </p>
         </div>
         <Button
@@ -244,35 +302,10 @@ export function TeamMembersView() {
         </Button>
       </div>
 
-      <div
-        className="mt-6 flex flex-wrap gap-2"
-        role="group"
-        aria-label="Filter by status"
-      >
-        {(
-          [
-            { key: "all" as const, label: "All" },
-            { key: "active" as const, label: "Active" },
-            { key: "pending" as const, label: "Pending" },
-          ] as const
-        ).map(({ key, label }) => (
-          <Button
-            key={key}
-            type="button"
-            size="sm"
-            variant={statusFilter === key ? "primary" : "secondary"}
-            className="rounded-full"
-            onClick={() => setStatusFilter(key)}
-          >
-            {label}
-          </Button>
-        ))}
-      </div>
-
-      <div className="relative mt-6 max-w-md">
+      <div className="relative mt-6 w-full">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          className="pl-9"
+          className="w-full pl-9"
           placeholder="Search by name or email"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -280,18 +313,17 @@ export function TeamMembersView() {
         />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-lg border-app border-border-subtle bg-sidebar">
+      <div className="mt-6 overflow-hidden border-app-t border-border-subtle bg-transparent">
         <StickyTableProvider>
-          <table className="min-w-[800px] w-full border-collapse text-base">
+          <table className="min-w-[720px] w-full border-collapse text-base">
             <thead>
               <tr>
-                <th className={tableHeadStickyCellClasses()}>Name</th>
-                <th className={tableHeadStickyCellClasses()}>Email</th>
+                <th className={tableHeadStickyCellClasses()}>Member</th>
                 <th className={tableHeadStickyCellClasses()}>Role</th>
                 <th className={tableHeadStickyCellClasses()}>
                   <button
                     type="button"
-                    className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 hover:bg-nav-link-active"
+                    className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground hover:bg-nav-link-active"
                     onClick={() =>
                       setStatusSort((s) => (s === "asc" ? "desc" : "asc"))
                     }
@@ -314,33 +346,44 @@ export function TeamMembersView() {
               </tr>
             </thead>
             <tbody>
-              {members.map((m, i) => (
+              {members.map((m) => {
+                const { bgClass, textClass } = brandAvatarClassesForId(m.id);
+                return (
                 <tr
                   key={m.id}
-                  className={cn(
-                    i % 2 === 0 ? "bg-sidebar" : "bg-surface/60",
-                  )}
+                  className="border-app-b border-border-subtle [&>td]:align-middle"
                 >
-                  <td className="border-app-b border-border-subtle px-3 py-3 font-medium">
-                    {m.kind === "member" ? (
-                      m.name
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
+                  <td className="border-app-b border-border-subtle px-4 py-6">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "flex size-9 shrink-0 items-center justify-center rounded-md text-[11px] font-semibold leading-none",
+                          bgClass,
+                          textClass,
+                        )}
+                      >
+                        {memberRowInitials(m)}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#242423]">
+                          {memberRowDisplayName(m)}
+                        </p>
+                        <p className="mt-1 text-base font-normal lowercase text-[#6A6A69]">
+                          {m.email}
+                        </p>
+                      </div>
+                    </div>
                   </td>
-                  <td className="border-app-b border-border-subtle px-3 py-3 text-muted-foreground">
-                    {m.email}
-                  </td>
-                  <td className="border-app-b border-border-subtle px-3 py-3 text-muted-foreground">
+                  <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
                     {m.kind === "member" ? "Member" : m.role}
                   </td>
-                  <td className="border-app-b border-border-subtle px-3 py-3">
+                  <td className="border-app-b border-border-subtle px-4 py-6">
                     <StatusBadge status={rowStatus(m)} />
                   </td>
-                  <td className="border-app-b border-border-subtle px-3 py-3 text-muted-foreground">
+                  <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
                     {m.kind === "member" ? m.joined : m.invitedAt}
                   </td>
-                  <td className="border-app-b border-border-subtle px-3 py-3 text-right">
+                  <td className="border-app-b border-border-subtle px-4 py-6 text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" aria-label="Actions">
@@ -374,7 +417,8 @@ export function TeamMembersView() {
                     </DropdownMenu>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </StickyTableProvider>

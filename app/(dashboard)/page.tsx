@@ -17,8 +17,12 @@ export default function HomePage() {
     >
       <div className="flex w-full flex-1 flex-col items-center justify-center px-6 py-16 md:min-h-[min(100dvh,56rem)] md:px-10 md:py-20">
         <div className="flex w-full max-w-2xl flex-col items-center text-center">
-          <div
-            className="mb-8 h-14 w-14 shrink-0 rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] ring-1 ring-black/5 dark:ring-white/10"
+          <img
+            src="/lc-logomark.svg"
+            alt=""
+            width={41}
+            height={27}
+            className="mb-8 h-[27px] w-[41px] shrink-0 max-w-none"
             aria-hidden
           />
           <PageTitle className="text-balance text-[28px]">

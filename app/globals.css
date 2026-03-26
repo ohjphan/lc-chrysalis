@@ -8,24 +8,30 @@
   --background: #ffffff;
   /* Primary body / UI text */
   --foreground: #242423;
-  --heading: #000000;
+  --heading: #242423;
   /* Supporting copy: derived from body so it stays a touch lighter than `--foreground` */
   --muted-foreground: color-mix(in srgb, #242423 68%, #ffffff);
-  --surface: #fafafa;
+  --surface: #faf9f8;
   --field-bg: #faf9f8;
   --sidebar-bg: #faf9f8;
   --border-subtle: #ccc9c6;
   --border-stroke: 1.5px;
-  --nav-active: #ebebeb;
+  --nav-active: #efebe7;
   --nav-link-active: #e8e8e8;
-  --nav-active-icon: #16a34a;
-  --nav-link-idle: #525252;
-  --accent-green: #16a34a;
-  --accent-green-muted: color-mix(in srgb, var(--accent-green) 14%, transparent);
+  --nav-active-icon: #1db470;
+  --nav-link-idle: #55554e;
+  --accent-green: #1db470;
+  --accent-green-muted: #125b3a;
   --destructive: #dc2626;
   --destructive-muted: color-mix(in srgb, var(--destructive) 12%, transparent);
   --modal-bg: #1a1a1a;
   --modal-border: #ccc9c6;
+  /* Single-line inputs, default buttons, native selects, composite copy rows */
+  --control-height: 38px;
+  --control-embed-inset: 6px;
+  --control-embed-button-height: calc(
+    var(--control-height) - 2 * var(--control-embed-inset)
+  );
 }
 
 /* Dark — soft warm base #242423 (surfaces stepped slightly for depth) */
@@ -43,13 +49,13 @@
   --border-subtle: #5c5c58;
   --nav-active: #32322f;
   --nav-link-active: #383835;
-  --nav-active-icon: #4ade80;
+  --nav-active-icon: #1db470;
   --nav-link-idle: #a3a3a3;
-  --accent-green: #2ecc71;
-  --accent-green-muted: color-mix(in srgb, var(--accent-green) 22%, #242423);
+  --accent-green: #1db470;
+  --accent-green-muted: #125b3a;
   --destructive: #f87171;
   --destructive-muted: color-mix(in srgb, var(--destructive) 16%, #242423);
-  --modal-bg: #2e2e2c;
+  --modal-bg: #242423;
   --modal-border: #5c5c58;
   --ring-offset-background: var(--background);
 }
@@ -128,9 +134,9 @@
   font-family: var(--font-parabolica-stack);
 }
 
-/** Left sidebar nav: #242423 at 4% (hover / active); not tied to global `--nav-active`. */
+/** Left sidebar nav: hover / active fill (uses light `--nav-active`; dark via `.dark`). */
 @utility bg-sidebar-nav-intent {
-  background-color: rgb(36 36 35 / 0.04);
+  background-color: var(--nav-active);
 }
 
 /** App-wide hairline: use with `border-border-subtle` (or other `border-*` color). */

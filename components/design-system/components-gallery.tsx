@@ -4,6 +4,7 @@ import * as React from "react";
 import { PageContainer } from "@/components/dashboard/page-container";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
+import { ColorBadge } from "@/components/ui/color-badge";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,7 +43,7 @@ export function ComponentsGallery() {
 
   return (
     <PageContainer>
-      <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[8px]">
         <PageTitle>Components</PageTitle>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
           Internal design system primitives used across the Learning Commons
@@ -51,6 +52,16 @@ export function ComponentsGallery() {
       </div>
 
       <div className="mt-10 space-y-12">
+        <Section title="Badges">
+          <div className="flex flex-wrap gap-3">
+            <ColorBadge variant="green">Green</ColorBadge>
+            <ColorBadge variant="pink">Pink</ColorBadge>
+            <ColorBadge variant="yellow">Yellow</ColorBadge>
+            <ColorBadge variant="beige">Beige</ColorBadge>
+            <ColorBadge variant="blue">Blue</ColorBadge>
+          </div>
+        </Section>
+
         <Section title="Buttons">
           <div className="flex flex-wrap gap-3">
             <Button variant="primary">Primary</Button>

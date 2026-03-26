@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Building2, User, Users } from "lucide-react";
+import { DASHBOARD_CONTENT_WIDTH_CLASS } from "@/components/dashboard/page-container";
+import { PageTitle } from "@/components/ui/page-title";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -19,10 +21,8 @@ export function SettingsLayoutClient({
   const pathname = usePathname();
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 pb-12 pt-10 md:px-8">
-      <h1 className="mb-8 text-2xl font-normal tracking-tight text-heading">
-        Settings
-      </h1>
+    <div className={cn(DASHBOARD_CONTENT_WIDTH_CLASS, "pb-12 pt-10")}>
+      <PageTitle className="mb-8">Settings</PageTitle>
       <div className="flex flex-col gap-8 md:flex-row md:gap-12 lg:gap-16">
         <nav
           aria-label="Settings sections"
@@ -52,7 +52,7 @@ export function SettingsLayoutClient({
                           "absolute left-1/2 top-1/2 size-[16px] -translate-x-1/2 -translate-y-1/2 stroke-[1.5] transition-[transform,opacity] duration-200 ease-out",
                           active
                             ? "scale-0 opacity-0"
-                            : "scale-100 opacity-100 text-muted-foreground group-hover:text-foreground",
+                            : "scale-100 opacity-100 text-nav-link-idle group-hover:text-foreground",
                         )}
                       />
                       <span

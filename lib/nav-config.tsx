@@ -6,6 +6,7 @@ import {
   Home,
   KeyRound,
   Layers,
+  Palette,
   Server,
   UserCircle,
   UserPlus,
@@ -18,16 +19,17 @@ export type NavItem = {
 };
 
 export type NavGroup = {
-  label: string;
+  /** Section eyebrow in the sidebar; omit for the first block if no label is desired. */
+  label?: string;
   items: NavItem[];
 };
 
 export const navGroups: NavGroup[] = [
   {
-    label: "Workspace",
     items: [
+      { href: "/", label: "Home", icon: Home },
+      { href: "/dataset", label: "Datasets", icon: Database },
       { href: "/api-keys", label: "API keys", icon: KeyRound },
-      { href: "/dataset", label: "Dataset", icon: Database },
     ],
   },
   {
@@ -42,12 +44,17 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
+    label: "Design system",
+    items: [
+      { href: "/foundations", label: "Foundations", icon: Palette },
+      { href: "/components", label: "Components", icon: Layers },
+    ],
+  },
+  {
     label: "Misc",
     items: [
       { href: "/signup", label: "Sign up", icon: UserPlus },
       { href: "/profile-setup", label: "Profile setup", icon: UserCircle },
-      { href: "/", label: "Landing", icon: Home },
-      { href: "/components", label: "Components", icon: Layers },
     ],
   },
 ];

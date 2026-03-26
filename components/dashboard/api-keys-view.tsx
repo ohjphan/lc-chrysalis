@@ -6,6 +6,7 @@ import { CreateApiKeyDialog } from "@/components/dashboard/create-api-key-dialog
 import { PageContainer } from "@/components/dashboard/page-container";
 import { StickyTableProvider } from "@/components/dashboard/sticky-table-provider";
 import { Button } from "@/components/ui/button";
+import { ColorBadge } from "@/components/ui/color-badge";
 import { PageTitle } from "@/components/ui/page-title";
 import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
@@ -49,7 +50,27 @@ const SEED: KeyRow[] = [
     createdByEmail: "jphan@magicschool.edu",
     created: "Feb 3, 2025",
     lastUsed: "Never",
-    disabled: true,
+    disabled: false,
+  },
+  {
+    id: "3",
+    name: "CI / GitHub Actions",
+    masked: "lc_live_••••••••c4d1",
+    createdByName: "Sam Rivera",
+    createdByEmail: "sam@magicschool.edu",
+    created: "Jan 28, 2025",
+    lastUsed: "Yesterday",
+    disabled: false,
+  },
+  {
+    id: "4",
+    name: "Local development",
+    masked: "lc_test_••••••••7e02",
+    createdByName: "Jessica Phan",
+    createdByEmail: "jphan@magicschool.edu",
+    created: "Jan 8, 2025",
+    lastUsed: "3 days ago",
+    disabled: false,
   },
 ];
 
@@ -91,7 +112,7 @@ export function ApiKeysView() {
   return (
     <PageContainer>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-[12px]">
+        <div className="flex flex-col gap-[8px]">
           <PageTitle>API keys</PageTitle>
           <p className="max-w-xl text-base font-normal text-muted-foreground">
             Authenticate requests to Learning Commons APIs.
@@ -114,7 +135,7 @@ export function ApiKeysView() {
         onCreated={appendKeyFromDialog}
       />
 
-      <div className="mt-10 overflow-hidden border-app-y border-border-subtle bg-transparent">
+      <div className="mt-10 overflow-hidden border-app-t border-border-subtle bg-transparent">
         <StickyTableProvider>
           <table className="min-w-[900px] w-full border-collapse text-base">
             <caption className="sr-only">
@@ -136,49 +157,47 @@ export function ApiKeysView() {
                 <tr
                   key={row.id}
                   className={cn(
-                    "border-app-b border-border-subtle",
+                    "border-app-b border-border-subtle [&>td]:align-middle",
                     row.disabled && "opacity-60",
                   )}
                 >
-                  <td className="px-4 py-8 align-top">
+                  <td className="px-4 py-8">
                     <div className="flex flex-wrap items-center gap-2">
                       <div>
-                        <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+                        <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#242423]">
                           {row.name}
                         </p>
-                        <p className="mt-1 font-mono text-base font-normal text-foreground">
+                        <p className="mt-1 font-mono text-base font-normal text-[#6A6A69]">
                           {row.masked}
                         </p>
                       </div>
                       {row.disabled ? (
-                        <span className="inline-flex rounded-full border-app border-border-subtle bg-nav-active px-2 py-0.5 font-nav-eyebrow text-[10px] font-medium uppercase text-muted-foreground">
-                          Disabled
-                        </span>
+                        <ColorBadge variant="beige">Disabled</ColorBadge>
                       ) : null}
                     </div>
                   </td>
-                  <td className="px-4 py-8 align-top">
-                    <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-foreground">
+                  <td className="px-4 py-8">
+                    <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#242423]">
                       {row.createdByName}
                     </p>
-                    <p className="mt-1 text-base font-normal lowercase text-muted-foreground">
+                    <p className="mt-1 text-base font-normal lowercase text-[#6A6A69]">
                       {row.createdByEmail}
                     </p>
                   </td>
-                  <td className="px-4 py-8 align-top text-muted-foreground">
+                  <td className="px-4 py-8 text-muted-foreground">
                     {row.created}
                   </td>
-                  <td className="px-4 py-8 align-top text-muted-foreground">
+                  <td className="px-4 py-8 text-muted-foreground">
                     {row.lastUsed}
                   </td>
                   {CURRENT_USER_IS_ADMIN ? (
-                    <td className="px-4 py-8 text-right align-top">
+                    <td className="px-4 py-8 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="size-9"
+                            className="size-9 hover:bg-[#EFEBE7] data-[state=open]:bg-[#EFEBE7] dark:hover:bg-nav-link-active dark:data-[state=open]:bg-nav-link-active"
                             aria-label="Row actions"
                           >
                             <MoreHorizontal className="size-4" />
@@ -200,7 +219,7 @@ export function ApiKeysView() {
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
+                            className="text-destructive focus:text-destructive data-[highlighted]:text-destructive"
                             onSelect={() =>
                               setRows((prev) =>
                                 prev.filter((k) => k.id !== row.id),

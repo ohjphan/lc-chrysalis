@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { brandAvatarClassesForId } from "@/lib/brand-avatar-colors";
 import { cn } from "@/lib/utils";
 
 export type DatasetRequestTarget = {
@@ -21,7 +22,6 @@ export type DatasetRequestTarget = {
   datasetName: string;
   license: string;
   initials: string;
-  avatarClassName: string;
 };
 
 const ORG_SIZE_OPTIONS = [
@@ -87,6 +87,8 @@ export function RequestAccessModal({
 
   if (!dataset) return null;
 
+  const { bgClass, textClass } = brandAvatarClassesForId(dataset.id);
+
   const canNextStep0 =
     orgLegalName.trim() &&
     orgUrl.trim() &&
@@ -120,8 +122,9 @@ export function RequestAccessModal({
               <div className="mb-6 flex items-start gap-3 rounded-md border-app border-border-subtle bg-field-bg p-4 dark:bg-[#141414]">
                 <div
                   className={cn(
-                    "flex size-10 shrink-0 items-center justify-center rounded-md text-xs font-semibold text-white",
-                    dataset.avatarClassName,
+                    "flex size-10 shrink-0 items-center justify-center rounded-md text-xs font-semibold",
+                    bgClass,
+                    textClass,
                   )}
                 >
                   {dataset.initials}

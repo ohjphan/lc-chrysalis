@@ -122,7 +122,7 @@ export function OrganizationSettingsView() {
 
   return (
     <div className="space-y-10">
-      <section className="space-y-6">
+      <section className="flex flex-col gap-10">
         <h2 className={sectionTitleClass()}>Organization profile</h2>
         <div className="grid gap-8 lg:grid-cols-[1fr_min(240px,100%)] lg:items-start">
           <div className="space-y-6">
@@ -207,6 +207,7 @@ export function OrganizationSettingsView() {
         <Button
           type="button"
           variant="primary"
+          className="w-fit"
           disabled={!profileDirty}
           onClick={saveProfile}
         >
@@ -214,9 +215,12 @@ export function OrganizationSettingsView() {
         </Button>
       </section>
 
-      <hr className="border-app border-border-subtle" />
+      <div
+        className="h-[length:var(--border-stroke)] w-full shrink-0 bg-border-subtle"
+        role="separator"
+      />
 
-      <section className="space-y-6">
+      <section className="flex flex-col gap-10">
         <h2 className={sectionTitleClass()}>Organization contact</h2>
         <div className="grid max-w-2xl gap-6">
           <Field id="addr-1" label="Primary business address">
@@ -284,6 +288,7 @@ export function OrganizationSettingsView() {
         <Button
           type="button"
           variant="primary"
+          className="w-fit"
           disabled={!contactDirty}
           onClick={saveContact}
         >
@@ -291,22 +296,27 @@ export function OrganizationSettingsView() {
         </Button>
       </section>
 
-      <hr className="border-app border-border-subtle" />
+      <div
+        className="h-[length:var(--border-stroke)] w-full shrink-0 bg-border-subtle"
+        role="separator"
+      />
 
-      <section className="space-y-4">
+      <section className="flex flex-col gap-10">
         <h2 className={sectionTitleClass()}>Danger zone</h2>
-        <p className="max-w-xl text-base text-muted-foreground">
-          Permanently delete this organization and all associated data. This
-          cannot be undone.
-        </p>
-        <Button
-          type="button"
-          variant="destructive"
-          className="w-full max-w-md sm:w-auto"
-          onClick={() => setDeleteOpen(true)}
-        >
-          Delete organization
-        </Button>
+        <div className="flex flex-col gap-4">
+          <p className="max-w-xl text-base text-muted-foreground">
+            Permanently delete this organization and all associated data. This
+            cannot be undone.
+          </p>
+          <Button
+            type="button"
+            variant="destructive"
+            className="w-full max-w-md sm:w-auto"
+            onClick={() => setDeleteOpen(true)}
+          >
+            Delete organization
+          </Button>
+        </div>
       </section>
 
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>

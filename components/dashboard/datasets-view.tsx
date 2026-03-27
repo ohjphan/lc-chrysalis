@@ -426,7 +426,7 @@ function DatasetFilterDropdown({
   );
 }
 
-/** Uniform row height (tbody); keeps description `line-clamp-3` + actions aligned. */
+/** Uniform row height (tbody); keeps title + description `line-clamp` + actions aligned. */
 const DATASET_TABLE_ROW_TD_HEIGHT = "h-[8.5rem]";
 const td = cn(
   "border-app-b border-border-subtle px-4 py-6 overflow-hidden",
@@ -527,16 +527,13 @@ function DatasetsTabPanel({
             </caption>
             <thead>
               <tr>
-                <th className={tableHeadStickyCellClasses(undefined, DATASETS_TABLE_HEAD_STICKY)}>
-                  Dataset
-                </th>
                 <th
                   className={tableHeadStickyCellClasses(
-                    "min-w-[220px]",
+                    "min-w-[320px]",
                     DATASETS_TABLE_HEAD_STICKY,
                   )}
                 >
-                  Description
+                  Dataset
                 </th>
                 <th className={tableHeadStickyCellClasses(undefined, DATASETS_TABLE_HEAD_STICKY)}>
                   Type
@@ -575,11 +572,11 @@ function DatasetsTabPanel({
                   key={row.id}
                   className="border-app-b border-border-subtle [&>td]:align-middle"
                 >
-                  <td className={td}>
-                    <div className="flex items-center gap-3">
+                  <td className={cn(td, "max-w-md")}>
+                    <div className="flex items-start gap-3">
                       <div
                         className={cn(
-                          "flex size-10 shrink-0 items-center justify-center rounded-md text-xs font-semibold",
+                          "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-md text-xs font-semibold",
                           bgClass,
                           textClass,
                         )}
@@ -590,32 +587,22 @@ function DatasetsTabPanel({
                         <p className="font-nav-eyebrow text-[10px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
                           {row.providerName}
                         </p>
-                        <p className="mt-1 line-clamp-2 font-medium text-foreground">
+                        <p className="mt-1 line-clamp-2 font-[550] text-foreground">
                           {row.datasetName}
+                        </p>
+                        <p className="mt-1.5 line-clamp-3 text-muted-foreground">
+                          {row.description}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className={cn(td, "max-w-xs text-muted-foreground")}>
-                    <span className="line-clamp-3">{row.description}</span>
-                  </td>
                   <td className={td}>
                     <TypeBadge type={row.type} />
                   </td>
-                  <td
-                    className={cn(
-                      td,
-                      "text-right font-mono text-xs text-muted-foreground",
-                    )}
-                  >
+                  <td className={cn(td, "text-right text-muted-foreground")}>
                     {row.version}
                   </td>
-                  <td
-                    className={cn(
-                      td,
-                      "text-right font-nav-eyebrow text-[10px] uppercase text-muted-foreground",
-                    )}
-                  >
+                  <td className={cn(td, "text-right text-muted-foreground")}>
                     {row.license}
                   </td>
                   <td className={cn(td, "text-right")}>
@@ -732,9 +719,12 @@ export function DatasetsView() {
     setRequestOpen(true);
   }
 
+  const datasetStickySentinelRef = React.useRef<HTMLDivElement>(null);
   const datasetStickyControlsRef = React.useRef<HTMLDivElement>(null);
   const [datasetStickyControlsHeight, setDatasetStickyControlsHeight] =
     React.useState(0);
+  const [datasetStickyBarStuck, setDatasetStickyBarStuck] =
+    React.useState(false);
 
   React.useLayoutEffect(() => {
     const el = datasetStickyControlsRef.current;
@@ -744,6 +734,21 @@ export function DatasetsView() {
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
+  }, []);
+
+  React.useEffect(() => {
+    const sentinel = datasetStickySentinelRef.current;
+    if (!sentinel) return;
+    function updateStuck() {
+      setDatasetStickyBarStuck(sentinel.getBoundingClientRect().top < 0);
+    }
+    updateStuck();
+    window.addEventListener("scroll", updateStuck, { passive: true });
+    window.addEventListener("resize", updateStuck);
+    return () => {
+      window.removeEventListener("scroll", updateStuck);
+      window.removeEventListener("resize", updateStuck);
+    };
   }, []);
 
   const sharedPanelProps = {
@@ -778,6 +783,12 @@ export function DatasetsView() {
             onValueChange={(v) => setScope(v as DatasetScope)}
             className="mt-8"
           >
+            {/* Sentinel above sticky bar: when it scrolls past the viewport top, the bar is sticky. */}
+            <div
+              ref={datasetStickySentinelRef}
+              className="pointer-events-none h-px w-full shrink-0"
+              aria-hidden
+            />
             {/* Outer: sticky only — `backdrop-filter` on the same node breaks sticking in Chromium/WebKit. */}
             <div
               ref={datasetStickyControlsRef}
@@ -785,21 +796,36 @@ export function DatasetsView() {
             >
               <div
                 className={cn(
-                  "border-app-b border-border-subtle px-6 pb-4 pt-3 md:px-8 md:pt-4",
+                  "border-app-b px-8 pb-4 pt-3 transition-[border-color] duration-300 ease-out md:px-10 md:pt-4",
+                  datasetStickyBarStuck
+                    ? "border-border-subtle"
+                    : "border-b-transparent",
                   DATASETS_FROSTED_STICKY_BG,
                 )}
               >
               <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <TabsList
                   aria-label="Dataset scope"
-                  className="h-auto min-h-10 w-full flex-wrap justify-start gap-1 rounded-md bg-nav-active/50 p-1 dark:bg-nav-active/30 lg:w-auto"
+                  className="h-auto min-h-10 w-full flex-wrap justify-start gap-1 rounded-md bg-nav-active/50 p-1 dark:bg-nav-active/30 lg:w-auto [&>button]:font-[550]"
                 >
                   <TabsTrigger value="all">All datasets</TabsTrigger>
-                  <TabsTrigger value="downloaded">
-                    Downloaded ({MOCK_DOWNLOADED_DATASET_IDS.size})
+                  <TabsTrigger value="downloaded" className="gap-1.5">
+                    Downloaded
+                    <ColorBadge
+                      variant="beige"
+                      className="shrink-0 tabular-nums normal-case"
+                    >
+                      {MOCK_DOWNLOADED_DATASET_IDS.size}
+                    </ColorBadge>
                   </TabsTrigger>
-                  <TabsTrigger value="pending">
-                    Pending requests ({MOCK_PENDING_REQUEST_DATASET_IDS.size})
+                  <TabsTrigger value="pending" className="gap-1.5">
+                    Pending requests
+                    <ColorBadge
+                      variant="beige"
+                      className="shrink-0 tabular-nums normal-case"
+                    >
+                      {MOCK_PENDING_REQUEST_DATASET_IDS.size}
+                    </ColorBadge>
                   </TabsTrigger>
                 </TabsList>
                 <div className="flex flex-wrap items-center justify-end gap-2">

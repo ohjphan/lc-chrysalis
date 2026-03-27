@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, User, Users } from "lucide-react";
+import { Building2, Palette, User, Users } from "lucide-react";
 import { DASHBOARD_CONTENT_WIDTH_CLASS } from "@/components/dashboard/page-container";
 import { PageTitle } from "@/components/ui/page-title";
 import { cn } from "@/lib/utils";

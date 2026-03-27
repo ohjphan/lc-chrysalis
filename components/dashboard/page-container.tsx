@@ -2,11 +2,11 @@ import { cn } from "@/lib/utils";
 
 /**
  * Single source for dashboard main-column width + horizontal padding
- * (max 1200px, `px-6` / `md:px-8`). Applied in `DashboardLayoutClient` for
+ * (max 1200px, `px-8` / `md:px-10`). Applied in `DashboardLayoutClient` for
  * all routes except `/`; also reuse for settings layout alignment.
  */
 export const DASHBOARD_CONTENT_WIDTH_CLASS =
-  "mx-auto w-full max-w-[1200px] px-6 md:px-8";
+  "mx-auto w-full max-w-[1200px] px-8 md:px-10";
 
 export function PageContainer({
   className,

@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { brandAvatarClassesForId } from "@/lib/brand-avatar-colors";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 export type DatasetRequestTarget = {
@@ -31,14 +32,6 @@ const ORG_SIZE_OPTIONS = [
   { value: "51-200", label: "51 – 200" },
   { value: "200+", label: "200+" },
 ];
-
-function ModalFieldLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="block font-mono text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground dark:text-zinc-500">
-      {children}
-    </label>
-  );
-}
 
 function modalInputClass(extra?: string) {
   return cn(
@@ -118,7 +111,7 @@ export function RequestAccessModal({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="px-6 pb-2">
+            <div className="px-9 pb-3">
               <div className="mb-6 flex items-start gap-3 rounded-md border-app border-border-subtle bg-field-bg p-4 dark:bg-[#141414]">
                 <div
                   className={cn(
@@ -145,8 +138,11 @@ export function RequestAccessModal({
               {step === 0 ? (
                 <div className="space-y-4">
                   <div className="stack-field">
-                    <ModalFieldLabel>Organization name</ModalFieldLabel>
+                    <Label htmlFor="request-access-org-name">
+                      Organization name
+                    </Label>
                     <input
+                      id="request-access-org-name"
                       className={modalInputClass()}
                       placeholder="Your organization"
                       value={orgLegalName}
@@ -155,12 +151,15 @@ export function RequestAccessModal({
                     />
                   </div>
                   <div className="stack-field">
-                    <ModalFieldLabel>Organization URL</ModalFieldLabel>
+                    <Label htmlFor="request-access-org-url">
+                      Organization URL
+                    </Label>
                     <div className="flex rounded-md border-app border-border-subtle bg-field-bg focus-within:border-border-subtle focus-within:ring-1 focus-within:ring-border-subtle dark:bg-[#141414]">
                       <span className="flex shrink-0 items-center border-app-r border-border-subtle px-3 text-xs text-muted-foreground dark:text-zinc-500">
                         https://
                       </span>
                       <input
+                        id="request-access-org-url"
                         className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-base font-normal text-foreground placeholder:text-muted-foreground focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-600"
                         placeholder="yoursite.com"
                         value={orgUrl}
@@ -169,8 +168,9 @@ export function RequestAccessModal({
                     </div>
                   </div>
                   <div className="stack-field">
-                    <ModalFieldLabel>Org count</ModalFieldLabel>
+                    <Label htmlFor="request-access-org-size">Org count</Label>
                     <select
+                      id="request-access-org-size"
                       className={modalInputClass("cursor-pointer appearance-none")}
                       value={orgSize}
                       onChange={(e) => setOrgSize(e.target.value)}
@@ -183,8 +183,11 @@ export function RequestAccessModal({
                     </select>
                   </div>
                   <div className="stack-field">
-                    <ModalFieldLabel>Short description</ModalFieldLabel>
+                    <Label htmlFor="request-access-org-desc">
+                      Short description
+                    </Label>
                     <textarea
+                      id="request-access-org-desc"
                       className={modalInputClass("min-h-[100px] resize-y")}
                       placeholder="A brief description of your organization."
                       value={orgDescription}
@@ -192,10 +195,11 @@ export function RequestAccessModal({
                     />
                   </div>
                   <div className="stack-field">
-                    <ModalFieldLabel>
-                      Contact phone number (optional)
-                    </ModalFieldLabel>
+                    <Label htmlFor="request-access-phone" optional>
+                      Contact phone number
+                    </Label>
                     <input
+                      id="request-access-phone"
                       className={modalInputClass()}
                       type="tel"
                       placeholder="+1 …"
@@ -207,8 +211,11 @@ export function RequestAccessModal({
               ) : (
                 <div className="space-y-4">
                   <div className="stack-field">
-                    <ModalFieldLabel>How do you plan to use this?</ModalFieldLabel>
+                    <Label htmlFor="request-access-use-case">
+                      How do you plan to use this?
+                    </Label>
                     <textarea
+                      id="request-access-use-case"
                       className={modalInputClass("min-h-[120px] resize-y")}
                       placeholder="Describe how your org plans to use this dataset."
                       value={useCase}
@@ -270,7 +277,7 @@ export function RequestAccessModal({
                 steps.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex flex-col items-center px-6 pb-2 pt-2">
+            <div className="flex flex-col items-center px-9 pb-3 pt-3">
               <div className="mb-6 flex size-16 items-center justify-center rounded-full bg-accent-green/15 ring-4 ring-accent-green/10">
                 <div className="flex size-10 items-center justify-center rounded-full bg-accent-green text-white">
                   <Check className="size-6 stroke-[2.5]" />

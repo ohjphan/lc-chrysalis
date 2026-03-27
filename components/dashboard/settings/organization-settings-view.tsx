@@ -328,7 +328,7 @@ export function OrganizationSettingsView() {
               demo. Are you sure?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="border-border-subtle dark:border-zinc-700/80">
+          <DialogFooter>
             <Button
               type="button"
               variant="secondary"

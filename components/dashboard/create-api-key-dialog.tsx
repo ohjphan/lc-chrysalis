@@ -122,7 +122,7 @@ export function CreateApiKeyDialog({
                 change it after the key is created.
               </DialogDescription>
             </DialogHeader>
-            <div className="px-6 pb-6">
+            <div className="px-9 pb-9">
               <div className="stack-field">
                 <label
                   htmlFor="create-api-key-name"
@@ -147,7 +147,7 @@ export function CreateApiKeyDialog({
                 />
               </div>
             </div>
-            <DialogFooter className="border-border-subtle dark:border-zinc-700/80">
+            <DialogFooter>
               <Button
                 type="button"
                 variant="secondary"
@@ -175,7 +175,7 @@ export function CreateApiKeyDialog({
                 won’t be able to see it again after you close this dialog.
               </DialogDescription>
             </DialogHeader>
-            <div className="px-6 pb-6">
+            <div className="px-9 pb-9">
               <div className="flex h-10 w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3 pr-1 dark:border-zinc-600 dark:bg-zinc-950/80">
                 <input
                   readOnly
@@ -194,7 +194,7 @@ export function CreateApiKeyDialog({
                 </Button>
               </div>
             </div>
-            <DialogFooter className="border-border-subtle dark:border-zinc-700/80">
+            <DialogFooter>
               <Button
                 type="button"
                 variant="primary"

@@ -107,15 +107,14 @@
   letter-spacing: 5%;
 }
 
-/** In-page section titles (`<h2>`): JetBrains Mono, caps, 16px regular, 5% tracking, 112% line-height, #242423 */
+/** In-page section titles (`<h2>`): Parabolica, 18px weight 550, 0.5% tracking, sentence case, 112% line-height */
 @utility font-page-h2 {
-  margin: 0;
-  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 5%;
+  margin: 0 0 6px 0;
+  font-family: var(--font-parabolica-stack);
+  font-size: 18px;
+  font-weight: 550;
+  letter-spacing: 0.5%;
   line-height: 1.12;
-  text-transform: uppercase;
   color: #242423;
 }
 
@@ -132,6 +131,16 @@
 
 @utility font-parabolica {
   font-family: var(--font-parabolica-stack);
+}
+
+/** In-app page titles (`<h1>`): Parabolica, 28px regular, 0.5% tracking, sentence case */
+@utility font-page-title {
+  margin: 0;
+  font-family: var(--font-parabolica-stack);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.5%;
+  line-height: 1.12;
 }
 
 /** Left sidebar nav: hover / active fill (uses light `--nav-active`; dark via `.dark`). */

@@ -36,13 +36,19 @@ export function PillToggleGroup<T extends string>({
             aria-checked={selected}
             onClick={() => onValueChange(opt.value)}
             className={cn(
-              "inline-flex h-10 shrink-0 items-center justify-center rounded-full px-4 text-base font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              "inline-flex h-[length:var(--control-height)] shrink-0 items-center justify-center gap-2.5 rounded-full px-4 text-base font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               selected
-                ? "border-[1.5px] border-[#125B3A] bg-[#E0F5EC] text-[#125B3A]"
+                ? "border-[1.5px] border-[#242423] bg-[#242423] text-white"
                 : "border-app border-border-subtle bg-sidebar text-foreground hover:bg-nav-active",
             )}
           >
-            {opt.label}
+            {selected ? (
+              <span
+                className="size-[6px] shrink-0 rounded-full bg-accent-green"
+                aria-hidden
+              />
+            ) : null}
+            <span>{opt.label}</span>
           </button>
         );
       })}

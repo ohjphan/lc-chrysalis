@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageTitle } from "@/components/ui/page-title";
-import { SpotlightBackground } from "@/components/landing/spotlight-background";
 import { cn } from "@/lib/utils";
 
 /** Signup footer legal pills: 10px mono, 5% tracking, #3A3A37 / #55554E */
@@ -99,11 +98,7 @@ export function SignupPageClient() {
   }, [showSignUpEmailExtras]);
 
   return (
-    <SpotlightBackground
-      className="min-h-[100dvh]"
-      veilClassName="bg-[#faf9f8] dark:bg-background"
-      bitmapOpacity={0.5}
-    >
+    <div className="flex min-h-[100dvh] flex-col bg-[#faf9f8] dark:bg-background">
       <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center bg-transparent px-4">
         <Link
           href="/"
@@ -130,7 +125,7 @@ export function SignupPageClient() {
         </Link>
       </header>
 
-      <main className="flex flex-1 flex-col items-center px-6 py-6 md:px-8 md:py-8">
+      <main className="flex flex-1 flex-col items-center px-6 py-6 pb-40 md:px-8 md:py-8 md:pb-44">
         <div className="mb-6 flex justify-center">
           <img
             src="/scene-person-laptop-working.svg"
@@ -142,7 +137,10 @@ export function SignupPageClient() {
           />
         </div>
 
-        <PageTitle className="mb-8 max-w-lg text-balance text-center text-[28px]">
+        <PageTitle
+          variant="authBranded"
+          className="mb-8 max-w-lg text-center"
+        >
           Build with Learning Commons
         </PageTitle>
 
@@ -154,10 +152,10 @@ export function SignupPageClient() {
               aria-label="Authentication"
               className="mb-4 flex h-auto min-h-10 w-full gap-1 rounded-md bg-nav-active/50 p-1 text-muted-foreground dark:bg-nav-active/30"
             >
-              <TabsTrigger value="signin" className="flex-1">
+              <TabsTrigger value="signin" className="flex-1 font-[550]">
                 Sign in
               </TabsTrigger>
-              <TabsTrigger value="signup" className="flex-1">
+              <TabsTrigger value="signup" className="flex-1 font-[550]">
                 Create account
               </TabsTrigger>
             </TabsList>
@@ -331,7 +329,7 @@ export function SignupPageClient() {
         </div>
       </main>
 
-      <footer className="mt-auto border-app-t border-[#55554E] bg-[#242423] px-[20px] py-4">
+      <footer className="fixed bottom-0 left-0 right-0 z-30 border-app-t border-[#55554E] bg-[#242423] px-[20px] py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex flex-wrap items-baseline gap-x-8 gap-y-1 font-mono text-[12px] font-normal uppercase tracking-[5%] text-white/65">
             <span>© {new Date().getFullYear()} Learning Commons</span>
@@ -367,6 +365,6 @@ export function SignupPageClient() {
           </div>
         </div>
       </footer>
-    </SpotlightBackground>
+    </div>
   );
 }

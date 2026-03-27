@@ -365,7 +365,7 @@ export function TeamMembersView() {
                         {memberRowInitials(m)}
                       </div>
                       <div className="min-w-0">
-                        <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#242423]">
+                        <p className="line-clamp-2 font-parabolica text-base font-[550] text-foreground">
                           {memberRowDisplayName(m)}
                         </p>
                         <p className="mt-1 text-base font-normal lowercase text-[#6A6A69]">
@@ -433,7 +433,7 @@ export function TeamMembersView() {
                 Send a mock invitation. No email is delivered in this demo.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 px-6 pb-6 pt-2">
+            <div className="grid gap-4 px-9 pb-9 pt-3">
               <Field id="invite-email" label="Email">
                 <Input
                   type="email"
@@ -462,7 +462,7 @@ export function TeamMembersView() {
                 </select>
               </div>
             </div>
-            <DialogFooter className="border-border-subtle dark:border-zinc-700/80">
+            <DialogFooter>
               <Button
                 type="button"
                 variant="secondary"
@@ -492,7 +492,7 @@ export function TeamMembersView() {
                 : null}
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="border-border-subtle dark:border-zinc-700/80">
+          <DialogFooter>
             <Button
               type="button"
               variant="secondary"

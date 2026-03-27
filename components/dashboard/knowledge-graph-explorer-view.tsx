@@ -40,7 +40,7 @@ function ExplorerGraphCanvas() {
     <div className="relative -mx-6 min-h-0 w-[calc(100%+3rem)] max-w-none md:-mx-8 md:w-[calc(100%+4rem)]">
       <div
         className={cn(
-          "relative min-h-[min(52vh,520px)] w-full px-6 py-4 pb-24 md:px-8 md:py-6 md:pb-28",
+          "relative min-h-[min(52vh,520px)] w-full px-8 py-4 pb-24 md:px-10 md:py-6 md:pb-28",
           "bg-background",
           "[background-image:radial-gradient(circle_at_center,rgba(0,0,0,0.13)_1px,transparent_1px)]",
           "[background-size:14px_14px]",
@@ -236,9 +236,7 @@ export function KnowledgeGraphExplorerView() {
     <PageContainer>
       <div className="flex flex-col gap-[8px]">
         <div className="flex flex-wrap items-center gap-3">
-          <PageTitle className="text-balance">
-            Knowledge Graph Explorer
-          </PageTitle>
+          <PageTitle>Knowledge Graph Explorer</PageTitle>
           <EarlyReleaseBadge />
         </div>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
@@ -267,7 +265,7 @@ export function KnowledgeGraphExplorerView() {
                 <TabsTrigger
                   key={seg.id}
                   value={seg.id}
-                  className="group flex h-auto min-h-10 min-w-0 flex-1 flex-col items-stretch justify-start gap-1.5 whitespace-normal p-[16px] text-left font-medium"
+                  className="group flex h-auto min-h-10 min-w-0 flex-1 flex-col items-stretch justify-start gap-1.5 whitespace-normal p-[16px] text-left font-[550]"
                 >
                   <span>{seg.label}</span>
                   <span className="text-[13px] font-normal leading-snug text-muted-foreground group-data-[state=active]:text-foreground/80">

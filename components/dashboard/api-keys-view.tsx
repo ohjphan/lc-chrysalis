@@ -164,7 +164,7 @@ export function ApiKeysView() {
                   <td className="px-4 py-8">
                     <div className="flex flex-wrap items-center gap-2">
                       <div>
-                        <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#242423]">
+                        <p className="line-clamp-2 font-parabolica text-base font-[550] text-foreground">
                           {row.name}
                         </p>
                         <p className="mt-1 font-mono text-base font-normal text-[#6A6A69]">
@@ -177,7 +177,7 @@ export function ApiKeysView() {
                     </div>
                   </td>
                   <td className="px-4 py-8">
-                    <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#242423]">
+                    <p className="text-base font-normal text-[#6A6A69]">
                       {row.createdByName}
                     </p>
                     <p className="mt-1 text-base font-normal lowercase text-[#6A6A69]">

@@ -1,21 +1,6 @@
-import type { LucideIcon } from "lucide-react";
-import {
-  Beaker,
-  Compass,
-  Database,
-  Home,
-  KeyRound,
-  Layers,
-  Palette,
-  Server,
-  UserCircle,
-  UserPlus,
-} from "lucide-react";
-
 export type NavItem = {
   href: string;
   label: string;
-  icon: LucideIcon;
 };
 
 export type NavGroup = {
@@ -27,34 +12,34 @@ export type NavGroup = {
 export const navGroups: NavGroup[] = [
   {
     items: [
-      { href: "/", label: "Home", icon: Home },
-      { href: "/dataset", label: "Datasets", icon: Database },
-      { href: "/api-keys", label: "API keys", icon: KeyRound },
+      { href: "/", label: "Home" },
+      { href: "/dataset", label: "Datasets" },
+      { href: "/api-keys", label: "API keys" },
     ],
   },
   {
     label: "Evaluators",
-    items: [{ href: "/playground", label: "Playground", icon: Beaker }],
+    items: [{ href: "/playground", label: "Playground" }],
   },
   {
     label: "Knowledge graph",
     items: [
-      { href: "/explorer", label: "Explorer", icon: Compass },
-      { href: "/mcp-server", label: "MCP server", icon: Server },
+      { href: "/explorer", label: "Explorer" },
+      { href: "/mcp-server", label: "MCP server" },
     ],
   },
   {
     label: "Design system",
     items: [
-      { href: "/foundations", label: "Foundations", icon: Palette },
-      { href: "/components", label: "Components", icon: Layers },
+      { href: "/foundations", label: "Foundations" },
+      { href: "/components", label: "Components" },
     ],
   },
   {
     label: "Misc",
     items: [
-      { href: "/signup", label: "Sign up", icon: UserPlus },
-      { href: "/profile-setup", label: "Profile setup", icon: UserCircle },
+      { href: "/signup", label: "Sign up" },
+      { href: "/profile-setup", label: "Profile setup" },
     ],
   },
 ];

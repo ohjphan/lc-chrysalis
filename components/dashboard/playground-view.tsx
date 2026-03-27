@@ -1,14 +1,28 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, Info, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  Info,
+  Trash2,
+  X,
+} from "lucide-react";
 import { PageContainer } from "@/components/dashboard/page-container";
+import { StickyTableProvider } from "@/components/dashboard/sticky-table-provider";
 import { Button } from "@/components/ui/button";
-import { Callout } from "@/components/ui/callout";
+import { ColorBadge } from "@/components/ui/color-badge";
 import { Label } from "@/components/ui/label";
 import { PageTitle } from "@/components/ui/page-title";
 import { Textarea } from "@/components/ui/textarea";
+import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
+
+const EVALUATOR_OPTIONS = [
+  { value: "", label: "Select an option" },
+  { value: "literacy", label: "Literacy evaluation" },
+  { value: "math-alignment", label: "Math standards alignment" },
+  { value: "cross", label: "Cross-curricular alignment" },
+] as const;
 
 const GRADE_OPTIONS = [
   { value: "", label: "Select an option" },
@@ -21,67 +35,250 @@ const GRADE_OPTIONS = [
   { value: "6", label: "Grade 6" },
   { value: "7", label: "Grade 7" },
   { value: "8", label: "Grade 8" },
-  { value: "9", label: "Grade 9" },
-  { value: "10", label: "Grade 10" },
-  { value: "11", label: "Grade 11" },
-  { value: "12", label: "Grade 12" },
 ] as const;
 
-const EXAMPLE_TEXT =
-  "Water moves through Earth's oceans, atmosphere, and land in a continuous cycle. When the sun warms the surface of a lake, some of the water evaporates into water vapor. The vapor rises, cools, and can form clouds. Eventually the water falls back to the ground as precipitation, such as rain or snow.";
+const CCSS_ADD_OPTIONS = [
+  { value: "3.OA.A.3", label: "3.OA.A.3" },
+  { value: "3.OA.A.4", label: "3.OA.A.4" },
+  { value: "3.OA.B.5", label: "3.OA.B.5" },
+  { value: "3.NBT.A.1", label: "3.NBT.A.1" },
+] as const;
+
+/** Parabolica + 550 for CCSS codes in overview table and result section headings. */
+const CCSS_CODE_TEXT_CLASS =
+  "font-parabolica text-base font-[550] text-foreground";
+
+const EXAMPLE_QUESTION =
+  "A school has 48 students going on a field trip. Each van holds 8 students. How many vans are needed? Show your reasoning using division and explain what the remainder means if there is one.";
 
 function selectClassName() {
   return cn(
-    "flex h-10 w-full rounded-md border-app border-border-subtle bg-field-bg px-3 py-2 text-base font-normal text-foreground",
+    "box-border flex h-[length:var(--control-height)] w-full rounded-md border-app border-border-subtle bg-field-bg px-3 py-2 text-base font-normal text-foreground",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
   );
 }
 
+type OverviewRow = {
+  id: string;
+  standard: string;
+  stencil: string;
+  scoreCurrent: number;
+  scoreMax: number;
+};
+
+const OVERVIEW_ROWS: OverviewRow[] = [
+  {
+    id: "1",
+    standard: "3.OA.A.3",
+    stencil: "Standard definition",
+    scoreCurrent: 2,
+    scoreMax: 2,
+  },
+  {
+    id: "2",
+    standard: "3.OA.A.4",
+    stencil: "Standard definition",
+    scoreCurrent: 1,
+    scoreMax: 2,
+  },
+  {
+    id: "3",
+    standard: "3.OA.B.5",
+    stencil: "Standard definition",
+    scoreCurrent: 1,
+    scoreMax: 2,
+  },
+];
+
+type AlignmentItem = {
+  id: string;
+  title: string;
+  aligned: boolean;
+  reasoning: string;
+  feedback: string;
+};
+
+type AlignmentGroup = {
+  code: string;
+  items: AlignmentItem[];
+};
+
+const ALIGNMENT_GROUPS: AlignmentGroup[] = [
+  {
+    code: "3.OA.A.3",
+    items: [
+      {
+        id: "a1",
+        title:
+          "Apply understanding of 3.OA.A.2 to solve a mathematical problem in context.",
+        aligned: true,
+        reasoning:
+          "The response correctly interprets the division situation and connects the quotient to equal groups, consistent with expectations for this standard.",
+        feedback:
+          "Strong alignment. Consider prompting students to verbalize the unit (e.g., vans vs. students) to reinforce structure.",
+      },
+      {
+        id: "a2",
+        title:
+          "Represent the situation with an equation and justify the operation choice.",
+        aligned: true,
+        reasoning:
+          "An equation is implied; the student’s steps match the intended operation for the task.",
+        feedback:
+          "Encourage explicit equation writing in future drafts for clarity.",
+      },
+    ],
+  },
+  {
+    code: "3.OA.A.4",
+    items: [
+      {
+        id: "b1",
+        title:
+          "Determine the unknown whole number in a multiplication or division equation.",
+        aligned: false,
+        reasoning:
+          "The work addresses a related skill but does not fully demonstrate determining an unknown in an equation as stated.",
+        feedback:
+          "Add a follow-up item that asks for the unknown explicitly in equation form.",
+      },
+    ],
+  },
+  {
+    code: "3.OA.B.5",
+    items: [
+      {
+        id: "c1",
+        title:
+          "Apply properties of operations as strategies to multiply and divide.",
+        aligned: false,
+        reasoning:
+          "Properties are not clearly named or used as strategies in the student work shown.",
+        feedback:
+          "Model one property (e.g., distributive) with a parallel example before reassessment.",
+      },
+    ],
+  },
+];
+
+function ScoreBar({
+  current,
+  max,
+}: {
+  current: number;
+  max: number;
+}) {
+  const pct = max > 0 ? Math.round((current / max) * 100) : 0;
+  const full = current >= max;
+  return (
+    <div className="flex min-w-[120px] items-center gap-3">
+      <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-nav-active">
+        <div
+          className={cn(
+            "h-full rounded-full transition-[width]",
+            full ? "bg-accent-green" : "bg-[#C4A574]",
+          )}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="shrink-0 tabular-nums text-sm font-medium text-foreground">
+        {pct}%
+      </span>
+    </div>
+  );
+}
+
 export function PlaygroundView() {
+  const [evaluatorType, setEvaluatorType] = React.useState("");
   const [grade, setGrade] = React.useState("");
+  const [standards, setStandards] = React.useState<string[]>([
+    "3.OA.A.3",
+    "3.OA.A.4",
+  ]);
+  const [addStandard, setAddStandard] = React.useState("");
   const [text, setText] = React.useState("");
-  const [demoResult, setDemoResult] = React.useState<string | null>(null);
+  const [expanded, setExpanded] = React.useState<Set<string>>(
+    () => new Set(["a1"]),
+  );
 
-  const canEvaluate = grade !== "" && text.trim().length > 0;
+  const canEvaluate =
+    evaluatorType !== "" && grade !== "" && text.trim().length > 0;
 
-  function useExampleText() {
-    setGrade("4");
-    setText(EXAMPLE_TEXT);
-    setDemoResult(null);
+  function toggleAccordion(id: string) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function removeStandard(code: string) {
+    setStandards((s) => s.filter((x) => x !== code));
+  }
+
+  function addStandardFromPicker() {
+    if (!addStandard || standards.includes(addStandard)) return;
+    setStandards((s) => [...s, addStandard]);
+    setAddStandard("");
+  }
+
+  function useExampleQuestion() {
+    setEvaluatorType("math-alignment");
+    setGrade("3");
+    setStandards(["3.OA.A.3", "3.OA.A.4", "3.OA.B.5"]);
+    setText(EXAMPLE_QUESTION);
   }
 
   function clearAll() {
+    setEvaluatorType("");
     setGrade("");
+    setStandards([]);
     setText("");
-    setDemoResult(null);
+    setAddStandard("");
   }
 
   function evaluate() {
     if (!canEvaluate) return;
-    setDemoResult(
-      "Demo only: in a live build, results would include scores and explanations for grade-level appropriateness, sentence structure, and vocabulary complexity.",
-    );
+    // Demo: expand first accordion in first group
+    setExpanded(new Set(["a1"]));
   }
 
   return (
     <PageContainer>
       <div className="flex flex-col gap-[8px]">
-        <PageTitle>Evaluator Playground</PageTitle>
+        <PageTitle>Evaluators playground</PageTitle>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
-          Test passages against a target grade with demo scores and explanations.
+          Test the quality and alignment of your educational content.
         </p>
       </div>
 
-      <div className="mt-10 max-w-2xl space-y-8">
+      <div className="relative mt-8 max-w-2xl space-y-10">
         <section className="space-y-8">
-          <div className="flex flex-col gap-[8px]">
-            <h2 className="font-page-h2">Literacy evaluation</h2>
-            <p className="text-base font-normal text-muted-foreground">
-              Assess the appropriateness of informational text for a specific grade
-              level. The evaluation returns scores and explanations for
-              grade-level appropriateness, sentence structure, and vocabulary
-              complexity.
-            </p>
+          <div className="stack-field">
+            <Label htmlFor="playground-evaluator">Evaluator type</Label>
+            <div className="relative">
+              <select
+                id="playground-evaluator"
+                className={cn(
+                  selectClassName(),
+                  "cursor-pointer appearance-none pr-10",
+                  evaluatorType === "" && "text-muted-foreground",
+                )}
+                value={evaluatorType}
+                onChange={(e) => setEvaluatorType(e.target.value)}
+              >
+                {EVALUATOR_OPTIONS.map((o) => (
+                  <option key={o.value || "placeholder"} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
+            </div>
           </div>
 
           <div className="stack-field">
@@ -95,10 +292,7 @@ export function PlaygroundView() {
                   grade === "" && "text-muted-foreground",
                 )}
                 value={grade}
-                onChange={(e) => {
-                  setGrade(e.target.value);
-                  setDemoResult(null);
-                }}
+                onChange={(e) => setGrade(e.target.value)}
               >
                 {GRADE_OPTIONS.map((o) => (
                   <option key={o.value || "placeholder"} value={o.value}>
@@ -111,25 +305,78 @@ export function PlaygroundView() {
                 aria-hidden
               />
             </div>
-            <p className="text-sm font-normal text-muted-foreground">
-              Choose the intended grade level for the text. Sentence structure and
-              vocabulary evaluations are currently only available for grades 3 and
-              4.
-            </p>
           </div>
 
           <div className="stack-field">
-            <Label htmlFor="playground-text">Your text</Label>
+            <Label id="playground-ccss-label">CCSS standards to test against</Label>
+            <div className="relative">
+              <select
+                id="playground-ccss-add"
+                className={cn(
+                  selectClassName(),
+                  "cursor-pointer appearance-none pr-10",
+                  !addStandard && "text-muted-foreground",
+                )}
+                value={addStandard}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setAddStandard(v);
+                  if (v && !standards.includes(v)) {
+                    setStandards((s) => [...s, v]);
+                    setAddStandard("");
+                  }
+                }}
+              >
+                <option value="">Add a standard…</option>
+                {CCSS_ADD_OPTIONS.filter((o) => !standards.includes(o.value)).map(
+                  (o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ),
+                )}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
+            </div>
+            {standards.length > 0 ? (
+              <div
+                className="flex flex-wrap gap-2 pt-1"
+                role="list"
+                aria-labelledby="playground-ccss-label"
+              >
+                {standards.map((code) => (
+                  <span
+                    key={code}
+                    role="listitem"
+                    className="inline-flex items-center gap-1.5 rounded-full border-app border-border-subtle bg-sidebar px-3 py-1 text-base font-normal text-foreground"
+                  >
+                    {code}
+                    <button
+                      type="button"
+                      className="rounded-full p-0.5 text-muted-foreground transition-colors hover:bg-nav-active hover:text-foreground"
+                      aria-label={`Remove ${code}`}
+                      onClick={() => removeStandard(code)}
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="stack-field">
+            <Label htmlFor="playground-text">Math question or problem</Label>
             <Textarea
               id="playground-text"
               value={text}
-              onChange={(e) => {
-                setText(e.target.value);
-                setDemoResult(null);
-              }}
-              placeholder="Paste the informational text you want to evaluate"
-              rows={10}
-              className="min-h-[220px] resize-y"
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Enter a question or problem to evaluate against your selected standards."
+              rows={8}
+              className="min-h-[200px] resize-y"
             />
             <p className="flex gap-2 text-sm font-normal text-muted-foreground">
               <Info
@@ -137,46 +384,182 @@ export function PlaygroundView() {
                 aria-hidden
               />
               <span>
-                Please do not enter any personally identifiable information (PII).
+                Please do not enter any personally identifiable information
+                (PII).
               </span>
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            <Button
-              type="button"
-              variant="secondary"
-              size="lg"
-              onClick={useExampleText}
-            >
-              Use example text
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              size="lg"
-              onClick={clearAll}
-            >
-              <Trash2 />
-              Clear all
-            </Button>
-          </div>
-
-          <div>
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <div className="flex flex-wrap gap-3">
+              <Button
+                type="button"
+                variant="secondary"
+                size="lg"
+                onClick={useExampleQuestion}
+              >
+                Use example question
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="lg"
+                onClick={clearAll}
+              >
+                <Trash2 className="size-4" aria-hidden />
+                Clear all
+              </Button>
+            </div>
             <Button
               type="button"
               variant="primary"
               size="lg"
+              className="sm:ml-auto"
               disabled={!canEvaluate}
               onClick={evaluate}
             >
               Evaluate
             </Button>
           </div>
+        </section>
+      </div>
 
-          {demoResult ? (
-            <Callout className="text-muted-foreground">{demoResult}</Callout>
-          ) : null}
+      <div className="relative mt-16 max-w-5xl space-y-16">
+        <section className="space-y-6">
+          <div className="space-y-6">
+            <h2 className="font-page-h2 text-heading dark:text-foreground">
+              Standards alignment overview
+            </h2>
+            <p className="text-base font-normal text-muted-foreground">
+              Summary scores per standard for this run (demo data).
+            </p>
+          </div>
+
+          <div className="overflow-hidden border-app-t border-border-subtle bg-transparent">
+            <StickyTableProvider>
+              <table className="min-w-[640px] w-full border-collapse text-base">
+                <caption className="sr-only">
+                  Standards alignment overview: standard, stencil label, score
+                </caption>
+                <thead>
+                  <tr>
+                    <th className={tableHeadStickyCellClasses()}>Standards</th>
+                    <th className={tableHeadStickyCellClasses()}>Stencil</th>
+                    <th className={tableHeadStickyCellClasses("min-w-[200px]")}>
+                      Score
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {OVERVIEW_ROWS.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="border-app-b border-border-subtle [&>td]:align-middle"
+                    >
+                      <td className="px-4 py-6">
+                        <span className={CCSS_CODE_TEXT_CLASS}>
+                          {row.standard}
+                        </span>
+                      </td>
+                      <td className="px-4 py-6 text-muted-foreground">
+                        {row.stencil}
+                      </td>
+                      <td className="px-4 py-6">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                          <span className="text-sm tabular-nums text-muted-foreground">
+                            {row.scoreCurrent}/{row.scoreMax}
+                          </span>
+                          <ScoreBar
+                            current={row.scoreCurrent}
+                            max={row.scoreMax}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </StickyTableProvider>
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="space-y-8">
+            <h2 className="font-page-h2 text-heading dark:text-foreground">
+              Standards alignment results
+            </h2>
+            <p className="text-base font-normal text-muted-foreground">
+              Yes means match standards alignment.
+            </p>
+          </div>
+
+          <div className="space-y-12">
+            {ALIGNMENT_GROUPS.map((group) => (
+              <div key={group.code} className="space-y-0">
+                <h3
+                  className={cn(
+                    "border-app-b border-border-subtle pb-3",
+                    CCSS_CODE_TEXT_CLASS,
+                  )}
+                >
+                  {group.code}
+                </h3>
+                <ul className="divide-y divide-border-subtle border-app-b border-border-subtle">
+                  {group.items.map((item) => {
+                    const isOpen = expanded.has(item.id);
+                    return (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          onClick={() => toggleAccordion(item.id)}
+                          className="flex w-full items-start gap-4 py-6 text-left transition-colors hover:bg-nav-active/40 dark:hover:bg-nav-active/20"
+                          aria-expanded={isOpen}
+                        >
+                          <span className="min-w-0 flex-1 text-base font-normal leading-snug text-foreground">
+                            {item.title}
+                          </span>
+                          <span className="flex shrink-0 items-center gap-3">
+                            <ColorBadge variant={item.aligned ? "green" : "pink"}>
+                              {item.aligned ? "Yes" : "No"}
+                            </ColorBadge>
+                            <ChevronDown
+                              className={cn(
+                                "size-5 shrink-0 text-muted-foreground transition-transform duration-200",
+                                isOpen && "rotate-180",
+                              )}
+                              aria-hidden
+                            />
+                          </span>
+                        </button>
+                        {isOpen ? (
+                          <div className="border-app-t border-border-subtle bg-field-bg/50 px-8 py-8 dark:bg-field-bg/30">
+                            <div className="space-y-8">
+                              <div>
+                                <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+                                  Reasoning
+                                </p>
+                                <p className="mt-3 text-base font-normal leading-relaxed text-foreground">
+                                  {item.reasoning}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+                                  Feedback
+                                </p>
+                                <p className="mt-3 text-base font-normal leading-relaxed text-foreground">
+                                  {item.feedback}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
         </section>
       </div>
     </PageContainer>

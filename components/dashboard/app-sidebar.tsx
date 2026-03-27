@@ -7,7 +7,6 @@ import { navGroups } from "@/lib/nav-config";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SidebarOrganizationSection } from "@/components/dashboard/sidebar-organization-section";
-import { ThemeToggleButton } from "@/components/dashboard/theme-toggle-button";
 
 export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
@@ -46,54 +45,49 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
         </Link>
       </div>
 
-      <nav className="min-h-0 flex-1 space-y-8 overflow-y-auto overflow-x-hidden p-3">
+      <nav className="min-h-0 flex-1 space-y-8 overflow-y-auto overflow-x-hidden py-3 px-5">
         {navGroups.map((group, index) => (
           <div
             key={group.label ?? group.items[0]?.href ?? `nav-${index}`}
           >
             {group.label ? (
-              <p className="mb-1.5 px-2 font-nav-sidebar-eyebrow uppercase text-muted-foreground">
+              <p className="mb-1.5 pl-0 pr-2 font-nav-sidebar-eyebrow uppercase text-muted-foreground/60">
                 {group.label}
               </p>
             ) : null}
             <ul className="space-y-0.5">
               {group.items.map((item) => {
                 const active = isActive(item.href);
-                const Icon = item.icon;
                 return (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       onClick={onNavigate}
                       className={cn(
-                        "group flex items-center gap-2.5 rounded-md px-2 py-2 text-sm font-normal transition-colors",
+                        "group flex w-full items-center rounded-md py-2 pr-2 text-sm font-normal transition-[padding-left,gap,background-color,color] duration-300 ease-in-out",
                         active
-                          ? "bg-sidebar-nav-intent text-foreground"
-                          : "text-nav-link-idle hover:bg-sidebar-nav-intent hover:text-foreground",
+                          ? "gap-1 bg-sidebar-nav-intent pl-2 text-foreground"
+                          : "gap-0 pl-0 text-nav-link-idle hover:gap-1 hover:bg-sidebar-nav-intent hover:pl-2 hover:text-foreground",
                       )}
                     >
                       <span
-                        className="relative size-[16px] shrink-0"
+                        className={cn(
+                          "flex h-4 shrink-0 items-center justify-center overflow-hidden",
+                          active ? "w-4" : "w-0 group-hover:w-4",
+                        )}
                         aria-hidden
                       >
-                        <Icon
-                          className={cn(
-                            "absolute left-1/2 top-1/2 size-[16px] -translate-x-1/2 -translate-y-1/2 stroke-[1.5] transition-[transform,opacity] duration-200 ease-out",
-                            active
-                              ? "scale-0 opacity-0"
-                              : "scale-100 opacity-100 text-nav-link-idle group-hover:text-foreground",
-                          )}
-                        />
-                        <span
-                          className={cn(
-                            "absolute left-1/2 top-1/2 size-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1DB470] transition-[transform,opacity] duration-200 ease-out",
-                            active
-                              ? "scale-100 opacity-100"
-                              : "scale-0 opacity-0",
-                          )}
-                        />
+                        {active ? (
+                          <span className="size-[6px] rounded-full bg-[#1DB470]" />
+                        ) : (
+                          <span
+                            className="size-[6px] scale-90 rounded-full bg-[#CCC9C6] opacity-0 transition-[opacity,transform] duration-300 ease-in-out group-hover:scale-100 group-hover:opacity-100 dark:bg-[#5c5c58]"
+                          />
+                        )}
                       </span>
-                      {item.label}
+                      <span className="min-w-0 flex-1 truncate">
+                        {item.label}
+                      </span>
                     </Link>
                   </li>
                 );
@@ -141,9 +135,6 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
                 <HelpCircle className="size-[16px] text-muted-foreground" />
               </Link>
             </Button>
-          </div>
-          <div className="flex h-9 shrink-0 items-center justify-end">
-            <ThemeToggleButton className="focus-visible:ring-offset-sidebar" />
           </div>
         </div>
         <div

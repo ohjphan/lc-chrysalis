@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
 import { Menu } from "lucide-react";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { DASHBOARD_CONTENT_WIDTH_CLASS } from "@/components/dashboard/page-container";
@@ -15,19 +14,7 @@ export function DashboardLayoutClient({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { resolvedTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Avoid hydration mismatch: resolvedTheme is undefined on server / first paint; align with defaultTheme (dark).
-  const dashboardBitmapUrl =
-    mounted && resolvedTheme === "light"
-      ? "url('/bitmap-fade.svg')"
-      : "url('/bitmap-darkmode.svg')";
 
   React.useEffect(() => {
     setMobileOpen(false);
@@ -96,25 +83,6 @@ export function DashboardLayoutClient({
                 ? "bg-white dark:bg-background"
                 : "bg-background",
           )}
-          style={
-            !useFlatMainSurface
-              ? {
-                  // Top-right radial + bottom linear + bottom-edge radial (full-width art) so dark/light both ease into --background.
-                  backgroundImage: [
-                    "radial-gradient(ellipse 125% 90% at 100% 0%, transparent 18%, color-mix(in srgb, var(--background) 45%, transparent) 42%, var(--background) 68%)",
-                    "linear-gradient(to top, var(--background) 0%, var(--background) 5%, color-mix(in srgb, var(--background) 85%, transparent) 12%, color-mix(in srgb, var(--background) 52%, transparent) 28%, color-mix(in srgb, var(--background) 20%, transparent) 50%, transparent 92%)",
-                    "radial-gradient(ellipse 120% 85% at 50% 100%, var(--background) 0%, color-mix(in srgb, var(--background) 90%, transparent) 18%, color-mix(in srgb, var(--background) 50%, transparent) 40%, transparent 70%)",
-                    dashboardBitmapUrl,
-                  ].join(", "),
-                  backgroundRepeat:
-                    "no-repeat, no-repeat, no-repeat, no-repeat",
-                  backgroundPosition:
-                    "right top, right top, right top, right top",
-                  backgroundSize:
-                    "100% 100%, 100% 100%, 100% 100%, 100% auto",
-                }
-              : undefined
-          }
         >
           <div
             className={cn(

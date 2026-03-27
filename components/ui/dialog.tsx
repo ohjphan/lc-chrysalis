@@ -44,7 +44,7 @@ const DialogContent = React.forwardRef<
     >
       {showClose ? (
         <DialogPrimitive.Close
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-subtle disabled:pointer-events-none"
+          className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-subtle disabled:pointer-events-none"
           aria-label="Close"
         >
           <X className="size-[20px] text-muted-foreground dark:text-zinc-500" />
@@ -62,7 +62,11 @@ function DialogHeader({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex flex-col gap-1 px-6 pb-4 pt-6 pr-12 text-left", className)}
+      className={cn(
+        /* px-9 matches modal body sections (inputs, etc.) for left alignment */
+        "flex flex-col gap-2.5 px-9 pb-4 pt-6 text-left",
+        className,
+      )}
       {...props}
     />
   );
@@ -75,7 +79,7 @@ function DialogFooter({
   return (
     <div
       className={cn(
-        "mt-4 flex flex-col-reverse gap-2 border-app-t border-border-subtle px-6 pt-5 pb-4 sm:flex-row sm:justify-end",
+        "mt-6 flex flex-col-reverse gap-3 px-9 py-7.5 sm:flex-row sm:justify-end",
         className,
       )}
       {...props}
@@ -90,7 +94,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "font-mono text-lg font-light uppercase tracking-[0.04em] text-heading dark:text-white",
+      "font-page-h2 text-heading dark:text-foreground pr-10",
       className,
     )}
     {...props}
@@ -105,7 +109,7 @@ const DialogDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     className={cn(
-      "text-base font-normal leading-relaxed text-muted-foreground dark:text-zinc-400",
+      "pr-10 text-base font-normal leading-relaxed text-muted-foreground dark:text-zinc-400",
       className,
     )}
     {...props}

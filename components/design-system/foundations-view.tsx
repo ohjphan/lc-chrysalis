@@ -18,7 +18,7 @@ function Section({
 }) {
   return (
     <section className="flex flex-col gap-4 border-app-b border-border-subtle pb-10 last:border-0">
-      <h2 className="font-page-h2">{title}</h2>
+      <h2 className="font-page-h2 text-heading dark:text-foreground">{title}</h2>
       {children}
     </section>
   );
@@ -185,8 +185,14 @@ export function FoundationsView() {
         <PageTitle>Foundations</PageTitle>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
           Semantic tokens and typography used across the Learning Commons developer
-          portal. Toggle light/dark with the theme control in the sidebar to compare
-          values. For interactive UI primitives, see{" "}
+          portal. Toggle light/dark under{" "}
+          <Link
+            href="/settings/appearance"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+          >
+            Settings → Appearance
+          </Link>{" "}
+          to compare values. For interactive UI primitives, see{" "}
           <Link
             href="/components"
             className="font-medium text-foreground underline-offset-4 hover:underline"
@@ -204,22 +210,48 @@ export function FoundationsView() {
             font size is <strong className="font-medium text-foreground">14px</strong>
             , so <code className="font-mono text-sm">1rem</code> in{" "}
             <code className="font-mono text-sm">globals.css</code> matches 14px.
-            Body uses the app sans stack with line-height 1.5.
+            Body uses the app sans stack with line-height 1.5. Dashboard and other
+            in-app page titles use{" "}
+            <code className="font-mono text-sm text-foreground">PageTitle</code>{" "}
+            with the Parabolica stack (
+            <code className="font-mono text-sm text-foreground">
+              --font-parabolica-stack
+            </code>
+            ), 28px regular, 0.5% letter-spacing, and sentence case (
+            <code className="font-mono text-sm text-foreground">font-page-title</code>
+            ). Section headings use{" "}
+            <code className="font-mono text-sm text-foreground">font-page-h2</code>{" "}
+            (same stack, 18px weight 550, 0.5% tracking, sentence case); often paired
+            with{" "}
+            <code className="font-mono text-sm text-foreground">text-heading</code>{" "}
+            and{" "}
+            <code className="font-mono text-sm text-foreground">
+              dark:text-foreground
+            </code>{" "}
+            on dashboard surfaces.
           </p>
           <div className="mt-6 rounded-lg border-app border-border-subtle bg-surface px-4 py-8 md:px-6 md:py-10">
             <TypographyRow
-              title="Hero title"
-              token="PageTitle + text-[28px] text-balance"
+              title="Landing hero (home)"
+              token='PageTitle variant="heroMono" · JetBrains Mono · 28px light · uppercase · tracking-[0.04em]'
             >
-              <PageTitle className="text-balance text-[28px]">
+              <PageTitle variant="heroMono">
                 Welcome to the Learning Commons Platform
               </PageTitle>
             </TypographyRow>
-            <TypographyRow title="Page title" token="PageTitle">
-              <PageTitle>Sample page title</PageTitle>
+            <TypographyRow
+              title="Page title"
+              token="font-page-title · PageTitle · text-heading text-balance"
+            >
+              <PageTitle>Evaluators playground</PageTitle>
             </TypographyRow>
-            <TypographyRow title="Section heading" token="font-page-h2">
-              <span className="font-page-h2">Section heading sample</span>
+            <TypographyRow
+              title="Section heading"
+              token="font-page-h2 · text-heading dark:text-foreground"
+            >
+              <span className="font-page-h2 text-heading dark:text-foreground">
+                Standards alignment overview
+              </span>
             </TypographyRow>
             <TypographyRow title="Body" token="text-base · foreground / muted-foreground">
               <p className="text-base font-normal text-foreground">
@@ -236,7 +268,7 @@ export function FoundationsView() {
             </TypographyRow>
             <TypographyRow
               title="Labels"
-              token="Label · text-base font-medium · #242423 / dark:foreground (components/ui/label.tsx)"
+              token="Label · font-parabolica · text-base font-medium · #242423 / dark:foreground (components/ui/label.tsx)"
             >
               <div className="space-y-3">
                 <div>
@@ -279,7 +311,7 @@ export function FoundationsView() {
             hex matches the swatch. Some groups note when values diverge between light
             and dark or between aliases.
           </p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {colorGroups.map((group) => (
               <ColorSwatchCard
                 key={group.entries.map(colorSwatchEntryKey).join("-")}
@@ -302,7 +334,7 @@ export function FoundationsView() {
             <code className="font-mono text-sm">brandAvatarClassForId</code> so each
             id keeps the same swatch across renders and theme toggles.
           </p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             {BRAND_AVATAR_PALETTE_FOR_DOCS.map((p) => (
               <ColorSwatchCard
                 key={p.hex}

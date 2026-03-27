@@ -99,7 +99,7 @@ export function ProfileSetupView() {
             </div>
 
             <div className="min-w-0 p-12">
-              <PageTitle className="text-balance">
+              <PageTitle variant="authBranded">
                 Tell us about your company and role
               </PageTitle>
 

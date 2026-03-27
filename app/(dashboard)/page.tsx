@@ -25,7 +25,7 @@ export default function HomePage() {
             className="mb-8 h-[27px] w-[41px] shrink-0 max-w-none"
             aria-hidden
           />
-          <PageTitle className="text-balance text-[28px]">
+          <PageTitle variant="heroMono">
             Welcome to the Learning Commons Platform
           </PageTitle>
           <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">

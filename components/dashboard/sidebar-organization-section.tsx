@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Check, ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +33,8 @@ const USER_EMAIL = "jphan@magicschool.edu";
 const popoverContentClass =
   "z-[60] min-w-[17.5rem] max-w-[min(calc(100vw-2rem),20rem)] rounded-lg border-app border-[#CCC9C6] bg-[#FAF9F8] p-2 text-zinc-900 shadow-lg";
 
-const popoverSeparatorClass = "my-2 bg-[#CCC9C6]";
+const popoverSeparatorClass =
+  "-mx-2 my-2 h-[length:var(--border-stroke)] bg-[#CCC9C6]";
 
 const popoverItemClass =
   "cursor-pointer gap-2 rounded-md px-2 py-2 text-sm font-normal text-zinc-800 focus:bg-[#EFEBE7] focus:text-zinc-900 data-[highlighted]:bg-[#EFEBE7] data-[highlighted]:text-zinc-900";
@@ -88,8 +89,8 @@ export function SidebarOrganizationSection({
       <DropdownMenuContent
         side="right"
         align="end"
-        sideOffset={8}
-        collisionPadding={16}
+        sideOffset={10}
+        collisionPadding={8}
         className={popoverContentClass}
       >
         {ORGS.map((o) => {
@@ -114,29 +115,25 @@ export function SidebarOrganizationSection({
                   {o.name}
                 </span>
               </span>
-              {selected ? (
-                <Check
-                  className="size-4 shrink-0 text-emerald-600"
-                  strokeWidth={2.5}
-                  aria-hidden
-                />
-              ) : (
-                <span className="size-4 shrink-0" aria-hidden />
-              )}
+              <span
+                className="flex size-5 shrink-0 items-center justify-end"
+                aria-hidden
+              >
+                {selected ? (
+                  <span className="mr-1.5 size-[6px] shrink-0 rounded-full bg-[#1DB470]" />
+                ) : null}
+              </span>
             </DropdownMenuItem>
           );
         })}
         <DropdownMenuItem
-            className={cn(
-            popoverItemClass,
-            "text-emerald-600 focus:text-emerald-700 data-[highlighted]:text-emerald-700",
-          )}
+          className={popoverItemClass}
           onSelect={(e) => e.preventDefault()}
         >
-          <span className="flex size-[20px] shrink-0 items-center justify-center rounded-[4px] bg-zinc-100 text-zinc-600">
+          <span className="flex size-[20px] shrink-0 items-center justify-center rounded-[4px] bg-[#FAF9F8] text-[#CCC9C6]">
             <Plus className="size-3.5" strokeWidth={2} aria-hidden />
           </span>
-          <span className="font-medium">New organization</span>
+          <span className="font-normal text-zinc-800">New organization</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator className={popoverSeparatorClass} />

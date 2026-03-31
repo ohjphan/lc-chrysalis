@@ -268,7 +268,7 @@ export function FoundationsView() {
             </TypographyRow>
             <TypographyRow
               title="Labels"
-              token="Label · font-parabolica · text-base font-medium · #242423 / dark:foreground (components/ui/label.tsx)"
+              token="Label · font-parabolica · text-base font-[500] · #242423 / dark:foreground (components/ui/label.tsx)"
             >
               <div className="space-y-3">
                 <div>

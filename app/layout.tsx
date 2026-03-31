@@ -34,7 +34,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="stylesheet" href="https://use.typekit.net/swj7jzx.css" />
+        <link rel="stylesheet" href="https://use.typekit.net/fqb1rfc.css" />
         <style>{`
           :root {
             --font-sans-app: "parabolica-text", var(--font-inter), ui-sans-serif, system-ui, sans-serif;

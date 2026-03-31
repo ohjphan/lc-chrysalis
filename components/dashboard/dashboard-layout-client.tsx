@@ -4,9 +4,12 @@ import * as React from "react";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
+import { OnboardingWelcomeDialog } from "@/components/dashboard/onboarding-welcome-dialog";
 import { DASHBOARD_CONTENT_WIDTH_CLASS } from "@/components/dashboard/page-container";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const ONBOARDING_WELCOME_KEY = "lc_onboarding_welcome";
 
 export function DashboardLayoutClient({
   children,
@@ -15,9 +18,26 @@ export function DashboardLayoutClient({
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [welcomeOpen, setWelcomeOpen] = React.useState(false);
+  const [welcomeOrgName, setWelcomeOrgName] = React.useState("");
 
   React.useEffect(() => {
     setMobileOpen(false);
+  }, [pathname]);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (pathname === "/profile-setup") return;
+    try {
+      const raw = sessionStorage.getItem(ONBOARDING_WELCOME_KEY);
+      if (!raw) return;
+      sessionStorage.removeItem(ONBOARDING_WELCOME_KEY);
+      const data = JSON.parse(raw) as { orgName?: string };
+      setWelcomeOrgName(data.orgName ?? "");
+      setWelcomeOpen(true);
+    } catch {
+      sessionStorage.removeItem(ONBOARDING_WELCOME_KEY);
+    }
   }, [pathname]);
 
   const isLanding = pathname === "/";
@@ -97,6 +117,13 @@ export function DashboardLayoutClient({
           </div>
         </main>
       </div>
+      {!isProfileSetup ? (
+        <OnboardingWelcomeDialog
+          open={welcomeOpen}
+          onOpenChange={setWelcomeOpen}
+          orgName={welcomeOrgName}
+        />
+      ) : null}
     </div>
   );
 }

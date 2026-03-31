@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { ColorBadge } from "@/components/ui/color-badge";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -445,12 +446,7 @@ export function TeamMembersView() {
                 />
               </Field>
               <div className="stack-field">
-                <label
-                  htmlFor="invite-role"
-                  className="text-base font-medium text-[#242423] dark:text-foreground"
-                >
-                  Role
-                </label>
+                <Label htmlFor="invite-role">Role</Label>
                 <select
                   id="invite-role"
                   className={selectClassName()}

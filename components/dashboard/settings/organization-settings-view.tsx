@@ -5,6 +5,7 @@ import { ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
@@ -134,12 +135,7 @@ export function OrganizationSettingsView() {
               />
             </Field>
             <div className="stack-field">
-              <label
-                htmlFor="org-url"
-                className="text-base font-medium text-[#242423] dark:text-foreground"
-              >
-                Organization URL
-              </label>
+              <Label htmlFor="org-url">Organization URL</Label>
               <div className="flex rounded-md border-app border-border-subtle bg-field-bg focus-within:ring-2 focus-within:ring-border-subtle focus-within:ring-offset-2 focus-within:ring-offset-background">
                 <span className="flex shrink-0 items-center border-app-r border-border-subtle px-3 text-sm text-muted-foreground">
                   https://

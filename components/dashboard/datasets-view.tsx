@@ -737,10 +737,12 @@ export function DatasetsView() {
   }, []);
 
   React.useEffect(() => {
-    const sentinel = datasetStickySentinelRef.current;
-    if (!sentinel) return;
+    const el = datasetStickySentinelRef.current;
+    if (!el) return;
     function updateStuck() {
-      setDatasetStickyBarStuck(sentinel.getBoundingClientRect().top < 0);
+      const node = datasetStickySentinelRef.current;
+      if (!node) return;
+      setDatasetStickyBarStuck(node.getBoundingClientRect().top < 0);
     }
     updateStuck();
     window.addEventListener("scroll", updateStuck, { passive: true });

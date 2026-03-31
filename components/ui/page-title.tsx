@@ -8,6 +8,8 @@ const variantClass = {
   /** Sign up / profile setup: JetBrains Mono, caps, 5% tracking */
   authBranded:
     "font-mono text-[28px] font-light uppercase leading-tight tracking-[5%] text-heading text-balance",
+  /** Onboarding wizard: Parabolica, sentence case, matches profile flow mocks */
+  onboarding: "font-page-title text-heading text-balance",
 } as const;
 
 export function PageTitle({

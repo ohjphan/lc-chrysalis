@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,6 +80,7 @@ function GoogleMark({ className }: { className?: string }) {
 }
 
 export function SignupPageClient() {
+  const router = useRouter();
   const [signInEmail, setSignInEmail] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
@@ -193,7 +195,7 @@ export function SignupPageClient() {
                 onSubmit={(e) => e.preventDefault()}
               >
                 <div className="stack-field">
-                  <Label htmlFor="auth-email" className="text-sm font-medium">
+                  <Label htmlFor="auth-email" className="text-sm font-[500]">
                     Email
                   </Label>
                   <Input
@@ -207,7 +209,7 @@ export function SignupPageClient() {
                 </div>
                 <AuthFormExpandSection open={showSignInEmailExtras}>
                   <div className="stack-field">
-                    <Label htmlFor="auth-password" className="text-sm font-medium">
+                    <Label htmlFor="auth-password" className="text-sm font-[500]">
                       Password
                     </Label>
                     <Input
@@ -245,10 +247,11 @@ export function SignupPageClient() {
                     return;
                   }
                   setSignUpPasswordError(null);
+                  router.push("/profile-setup");
                 }}
               >
                 <div className="stack-field">
-                  <Label htmlFor="signup-email" className="text-sm font-medium">
+                  <Label htmlFor="signup-email" className="text-sm font-[500]">
                     Email
                   </Label>
                   <Input
@@ -262,7 +265,7 @@ export function SignupPageClient() {
                 </div>
                 <AuthFormExpandSection open={showSignUpEmailExtras}>
                   <div className="stack-field">
-                    <Label htmlFor="signup-password" className="text-sm font-medium">
+                    <Label htmlFor="signup-password" className="text-sm font-[500]">
                       Password
                     </Label>
                     <Input
@@ -285,7 +288,7 @@ export function SignupPageClient() {
                   <div className="stack-field">
                     <Label
                       htmlFor="signup-password-confirm"
-                      className="text-sm font-medium"
+                      className="text-sm font-[500]"
                     >
                       Confirm password
                     </Label>

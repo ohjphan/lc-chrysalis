@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const STEPS = 2;
 
@@ -124,12 +125,9 @@ export function CreateApiKeyDialog({
             </DialogHeader>
             <div className="px-9 pb-9">
               <div className="stack-field">
-                <label
-                  htmlFor="create-api-key-name"
-                  className="text-sm font-medium text-foreground"
-                >
+                <Label htmlFor="create-api-key-name" className="text-sm">
                   Key name
-                </label>
+                </Label>
                 <Input
                   id="create-api-key-name"
                   autoFocus

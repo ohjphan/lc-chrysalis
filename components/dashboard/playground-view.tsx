@@ -44,8 +44,12 @@ const CCSS_ADD_OPTIONS = [
   { value: "3.NBT.A.1", label: "3.NBT.A.1" },
 ] as const;
 
-/** Parabolica + 550 for CCSS codes in overview table and result section headings. */
-const CCSS_CODE_TEXT_CLASS =
+/** Parabolica + medium (500) for CCSS codes in the overview table. */
+const CCSS_TABLE_CODE_CLASS =
+  "font-parabolica text-base font-medium text-foreground";
+
+/** Parabolica + 550 for CCSS codes in result section headings. */
+const CCSS_CODE_HEADING_CLASS =
   "font-parabolica text-base font-[550] text-foreground";
 
 const EXAMPLE_QUESTION =
@@ -191,10 +195,7 @@ function ScoreBar({
 export function PlaygroundView() {
   const [evaluatorType, setEvaluatorType] = React.useState("");
   const [grade, setGrade] = React.useState("");
-  const [standards, setStandards] = React.useState<string[]>([
-    "3.OA.A.3",
-    "3.OA.A.4",
-  ]);
+  const [standards, setStandards] = React.useState<string[]>([]);
   const [addStandard, setAddStandard] = React.useState("");
   const [text, setText] = React.useState("");
   const [expanded, setExpanded] = React.useState<Set<string>>(
@@ -203,6 +204,8 @@ export function PlaygroundView() {
 
   const canEvaluate =
     evaluatorType !== "" && grade !== "" && text.trim().length > 0;
+
+  const canClearAll = text.trim().length > 0;
 
   function toggleAccordion(id: string) {
     setExpanded((prev) => {
@@ -253,9 +256,9 @@ export function PlaygroundView() {
         </p>
       </div>
 
-      <div className="relative mt-8 max-w-2xl space-y-10">
-        <section className="space-y-8">
-          <div className="stack-field">
+      <div className="relative mt-6 max-w-2xl">
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="stack-field min-w-0">
             <Label htmlFor="playground-evaluator">Evaluator type</Label>
             <div className="relative">
               <select
@@ -281,7 +284,7 @@ export function PlaygroundView() {
             </div>
           </div>
 
-          <div className="stack-field">
+          <div className="stack-field min-w-0">
             <Label htmlFor="playground-grade">Target grade level</Label>
             <div className="relative">
               <select
@@ -307,7 +310,7 @@ export function PlaygroundView() {
             </div>
           </div>
 
-          <div className="stack-field">
+          <div className="stack-field min-w-0 sm:col-span-2">
             <Label id="playground-ccss-label">CCSS standards to test against</Label>
             <div className="relative">
               <select
@@ -368,15 +371,24 @@ export function PlaygroundView() {
             ) : null}
           </div>
 
-          <div className="stack-field">
-            <Label htmlFor="playground-text">Math question or problem</Label>
+          <div className="stack-field min-w-0 sm:col-span-2">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <Label htmlFor="playground-text">Math question or problem</Label>
+              <button
+                type="button"
+                onClick={useExampleQuestion}
+                className="shrink-0 text-sm font-normal text-foreground underline underline-offset-4 hover:opacity-90"
+              >
+                Use example question
+              </button>
+            </div>
             <Textarea
               id="playground-text"
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Enter a question or problem to evaluate against your selected standards."
-              rows={8}
-              className="min-h-[200px] resize-y"
+              rows={6}
+              className="min-h-[160px] resize-y"
             />
             <p className="flex gap-2 text-sm font-normal text-muted-foreground">
               <Info
@@ -390,41 +402,31 @@ export function PlaygroundView() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-            <div className="flex flex-wrap gap-3">
-              <Button
-                type="button"
-                variant="secondary"
-                size="lg"
-                onClick={useExampleQuestion}
-              >
-                Use example question
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                size="lg"
-                onClick={clearAll}
-              >
-                <Trash2 className="size-4" aria-hidden />
-                Clear all
-              </Button>
-            </div>
+          <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
             <Button
               type="button"
               variant="primary"
               size="lg"
-              className="sm:ml-auto"
               disabled={!canEvaluate}
               onClick={evaluate}
             >
               Evaluate
             </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="lg"
+              disabled={!canClearAll}
+              onClick={clearAll}
+            >
+              <Trash2 className="size-4" aria-hidden />
+              Clear all
+            </Button>
           </div>
         </section>
       </div>
 
-      <div className="relative mt-16 max-w-5xl space-y-16">
+      <div className="relative mt-10 max-w-5xl space-y-16">
         <section className="space-y-6">
           <div className="space-y-6">
             <h2 className="font-page-h2 text-heading dark:text-foreground">
@@ -457,7 +459,7 @@ export function PlaygroundView() {
                       className="border-app-b border-border-subtle [&>td]:align-middle"
                     >
                       <td className="px-4 py-6">
-                        <span className={CCSS_CODE_TEXT_CLASS}>
+                        <span className={CCSS_TABLE_CODE_CLASS}>
                           {row.standard}
                         </span>
                       </td>
@@ -499,7 +501,7 @@ export function PlaygroundView() {
                 <h3
                   className={cn(
                     "border-app-b border-border-subtle pb-3",
-                    CCSS_CODE_TEXT_CLASS,
+                    CCSS_CODE_HEADING_CLASS,
                   )}
                 >
                   {group.code}

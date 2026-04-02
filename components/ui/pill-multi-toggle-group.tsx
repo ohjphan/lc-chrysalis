@@ -45,18 +45,12 @@ export function PillMultiToggleGroup<T extends string>({
             aria-pressed={isOn}
             onClick={() => toggle(opt.value)}
             className={cn(
-              "inline-flex h-[length:var(--control-height)] shrink-0 items-center justify-center gap-2.5 rounded-full px-4 text-base font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              "inline-flex h-[length:var(--control-height)] shrink-0 items-center justify-center rounded-[var(--radius-sm)] px-4 text-base font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               isOn
-                ? "border-[1.5px] border-[#242423] bg-[#242423] text-white dark:border-foreground dark:bg-foreground"
-                : "border-app border-border-subtle bg-sidebar text-foreground hover:bg-nav-active",
+                ? "border-[1.5px] border-[#1DB470] bg-[rgba(29,180,112,0.06)] font-medium text-foreground"
+                : "border-app border-border-subtle bg-sidebar text-nav-link-idle hover:bg-nav-active hover:text-[#242423] dark:hover:text-foreground",
             )}
           >
-            {isOn ? (
-              <span
-                className="size-[6px] shrink-0 rounded-full bg-accent-green"
-                aria-hidden
-              />
-            ) : null}
             <span>{opt.label}</span>
           </button>
         );

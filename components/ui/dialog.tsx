@@ -29,31 +29,55 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showClose?: boolean;
+    /**
+     * Full-width green top bar (same fill as a completed progress segment).
+     * Set `false` when the dialog renders its own progress bar (multi-step flows).
+     * @default true
+     */
+    topAccent?: boolean;
   }
->(({ className, children, showClose = true, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        // Platform-wide modal width; override with className when a dialog must differ.
-        "fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-0 rounded-lg border-app border-border-subtle bg-background p-0 text-foreground shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 dark:bg-modal-bg dark:text-zinc-100 sm:max-w-xl",
-        className,
-      )}
-      {...props}
-    >
-      {showClose ? (
-        <DialogPrimitive.Close
-          className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-subtle disabled:pointer-events-none"
-          aria-label="Close"
-        >
-          <X className="size-[20px] text-muted-foreground dark:text-zinc-500" />
-        </DialogPrimitive.Close>
-      ) : null}
-      {children}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
+>(
+  (
+    {
+      className,
+      children,
+      showClose = true,
+      topAccent = true,
+      ...props
+    },
+    ref,
+  ) => (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          // Platform-wide modal width; override with className when a dialog must differ.
+          "fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-0 rounded-lg border-app border-border-subtle bg-background p-0 text-foreground shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 dark:bg-modal-bg dark:text-zinc-100 sm:max-w-xl",
+          topAccent && "overflow-hidden",
+          className,
+        )}
+        {...props}
+      >
+        {topAccent ? (
+          <div
+            className="h-1 w-full shrink-0 bg-accent-green"
+            aria-hidden
+          />
+        ) : null}
+        {showClose ? (
+          <DialogPrimitive.Close
+            className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-subtle disabled:pointer-events-none"
+            aria-label="Close"
+          >
+            <X className="size-[20px] text-muted-foreground dark:text-zinc-500" />
+          </DialogPrimitive.Close>
+        ) : null}
+        {children}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  ),
+);
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 function DialogHeader({

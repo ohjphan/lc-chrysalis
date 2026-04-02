@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ChevronDown, Plus } from "lucide-react";
+import { Check, ChevronDown, Plus } from "lucide-react";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +38,7 @@ const popoverSeparatorClass =
   "-mx-2 my-2 h-[length:var(--border-stroke)] bg-[#CCC9C6]";
 
 const popoverItemClass =
-  "cursor-pointer gap-2 rounded-md px-2 py-2 text-sm font-normal text-zinc-800 focus:bg-[#EFEBE7] focus:text-zinc-900 data-[highlighted]:bg-[#EFEBE7] data-[highlighted]:text-zinc-900";
+  "cursor-pointer gap-2 rounded-md px-2 py-2 text-sm font-normal text-zinc-800 focus:bg-nav-active focus:text-zinc-900 data-[highlighted]:bg-nav-active data-[highlighted]:text-zinc-900";
 
 /** Matches copyright line in org menu footer */
 const orgMenuFooterCopyClass =
@@ -89,7 +90,7 @@ export function SidebarOrganizationSection({
       <DropdownMenuContent
         side="right"
         align="end"
-        sideOffset={10}
+        sideOffset={20}
         collisionPadding={8}
         className={popoverContentClass}
       >
@@ -99,7 +100,21 @@ export function SidebarOrganizationSection({
             <DropdownMenuItem
               key={o.id}
               className={cn(popoverItemClass, "justify-between")}
-              onSelect={() => setOrgId(o.id)}
+              onSelect={() => {
+                if (o.id === orgId) return;
+                setOrgId(o.id);
+                toast(`You have switched to ${o.name}.`, {
+                  icon: (
+                    <span className="grid size-[22px] shrink-0 place-items-center rounded-full leading-none bg-accent-green">
+                      <Check
+                        className="size-[14px] shrink-0 text-white block"
+                        strokeWidth={2.5}
+                        aria-hidden
+                      />
+                    </span>
+                  ),
+                });
+              }}
             >
               <span className="flex min-w-0 flex-1 items-center gap-2">
                 <span
@@ -120,7 +135,9 @@ export function SidebarOrganizationSection({
                 aria-hidden
               >
                 {selected ? (
-                  <span className="mr-1.5 size-[6px] shrink-0 rounded-full bg-[#1DB470]" />
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-accent-green">
+                    <Check className="size-3 text-white" strokeWidth={2.5} />
+                  </span>
                 ) : null}
               </span>
             </DropdownMenuItem>
@@ -130,7 +147,7 @@ export function SidebarOrganizationSection({
           className={popoverItemClass}
           onSelect={(e) => e.preventDefault()}
         >
-          <span className="flex size-[20px] shrink-0 items-center justify-center rounded-[4px] bg-[#FAF9F8] text-[#CCC9C6]">
+          <span className="flex size-[20px] shrink-0 items-center justify-center rounded-[4px] bg-[#FAF9F8] text-[#6A6A69]">
             <Plus className="size-3.5" strokeWidth={2} aria-hidden />
           </span>
           <span className="font-normal text-zinc-800">New organization</span>

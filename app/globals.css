@@ -12,16 +12,20 @@
   /* Supporting copy: derived from body so it stays a touch lighter than `--foreground` */
   --muted-foreground: color-mix(in srgb, #242423 68%, #ffffff);
   --surface: #faf9f8;
-  --field-bg: #faf9f8;
+  /* Inputs, textareas, copy fields — distinct from warm sidebar/surface */
+  --field-bg: #ffffff;
   --sidebar-bg: #faf9f8;
   --border-subtle: #ccc9c6;
   --border-stroke: 1.5px;
-  --nav-active: #efebe7;
+  /* Was #EFEBE7; same hue at 70% opacity for layering on sidebar/surface */
+  --nav-active: rgba(239, 235, 231, 0.7);
   --nav-link-active: #e8e8e8;
   --nav-active-icon: #1db470;
   --nav-link-idle: #55554e;
   --accent-green: #1db470;
   --accent-green-muted: #125b3a;
+  /* Warning / yellow: badges, callouts, toasts */
+  --accent-yellow: #fdd151;
   --destructive: #dc2626;
   --destructive-muted: color-mix(in srgb, var(--destructive) 12%, transparent);
   --modal-bg: #1a1a1a;
@@ -32,6 +36,15 @@
   --control-embed-button-height: calc(
     var(--control-height) - 2 * var(--control-embed-inset)
   );
+  /* Callouts: neutral = #FAF9F8 + #CCC9C6; semantic rows = 4% fill + solid accent border */
+  --callout-neutral-bg: #faf9f8;
+  --callout-success-bg: rgba(29, 180, 112, 0.04);
+  --callout-warning-bg: rgba(253, 209, 81, 0.04);
+  --callout-destructive-bg: rgba(255, 85, 76, 0.04);
+  --callout-neutral-border: #ccc9c6;
+  --callout-success-border: #1db470;
+  --callout-warning-border: var(--accent-yellow);
+  --callout-destructive-border: #ff554c;
 }
 
 /* Dark — soft warm base #242423 (surfaces stepped slightly for depth) */
@@ -53,11 +66,20 @@
   --nav-link-idle: #a3a3a3;
   --accent-green: #1db470;
   --accent-green-muted: #125b3a;
+  --accent-yellow: #fdd151;
   --destructive: #f87171;
   --destructive-muted: color-mix(in srgb, var(--destructive) 16%, #242423);
   --modal-bg: #242423;
   --modal-border: #5c5c58;
   --ring-offset-background: var(--background);
+  --callout-neutral-bg: var(--surface);
+  --callout-neutral-border: var(--border-subtle);
+  --callout-success-bg: rgba(29, 180, 112, 0.04);
+  --callout-warning-bg: rgba(253, 209, 81, 0.04);
+  --callout-destructive-bg: rgba(255, 85, 76, 0.04);
+  --callout-success-border: #1db470;
+  --callout-warning-border: var(--accent-yellow);
+  --callout-destructive-border: #ff554c;
 }
 
 @theme inline {
@@ -75,10 +97,19 @@
   --color-nav-link-idle: var(--nav-link-idle);
   --color-accent-green: var(--accent-green);
   --color-accent-green-muted: var(--accent-green-muted);
+  --color-accent-yellow: var(--accent-yellow);
   --color-destructive: var(--destructive);
   --color-destructive-muted: var(--destructive-muted);
   --color-modal-bg: var(--modal-bg);
   --color-modal-border: var(--modal-border);
+  --color-callout-neutral-bg: var(--callout-neutral-bg);
+  --color-callout-success-bg: var(--callout-success-bg);
+  --color-callout-warning-bg: var(--callout-warning-bg);
+  --color-callout-destructive-bg: var(--callout-destructive-bg);
+  --color-callout-neutral-border: var(--callout-neutral-border);
+  --color-callout-success-border: var(--callout-success-border);
+  --color-callout-warning-border: var(--callout-warning-border);
+  --color-callout-destructive-border: var(--callout-destructive-border);
   --font-sans: var(--font-sans-app);
   --font-mono: var(--font-jetbrains-mono);
   --radius-xs: 4px;
@@ -99,12 +130,12 @@
   letter-spacing: 0.04em;
 }
 
-/** Section labels in the app sidebar (Workspace, Evaluators, …): JetBrains Mono Medium 12px, 5% tracking */
+/** Section labels in the app sidebar (Workspace, Evaluators, …): JetBrains Mono Medium 12px, 0.04em tracking (matches font-nav-eyebrow) */
 @utility font-nav-sidebar-eyebrow {
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 5%;
+  letter-spacing: 0.04em;
 }
 
 /** In-page section titles (`<h2>`): Parabolica, 18px weight 550, 0.5% tracking, sentence case, 112% line-height */
@@ -195,4 +226,100 @@ body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
+}
+
+/* Sonner: inverted surface (#242423) + body-sized type; matches modal panels */
+[data-sonner-toast][data-styled="true"] {
+  border-radius: var(--radius-sm) !important;
+  background: #242423 !important;
+  border-color: #5c5c58 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28) !important;
+  color: #fafafa !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+[data-sonner-toast][data-styled="true"] [data-title] {
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  color: #fafafa !important;
+}
+
+[data-sonner-toast][data-styled="true"] [data-description] {
+  color: #a3a3a3 !important;
+}
+
+/* Custom leading icons (e.g. design-system toasts): 22px slot + true center (Sonner defaults flex-start + svg margins). */
+[data-sonner-toast][data-styled="true"] [data-icon] {
+  height: auto !important;
+  width: auto !important;
+  min-height: 22px;
+  min-width: 22px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+[data-sonner-toast][data-styled="true"] [data-icon] svg {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  display: block;
+}
+
+/* Sonner: close inside toast, right of message (library defaults place it outside the top corner).
+   inset-inline-end matches toast padding (16px); content padding reserves space for the 20px control.
+   Visual reset matches modal close: no circular border fill (see components/ui/dialog.tsx). */
+[data-sonner-toast][data-styled="true"] [data-close-button] {
+  inset-inline-start: auto !important;
+  inset-inline-end: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  height: auto !important;
+  width: auto !important;
+  border-radius: 4px !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--color-zinc-500) !important;
+}
+
+[data-sonner-toast][data-styled="true"] [data-content] {
+  padding-inline-end: 2.5rem !important;
+}
+
+/* Sonner close: strip library hover / dark fills so modal-style ghost button wins */
+[data-sonner-toast][data-styled="true"]:hover [data-close-button]:hover,
+[data-sonner-toaster][data-sonner-theme="dark"] [data-sonner-toast][data-styled="true"] [data-close-button],
+[data-sonner-toaster][data-sonner-theme="dark"]
+  [data-sonner-toast][data-styled="true"]
+  [data-close-button]:hover {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+[data-sonner-toast][data-styled="true"] [data-close-button]:focus-visible {
+  box-shadow: none !important;
+}
+
+/* Components gallery: in-flow Sonner-shaped previews (Sonner defaults use absolute + stack opacity). */
+[data-components-toast-preview] {
+  --width: 356px;
+  /* Same as Sonner `[data-sonner-toaster][dir=ltr]` / `html[dir=ltr]` — without these, `margin-*: var(--toast-icon-margin-*)` on [data-icon] is invalid and previews sit tighter than live toasts. */
+  --toast-icon-margin-start: -3px;
+  --toast-icon-margin-end: 4px;
+}
+
+[data-components-toast-preview] [data-sonner-toast] {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: none;
+}
+
+[data-components-toast-preview] [data-sonner-toast] > * {
+  pointer-events: none;
 }

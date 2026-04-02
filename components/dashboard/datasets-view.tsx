@@ -540,7 +540,7 @@ function DatasetsTabPanel({
                 </th>
                 <th
                   className={tableHeadStickyCellClasses(
-                    "text-right",
+                    undefined,
                     DATASETS_TABLE_HEAD_STICKY,
                   )}
                 >
@@ -548,7 +548,7 @@ function DatasetsTabPanel({
                 </th>
                 <th
                   className={tableHeadStickyCellClasses(
-                    "text-right",
+                    undefined,
                     DATASETS_TABLE_HEAD_STICKY,
                   )}
                 >
@@ -560,7 +560,7 @@ function DatasetsTabPanel({
                     DATASETS_TABLE_HEAD_STICKY,
                   )}
                 >
-                  Action
+                  <span className="sr-only">Action</span>
                 </th>
               </tr>
             </thead>
@@ -599,10 +599,10 @@ function DatasetsTabPanel({
                   <td className={td}>
                     <TypeBadge type={row.type} />
                   </td>
-                  <td className={cn(td, "text-right text-muted-foreground")}>
+                  <td className={cn(td, "text-muted-foreground")}>
                     {row.version}
                   </td>
-                  <td className={cn(td, "text-right text-muted-foreground")}>
+                  <td className={cn(td, "text-muted-foreground")}>
                     {row.license}
                   </td>
                   <td className={cn(td, "text-right")}>

@@ -197,7 +197,7 @@ export function ApiKeysView() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="size-9 hover:bg-[#EFEBE7] data-[state=open]:bg-[#EFEBE7] dark:hover:bg-nav-link-active dark:data-[state=open]:bg-nav-link-active"
+                            className="size-9 hover:bg-nav-active data-[state=open]:bg-nav-active dark:hover:bg-nav-link-active dark:data-[state=open]:bg-nav-link-active"
                             aria-label="Row actions"
                           >
                             <MoreHorizontal className="size-4" />

@@ -235,10 +235,9 @@ export function KnowledgeGraphExplorerView() {
   return (
     <PageContainer>
       <div className="flex flex-col gap-[8px]">
-        <div className="flex flex-wrap items-center gap-3">
-          <PageTitle>Knowledge Graph Explorer</PageTitle>
-          <EarlyReleaseBadge />
-        </div>
+        <PageTitle trailing={<EarlyReleaseBadge />}>
+          Knowledge Graph Explorer
+        </PageTitle>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
           Assess the appropriateness of informational text for a specific grade
           level.

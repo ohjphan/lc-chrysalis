@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const variantClass = {
@@ -16,12 +17,28 @@ export function PageTitle({
   className,
   children,
   variant = "default",
+  trailing,
 }: {
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: keyof typeof variantClass;
+  /** Renders after the title on the same row; vertically centered with the heading text. */
+  trailing?: ReactNode;
 }) {
-  return (
+  const heading = (
     <h1 className={cn(variantClass[variant], className)}>{children}</h1>
+  );
+
+  if (!trailing) {
+    return heading;
+  }
+
+  return (
+    <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+      {heading}
+      <span className="inline-flex shrink-0 translate-y-[4px] items-center">
+        {trailing}
+      </span>
+    </div>
   );
 }

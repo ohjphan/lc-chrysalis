@@ -15,10 +15,7 @@ export default function McpServerPage() {
   return (
     <PageContainer>
       <div className="flex flex-col gap-[8px]">
-        <div className="flex flex-wrap items-center gap-3">
-          <PageTitle>MCP server</PageTitle>
-          <EarlyReleaseBadge />
-        </div>
+        <PageTitle trailing={<EarlyReleaseBadge />}>MCP server</PageTitle>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
           Connect to the Learning Commons MCP server with an API key.
         </p>

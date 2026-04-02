@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ColorSwatchCard } from "@/components/design-system/color-swatch-card";
 import {
@@ -24,22 +25,78 @@ function Section({
   );
 }
 
+/** Specs aligned with `globals.css`, `PageTitle`, and `Label` sources. */
+type TypeRampSpec = {
+  family: string;
+  familyVar?: string;
+  fontSize: string;
+  fontWeight: string;
+  lineHeight: string;
+  letterSpacing: string;
+  /** Tailwind / utility class reference */
+  token?: string;
+  /** e.g. text transform, color role */
+  notes?: string;
+};
+
+function TypographySpecGrid({ spec }: { spec: TypeRampSpec }) {
+  const rows: { label: string; value: ReactNode }[] = [
+    { label: "Family", value: spec.family },
+    ...(spec.familyVar
+      ? [
+          {
+            label: "CSS",
+            value: (
+              <code className="font-mono text-[11px] text-foreground">
+                {spec.familyVar}
+              </code>
+            ),
+          },
+        ]
+      : []),
+    { label: "Size", value: spec.fontSize },
+    { label: "Weight", value: spec.fontWeight },
+    { label: "Line height", value: spec.lineHeight },
+    { label: "Letter spacing", value: spec.letterSpacing },
+    ...(spec.notes
+      ? [{ label: "Notes", value: spec.notes }]
+      : []),
+  ];
+
+  return (
+    <div className="mt-2 space-y-1.5 text-xs">
+      {rows.map(({ label, value }) => (
+        <div
+          key={label}
+          className="grid grid-cols-1 gap-x-3 gap-y-0.5 sm:grid-cols-[7rem_1fr] sm:items-baseline"
+        >
+          <span className="text-muted-foreground">{label}</span>
+          <span className="min-w-0 text-foreground">{value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function TypographyRow({
   title,
-  token,
+  spec,
   children,
 }: {
   title: string;
-  token: string;
+  spec: TypeRampSpec;
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid gap-4 border-app-b border-border-subtle py-6 first:pt-0 last:border-0 last:pb-0 md:grid-cols-[minmax(11rem,14rem)_1fr] md:items-start md:gap-10">
-      <div className="shrink-0">
+    <div className="grid gap-4 border-app-b border-border-subtle py-6 first:pt-0 last:border-0 last:pb-0 md:grid-cols-[minmax(14rem,18rem)_1fr] md:items-start md:gap-10">
+      <div className="min-w-0 shrink-0">
         <p className="text-sm font-medium text-foreground">{title}</p>
-        <p className="mt-1 font-mono text-xs leading-snug text-muted-foreground">
-          {token}
-        </p>
+        <TypographySpecGrid spec={spec} />
+        {spec.token ? (
+          <p className="mt-2 font-mono text-[11px] leading-snug text-muted-foreground">
+            {spec.token}
+          </p>
+        ) : null}
       </div>
       <div className="min-w-0">{children}</div>
     </div>
@@ -67,13 +124,15 @@ export function FoundationsView() {
         { label: "Surface", varName: "--surface", className: "bg-surface" },
       ],
       footnote:
-        "In light mode field, sidebar, and surface match (#FAF9F8). In dark mode they diverge; swatch follows --field-bg.",
+        "Light: field #FFFFFF; sidebar and surface #FAF9F8. Dark: swatch follows each token.",
     },
     {
       title: "Nav active",
       entries: [
         { label: "Nav active", varName: "--nav-active", className: "bg-nav-active" },
       ],
+      footnote:
+        "Light mode: #EFEBE7 at 70% opacity — rgba(239, 235, 231, 0.7). Dark mode: solid #32322F. Swatch follows the current theme.",
     },
     {
       title: "Border / stroke",
@@ -158,6 +217,18 @@ export function FoundationsView() {
       ],
     },
     {
+      title: "Accent yellow",
+      entries: [
+        {
+          label: "Accent yellow",
+          varName: "--accent-yellow",
+          className: "bg-accent-yellow",
+        },
+      ],
+      footnote:
+        "Warning UI, yellow ColorBadge, toasts, and callouts (#FDD151); same in light and dark.",
+    },
+    {
       title: "Destructive",
       entries: [
         {
@@ -233,7 +304,17 @@ export function FoundationsView() {
           <div className="mt-6 rounded-lg border-app border-border-subtle bg-surface px-4 py-8 md:px-6 md:py-10">
             <TypographyRow
               title="Landing hero (home)"
-              token='PageTitle variant="heroMono" · JetBrains Mono · 28px light · uppercase · tracking-[0.04em]'
+              spec={{
+                family: "JetBrains Mono",
+                familyVar: "var(--font-jetbrains-mono)",
+                fontSize: "28px",
+                fontWeight: "300 (Light)",
+                lineHeight: "~1.25 (Tailwind leading-tight)",
+                letterSpacing: "0.04em",
+                token:
+                  'PageTitle variant="heroMono" · font-mono text-[28px] font-light uppercase leading-tight tracking-[0.04em] text-heading text-balance',
+                notes: "Uppercase · color role: text-heading",
+              }}
             >
               <PageTitle variant="heroMono">
                 Welcome to the Learning Commons Platform
@@ -241,19 +322,51 @@ export function FoundationsView() {
             </TypographyRow>
             <TypographyRow
               title="Page title"
-              token="font-page-title · PageTitle · text-heading text-balance"
+              spec={{
+                family: "Parabolica / parabolica-text / Inter",
+                familyVar: "var(--font-parabolica-stack)",
+                fontSize: "28px",
+                fontWeight: "400 (Regular)",
+                lineHeight: "1.12",
+                letterSpacing: "0.5%",
+                token: "font-page-title · PageTitle · text-heading text-balance",
+                notes: "Sentence case",
+              }}
             >
               <PageTitle>Evaluators playground</PageTitle>
             </TypographyRow>
             <TypographyRow
               title="Section heading"
-              token="font-page-h2 · text-heading dark:text-foreground"
+              spec={{
+                family: "Parabolica / parabolica-text / Inter",
+                familyVar: "var(--font-parabolica-stack)",
+                fontSize: "18px",
+                fontWeight: "550",
+                lineHeight: "1.12",
+                letterSpacing: "0.5%",
+                token: "font-page-h2 · text-heading dark:text-foreground",
+                notes:
+                  "Sentence case · utility sets margin-bottom 6px · light: #242423 on heading color",
+              }}
             >
               <span className="font-page-h2 text-heading dark:text-foreground">
                 Standards alignment overview
               </span>
             </TypographyRow>
-            <TypographyRow title="Body" token="text-base · foreground / muted-foreground">
+            <TypographyRow
+              title="Body"
+              spec={{
+                family: "App sans (parabolica-text / Inter)",
+                familyVar: "var(--font-sans-app)",
+                fontSize: "14px (1rem; html root 14px)",
+                fontWeight: "400 (Regular)",
+                lineHeight: "1.5 (body, globals.css)",
+                letterSpacing: "normal",
+                token:
+                  "text-base font-normal · text-foreground / text-muted-foreground",
+                notes: "Muted copy for secondary hierarchy",
+              }}
+            >
               <p className="text-base font-normal text-foreground">
                 Primary body text uses the default foreground color.
               </p>
@@ -261,14 +374,37 @@ export function FoundationsView() {
                 Supporting copy uses muted foreground for hierarchy.
               </p>
             </TypographyRow>
-            <TypographyRow title="Eyebrows" token="font-nav-sidebar-eyebrow">
+            <TypographyRow
+              title="Eyebrows"
+              spec={{
+                family: "JetBrains Mono",
+                familyVar: "var(--font-jetbrains-mono)",
+                fontSize: "12px",
+                fontWeight: "500 (Medium)",
+                lineHeight: "normal (default)",
+                letterSpacing: "0.04em (4%)",
+                token:
+                  "font-nav-sidebar-eyebrow uppercase text-muted-foreground",
+                notes: "Sidebar section labels (Workspace, Evaluators, …)",
+              }}
+            >
               <p className="font-nav-sidebar-eyebrow uppercase text-muted-foreground">
                 Workspace
               </p>
             </TypographyRow>
             <TypographyRow
               title="Labels"
-              token="Label · font-parabolica · text-base font-[500] · #242423 / dark:foreground (components/ui/label.tsx)"
+              spec={{
+                family: "Parabolica / parabolica-text / Inter",
+                familyVar: "font-parabolica → var(--font-parabolica-stack)",
+                fontSize: "14px (text-base)",
+                fontWeight: "500",
+                lineHeight: "1.5 (inherited from body)",
+                letterSpacing: "normal",
+                token:
+                  "Label · font-parabolica text-base font-[500] · components/ui/label.tsx",
+                notes: "Light: #242423 · dark: text-foreground",
+              }}
             >
               <div className="space-y-3">
                 <div>

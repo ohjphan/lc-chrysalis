@@ -51,7 +51,7 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
             key={group.label ?? group.items[0]?.href ?? `nav-${index}`}
           >
             {group.label ? (
-              <p className="mb-1.5 pl-0 pr-2 font-nav-sidebar-eyebrow uppercase text-muted-foreground/60">
+              <p className="mb-1.5 pl-0 pr-2 font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#55554E] dark:text-nav-link-idle">
                 {group.label}
               </p>
             ) : null}

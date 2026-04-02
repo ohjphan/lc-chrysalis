@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LogomarkLoadingAnimation } from "@/components/design-system/logomark-loading-animation";
 import { ToastVariantPreview } from "@/components/design-system/toast-variant-preview";
 import {
   toastError,
@@ -70,6 +71,22 @@ export function ComponentsGallery() {
               <SecondaryPaletteBadge key={swatch.hex} swatch={swatch} />
             ))}
           </div>
+        </Section>
+
+        <Section title="Loading (logomark)">
+          <p className="mb-4 max-w-2xl text-base font-normal text-muted-foreground">
+            Full-screen or inline loader: chevrons stay{" "}
+            <code className="font-mono text-sm text-foreground">#1DB470</code>{" "}
+            (same as{" "}
+            <code className="font-mono text-sm text-foreground">public/lc-logo.svg</code>
+            ); diamond and square use the secondary palette (see{" "}
+            <code className="font-mono text-sm text-foreground">
+              BRAND_SECONDARY_PALETTE_HEX
+            </code>
+            ). A rotating radial arc around the mark matches the current accent
+            (green or morph color).
+          </p>
+          <LogomarkLoadingAnimation />
         </Section>
 
         <Section title="Buttons">

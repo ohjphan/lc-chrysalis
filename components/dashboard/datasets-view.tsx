@@ -20,7 +20,6 @@ import { PageTitle } from "@/components/ui/page-title";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -41,22 +40,6 @@ export type SubjectSlug =
   | "science"
   | "social-studies"
   | "cross-curricular";
-
-export const SUBJECT_LABELS: Record<SubjectSlug, string> = {
-  math: "Math",
-  english: "English",
-  science: "Science",
-  "social-studies": "Social studies",
-  "cross-curricular": "Cross-curricular",
-};
-
-export const SUBJECT_SLUGS: SubjectSlug[] = [
-  "math",
-  "english",
-  "science",
-  "social-studies",
-  "cross-curricular",
-];
 
 export type DatasetType = "knowledge-graph" | "evaluator";
 
@@ -336,7 +319,7 @@ const MOCK_PENDING_REQUEST_DATASET_IDS = new Set([
 function TypeBadge({ type }: { type: DatasetType }) {
   const kg = type === "knowledge-graph";
   return (
-    <ColorBadge variant="beige">
+    <ColorBadge variant="gray">
       {kg ? "Knowledge graph" : "Evaluator"}
     </ColorBadge>
   );
@@ -383,49 +366,6 @@ function DatasetAccessDropdown({
   );
 }
 
-function DatasetFilterDropdown({
-  label,
-  options,
-  selected,
-  onToggle,
-}: {
-  label: string;
-  options: readonly { value: string; label: string }[];
-  selected: ReadonlySet<string>;
-  onToggle: (value: string, checked: boolean) => void;
-}) {
-  const count = selected.size;
-  const trigger = count === 0 ? label : `${label} (${count})`;
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="secondary"
-          className="h-10 gap-2 border-border-subtle bg-transparent px-3"
-          aria-label={label}
-        >
-          {trigger}
-          <ChevronDown className="size-4 opacity-60" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>{label}</DropdownMenuLabel>
-        {options.map((opt) => (
-          <DropdownMenuCheckboxItem
-            key={opt.value}
-            checked={selected.has(opt.value)}
-            onCheckedChange={(c) => onToggle(opt.value, Boolean(c))}
-            onSelect={(e) => e.preventDefault()}
-          >
-            {opt.label}
-          </DropdownMenuCheckboxItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
 /** Uniform row height (tbody); keeps title + description `line-clamp` + actions aligned. */
 const DATASET_TABLE_ROW_TD_HEIGHT = "h-[8.5rem]";
 const td = cn(
@@ -451,9 +391,6 @@ type DatasetsTabPanelProps = {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
   accessFilter: AccessFilterValue;
-  selectedSubjects: Set<string>;
-  selectedFormats: Set<string>;
-  selectedProviders: Set<string>;
   openRequest: (row: DatasetRow) => void;
 };
 
@@ -462,9 +399,6 @@ function DatasetsTabPanel({
   query,
   setQuery,
   accessFilter,
-  selectedSubjects,
-  selectedFormats,
-  selectedProviders,
   openRequest,
 }: DatasetsTabPanelProps) {
   const scopedDatasets = React.useMemo(() => {
@@ -491,30 +425,12 @@ function DatasetsTabPanel({
         return false;
       if (accessFilter === "gated" && d.primaryAction !== "request")
         return false;
-      if (
-        selectedSubjects.size > 0 &&
-        !d.subjects.some((s) => selectedSubjects.has(s))
-      ) {
-        return false;
-      }
-      if (selectedFormats.size > 0 && !selectedFormats.has(d.fileFormat)) {
-        return false;
-      }
-      if (
-        selectedProviders.size > 0 &&
-        !selectedProviders.has(d.providerName)
-      ) {
-        return false;
-      }
       return true;
     });
   }, [
     scopedDatasets,
     query,
     accessFilter,
-    selectedSubjects,
-    selectedFormats,
-    selectedProviders,
   ]);
 
   return (
@@ -666,47 +582,10 @@ export function DatasetsView() {
   const [query, setQuery] = React.useState("");
   const [accessFilter, setAccessFilter] =
     React.useState<AccessFilterValue>("all");
-  const [selectedSubjects, setSelectedSubjects] = React.useState<Set<string>>(
-    () => new Set(),
-  );
-  const [selectedFormats, setSelectedFormats] = React.useState<Set<string>>(
-    () => new Set(),
-  );
-  const [selectedProviders, setSelectedProviders] = React.useState<
-    Set<string>
-  >(() => new Set());
 
   const [requestOpen, setRequestOpen] = React.useState(false);
   const [requestTarget, setRequestTarget] =
     React.useState<DatasetRequestTarget | null>(null);
-
-  const formatOptions = React.useMemo(() => {
-    const u = [...new Set(MOCK_DATASETS.map((d) => d.fileFormat))].sort();
-    return u.map((v) => ({ value: v, label: v }));
-  }, []);
-
-  const providerOptions = React.useMemo(() => {
-    const u = [...new Set(MOCK_DATASETS.map((d) => d.providerName))].sort();
-    return u.map((v) => ({ value: v, label: v }));
-  }, []);
-
-  const subjectOptions = SUBJECT_SLUGS.map((s) => ({
-    value: s,
-    label: SUBJECT_LABELS[s],
-  }));
-
-  const hasActiveFilters =
-    accessFilter !== "all" ||
-    selectedSubjects.size > 0 ||
-    selectedFormats.size > 0 ||
-    selectedProviders.size > 0;
-
-  function clearFilters() {
-    setAccessFilter("all");
-    setSelectedSubjects(new Set());
-    setSelectedFormats(new Set());
-    setSelectedProviders(new Set());
-  }
 
   function openRequest(row: DatasetRow) {
     setRequestTarget({
@@ -757,9 +636,6 @@ export function DatasetsView() {
     query,
     setQuery,
     accessFilter,
-    selectedSubjects,
-    selectedFormats,
-    selectedProviders,
     openRequest,
   } as const;
 
@@ -808,7 +684,7 @@ export function DatasetsView() {
               <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <TabsList
                   aria-label="Dataset scope"
-                  className="h-auto min-h-10 w-full flex-wrap justify-start gap-1 rounded-md bg-nav-active/50 p-1 dark:bg-nav-active/30 lg:w-auto [&>button]:font-[550]"
+                  className="h-auto min-h-10 w-full flex-wrap justify-start gap-1 lg:w-auto [&>button]:font-[550]"
                 >
                   <TabsTrigger value="all">All datasets</TabsTrigger>
                   <TabsTrigger value="downloaded" className="gap-1.5">
@@ -835,55 +711,6 @@ export function DatasetsView() {
                     value={accessFilter}
                     onValueChange={setAccessFilter}
                   />
-                  <DatasetFilterDropdown
-                    label="Subjects"
-                    options={subjectOptions}
-                    selected={selectedSubjects}
-                    onToggle={(v, c) => {
-                      setSelectedSubjects((prev) => {
-                        const next = new Set(prev);
-                        if (c) next.add(v);
-                        else next.delete(v);
-                        return next;
-                      });
-                    }}
-                  />
-                  <DatasetFilterDropdown
-                    label="Formats"
-                    options={formatOptions}
-                    selected={selectedFormats}
-                    onToggle={(v, c) => {
-                      setSelectedFormats((prev) => {
-                        const next = new Set(prev);
-                        if (c) next.add(v);
-                        else next.delete(v);
-                        return next;
-                      });
-                    }}
-                  />
-                  <DatasetFilterDropdown
-                    label="Providers"
-                    options={providerOptions}
-                    selected={selectedProviders}
-                    onToggle={(v, c) => {
-                      setSelectedProviders((prev) => {
-                        const next = new Set(prev);
-                        if (c) next.add(v);
-                        else next.delete(v);
-                        return next;
-                      });
-                    }}
-                  />
-                  {hasActiveFilters ? (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="h-10 text-muted-foreground"
-                      onClick={clearFilters}
-                    >
-                      Clear filters
-                    </Button>
-                  ) : null}
                 </div>
               </div>
 

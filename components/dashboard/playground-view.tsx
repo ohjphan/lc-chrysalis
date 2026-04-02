@@ -14,6 +14,7 @@ import { ColorBadge } from "@/components/ui/color-badge";
 import { Label } from "@/components/ui/label";
 import { PageTitle } from "@/components/ui/page-title";
 import { Textarea } from "@/components/ui/textarea";
+import { LogomarkLoadingAnimation } from "@/components/design-system/logomark-loading-animation";
 import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
 
@@ -201,6 +202,20 @@ export function PlaygroundView() {
   const [expanded, setExpanded] = React.useState<Set<string>>(
     () => new Set(["a1"]),
   );
+  const [evaluationStatus, setEvaluationStatus] = React.useState<
+    "idle" | "loading" | "complete"
+  >("idle");
+  const evaluationFinishTimerRef = React.useRef<ReturnType<
+    typeof setTimeout
+  > | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (evaluationFinishTimerRef.current) {
+        clearTimeout(evaluationFinishTimerRef.current);
+      }
+    };
+  }, []);
 
   const canEvaluate =
     evaluatorType !== "" && grade !== "" && text.trim().length > 0;
@@ -234,6 +249,11 @@ export function PlaygroundView() {
   }
 
   function clearAll() {
+    if (evaluationFinishTimerRef.current) {
+      clearTimeout(evaluationFinishTimerRef.current);
+      evaluationFinishTimerRef.current = null;
+    }
+    setEvaluationStatus("idle");
     setEvaluatorType("");
     setGrade("");
     setStandards([]);
@@ -243,8 +263,16 @@ export function PlaygroundView() {
 
   function evaluate() {
     if (!canEvaluate) return;
-    // Demo: expand first accordion in first group
-    setExpanded(new Set(["a1"]));
+    if (evaluationFinishTimerRef.current) {
+      clearTimeout(evaluationFinishTimerRef.current);
+      evaluationFinishTimerRef.current = null;
+    }
+    setEvaluationStatus("loading");
+    evaluationFinishTimerRef.current = setTimeout(() => {
+      evaluationFinishTimerRef.current = null;
+      setExpanded(new Set(["a1"]));
+      setEvaluationStatus("complete");
+    }, 2200);
   }
 
   return (
@@ -426,144 +454,170 @@ export function PlaygroundView() {
         </section>
       </div>
 
-      <div className="relative mt-10 max-w-5xl space-y-16">
-        <section className="space-y-6">
-          <div className="space-y-6">
-            <h2 className="font-page-h2 text-heading dark:text-foreground">
-              Standards alignment overview
-            </h2>
-            <p className="text-base font-normal text-muted-foreground">
-              Summary scores per standard for this run (demo data).
-            </p>
-          </div>
+      {evaluationStatus !== "idle" ? (
+        <div className="relative mt-10 max-w-5xl">
+          {evaluationStatus === "loading" ? (
+            <div
+              className="flex justify-center py-6"
+              role="status"
+              aria-live="polite"
+              aria-busy="true"
+            >
+              <LogomarkLoadingAnimation />
+            </div>
+          ) : (
+            <div className="space-y-16">
+              <section className="space-y-6">
+                <div className="space-y-6">
+                  <h2 className="font-page-h2 text-heading dark:text-foreground">
+                    Standards alignment overview
+                  </h2>
+                  <p className="text-base font-normal text-muted-foreground">
+                    Summary scores per standard for this run (demo data).
+                  </p>
+                </div>
 
-          <div className="overflow-hidden border-app-t border-border-subtle bg-transparent">
-            <StickyTableProvider>
-              <table className="min-w-[640px] w-full border-collapse text-base">
-                <caption className="sr-only">
-                  Standards alignment overview: standard, stencil label, score
-                </caption>
-                <thead>
-                  <tr>
-                    <th className={tableHeadStickyCellClasses()}>Standards</th>
-                    <th className={tableHeadStickyCellClasses()}>Stencil</th>
-                    <th className={tableHeadStickyCellClasses("min-w-[200px]")}>
-                      Score
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {OVERVIEW_ROWS.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="border-app-b border-border-subtle [&>td]:align-middle"
-                    >
-                      <td className="px-4 py-6">
-                        <span className={CCSS_TABLE_CODE_CLASS}>
-                          {row.standard}
-                        </span>
-                      </td>
-                      <td className="px-4 py-6 text-muted-foreground">
-                        {row.stencil}
-                      </td>
-                      <td className="px-4 py-6">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                          <span className="text-sm tabular-nums text-muted-foreground">
-                            {row.scoreCurrent}/{row.scoreMax}
-                          </span>
-                          <ScoreBar
-                            current={row.scoreCurrent}
-                            max={row.scoreMax}
-                          />
-                        </div>
-                      </td>
-                    </tr>
+                <div className="overflow-hidden border-app-t border-border-subtle bg-transparent">
+                  <StickyTableProvider>
+                    <table className="min-w-[640px] w-full border-collapse text-base">
+                      <caption className="sr-only">
+                        Standards alignment overview: standard, stencil label,
+                        score
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th className={tableHeadStickyCellClasses()}>
+                            Standards
+                          </th>
+                          <th className={tableHeadStickyCellClasses()}>
+                            Stencil
+                          </th>
+                          <th
+                            className={tableHeadStickyCellClasses(
+                              "min-w-[200px]",
+                            )}
+                          >
+                            Score
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {OVERVIEW_ROWS.map((row) => (
+                          <tr
+                            key={row.id}
+                            className="border-app-b border-border-subtle [&>td]:align-middle"
+                          >
+                            <td className="px-4 py-6">
+                              <span className={CCSS_TABLE_CODE_CLASS}>
+                                {row.standard}
+                              </span>
+                            </td>
+                            <td className="px-4 py-6 text-muted-foreground">
+                              {row.stencil}
+                            </td>
+                            <td className="px-4 py-6">
+                              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                <span className="text-sm tabular-nums text-muted-foreground">
+                                  {row.scoreCurrent}/{row.scoreMax}
+                                </span>
+                                <ScoreBar
+                                  current={row.scoreCurrent}
+                                  max={row.scoreMax}
+                                />
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </StickyTableProvider>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <div className="space-y-8">
+                  <h2 className="font-page-h2 text-heading dark:text-foreground">
+                    Standards alignment results
+                  </h2>
+                  <p className="text-base font-normal text-muted-foreground">
+                    Yes means match standards alignment.
+                  </p>
+                </div>
+
+                <div className="space-y-12">
+                  {ALIGNMENT_GROUPS.map((group) => (
+                    <div key={group.code} className="space-y-0">
+                      <h3
+                        className={cn(
+                          "border-app-b border-border-subtle pb-3",
+                          CCSS_CODE_HEADING_CLASS,
+                        )}
+                      >
+                        {group.code}
+                      </h3>
+                      <ul className="divide-y divide-border-subtle border-app-b border-border-subtle">
+                        {group.items.map((item) => {
+                          const isOpen = expanded.has(item.id);
+                          return (
+                            <li key={item.id}>
+                              <button
+                                type="button"
+                                onClick={() => toggleAccordion(item.id)}
+                                className="flex w-full items-start gap-4 py-6 text-left transition-colors hover:bg-nav-active/40 dark:hover:bg-nav-active/20"
+                                aria-expanded={isOpen}
+                              >
+                                <span className="min-w-0 flex-1 text-base font-normal leading-snug text-foreground">
+                                  {item.title}
+                                </span>
+                                <span className="flex shrink-0 items-center gap-3">
+                                  <ColorBadge
+                                    variant={item.aligned ? "green" : "pink"}
+                                  >
+                                    {item.aligned ? "Yes" : "No"}
+                                  </ColorBadge>
+                                  <ChevronDown
+                                    className={cn(
+                                      "size-5 shrink-0 text-muted-foreground transition-transform duration-200",
+                                      isOpen && "rotate-180",
+                                    )}
+                                    aria-hidden
+                                  />
+                                </span>
+                              </button>
+                              {isOpen ? (
+                                <div className="border-app-t border-border-subtle bg-field-bg/50 px-8 py-8 dark:bg-field-bg/30">
+                                  <div className="space-y-8">
+                                    <div>
+                                      <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+                                        Reasoning
+                                      </p>
+                                      <p className="mt-3 text-base font-normal leading-relaxed text-foreground">
+                                        {item.reasoning}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+                                        Feedback
+                                      </p>
+                                      <p className="mt-3 text-base font-normal leading-relaxed text-foreground">
+                                        {item.feedback}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : null}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </StickyTableProvider>
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="space-y-8">
-            <h2 className="font-page-h2 text-heading dark:text-foreground">
-              Standards alignment results
-            </h2>
-            <p className="text-base font-normal text-muted-foreground">
-              Yes means match standards alignment.
-            </p>
-          </div>
-
-          <div className="space-y-12">
-            {ALIGNMENT_GROUPS.map((group) => (
-              <div key={group.code} className="space-y-0">
-                <h3
-                  className={cn(
-                    "border-app-b border-border-subtle pb-3",
-                    CCSS_CODE_HEADING_CLASS,
-                  )}
-                >
-                  {group.code}
-                </h3>
-                <ul className="divide-y divide-border-subtle border-app-b border-border-subtle">
-                  {group.items.map((item) => {
-                    const isOpen = expanded.has(item.id);
-                    return (
-                      <li key={item.id}>
-                        <button
-                          type="button"
-                          onClick={() => toggleAccordion(item.id)}
-                          className="flex w-full items-start gap-4 py-6 text-left transition-colors hover:bg-nav-active/40 dark:hover:bg-nav-active/20"
-                          aria-expanded={isOpen}
-                        >
-                          <span className="min-w-0 flex-1 text-base font-normal leading-snug text-foreground">
-                            {item.title}
-                          </span>
-                          <span className="flex shrink-0 items-center gap-3">
-                            <ColorBadge variant={item.aligned ? "green" : "pink"}>
-                              {item.aligned ? "Yes" : "No"}
-                            </ColorBadge>
-                            <ChevronDown
-                              className={cn(
-                                "size-5 shrink-0 text-muted-foreground transition-transform duration-200",
-                                isOpen && "rotate-180",
-                              )}
-                              aria-hidden
-                            />
-                          </span>
-                        </button>
-                        {isOpen ? (
-                          <div className="border-app-t border-border-subtle bg-field-bg/50 px-8 py-8 dark:bg-field-bg/30">
-                            <div className="space-y-8">
-                              <div>
-                                <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
-                                  Reasoning
-                                </p>
-                                <p className="mt-3 text-base font-normal leading-relaxed text-foreground">
-                                  {item.reasoning}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
-                                  Feedback
-                                </p>
-                                <p className="mt-3 text-base font-normal leading-relaxed text-foreground">
-                                  {item.feedback}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ) : null}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+                </div>
+              </section>
+            </div>
+          )}
+        </div>
+      ) : null}
     </PageContainer>
   );
 }

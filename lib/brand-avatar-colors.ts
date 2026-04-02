@@ -71,6 +71,10 @@ const BRAND_AVATAR_SWATCHES = [
   },
 ] as const;
 
+/** Solid fills for morphing / accent shapes; excludes primary LC green (`#1DB470`). */
+export const BRAND_SECONDARY_PALETTE_HEX: readonly string[] =
+  BRAND_AVATAR_SWATCHES.filter((s) => s.hex !== "#1DB470").map((s) => s.hex);
+
 /**
  * Tailwind classes (literals for JIT). Same order as `BRAND_AVATAR_SWATCHES`.
  * Each swatch: 20% fill + `text-[#242423]`.

@@ -29,15 +29,10 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
-    label: "Design system",
+    label: "More",
     items: [
       { href: "/foundations", label: "Foundations" },
       { href: "/components", label: "Components" },
-    ],
-  },
-  {
-    label: "Misc",
-    items: [
       { href: "/signup", label: "Sign up" },
       { href: "/profile-setup", label: "Profile setup" },
     ],

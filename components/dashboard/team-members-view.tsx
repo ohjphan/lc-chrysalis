@@ -139,16 +139,7 @@ function StatusBadge({ status }: { status: "active" | "pending" }) {
   if (status === "active") {
     return <ColorBadge variant="green">Active</ColorBadge>;
   }
-  return (
-    <span
-      className={cn(
-        "inline-flex rounded-full px-2 py-0.5 font-nav-eyebrow text-[11px] font-medium uppercase",
-        "bg-nav-active text-muted-foreground",
-      )}
-    >
-      Pending
-    </span>
-  );
+  return <ColorBadge variant="gray">Pending</ColorBadge>;
 }
 
 function selectClassName() {

@@ -101,10 +101,10 @@ export function SignupPageClient() {
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-[#faf9f8] dark:bg-background">
-      <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center bg-transparent px-4">
+      <header className="sticky top-0 z-40 flex h-[60px] shrink-0 items-center bg-transparent px-4">
         <Link
           href="/"
-          className="flex min-w-0 flex-1 items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-[#faf9f8] dark:focus-visible:ring-offset-background"
+          className="flex min-h-0 min-w-0 flex-1 items-center gap-2 px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-[#faf9f8] dark:focus-visible:ring-offset-background"
         >
           <span className="min-w-0 flex-1 dark:hidden">
             <img
@@ -147,12 +147,12 @@ export function SignupPageClient() {
         </PageTitle>
 
         <div
-          className="w-full max-w-[440px] rounded-[4px] border-app border-border-subtle bg-background px-5 py-6 shadow-none md:px-8 md:py-8 dark:bg-sidebar"
+          className="w-full max-w-[440px] rounded-[4px] border-app border-border-subtle bg-background px-5 pb-6 pt-[16px] shadow-none md:px-8 md:pb-8 md:pt-[16px] dark:bg-sidebar"
         >
           <Tabs defaultValue="signin" className="w-full">
             <TabsList
               aria-label="Authentication"
-              className="mb-4 flex h-auto min-h-10 w-full gap-1 rounded-md bg-nav-active/50 p-1 text-muted-foreground dark:bg-nav-active/30"
+              className="mb-4 flex h-auto min-h-10 w-full gap-1 text-muted-foreground"
             >
               <TabsTrigger value="signin" className="flex-1 font-[550]">
                 Sign in

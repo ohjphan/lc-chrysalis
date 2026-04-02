@@ -11,7 +11,7 @@ const colorBadgeVariants = {
   yellow: "bg-[rgba(253,209,81,0.2)] text-[#242423]",
   beige: "bg-[rgba(239,235,231,0.2)] text-[#242423]",
   blue: "bg-[rgba(29,78,216,0.2)] text-[#242423]",
-  gray: "bg-[rgba(204,201,198,0.2)] text-[#242423]",
+  gray: "bg-[#EFEBE7B3] text-[#6A6A69]",
 } as const;
 
 export type ColorBadgeVariant = keyof typeof colorBadgeVariants;

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { PageContainer } from "@/components/dashboard/page-container";
+import { LogomarkLoadingAnimation } from "@/components/design-system/logomark-loading-animation";
 
 /**
  * Radix Tabs + Next SSR can disagree on auto-generated DOM ids on first paint.
@@ -16,11 +17,13 @@ const KnowledgeGraphExplorerView = dynamic(
     ssr: false,
     loading: () => (
       <PageContainer>
-        <div className="flex flex-col gap-4">
-          <div className="h-8 w-[min(100%,28rem)] animate-pulse rounded bg-nav-active/30" />
-          <div className="h-4 w-full max-w-xl animate-pulse rounded bg-nav-active/25" />
-          <div className="h-4 w-full max-w-lg animate-pulse rounded bg-nav-active/20" />
-          <div className="mt-6 h-32 w-full animate-pulse rounded-lg bg-nav-active/20" />
+        <div
+          className="flex min-h-[min(60vh,28rem)] min-w-0 flex-col items-center justify-center py-12"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        >
+          <LogomarkLoadingAnimation />
         </div>
       </PageContainer>
     ),

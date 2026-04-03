@@ -5,7 +5,7 @@ import { PageContainer } from "@/components/dashboard/page-container";
 import { EarlyReleaseBadge } from "@/components/ui/early-release-badge";
 import { Label } from "@/components/ui/label";
 import { PageTitle } from "@/components/ui/page-title";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SelectableCardGroup } from "@/components/ui/selectable-card-group";
 import { cn } from "@/lib/utils";
 
 const EXPLORER_SEGMENTS = [
@@ -14,28 +14,52 @@ const EXPLORER_SEGMENTS = [
     label: "Mapping concepts and skills to standards",
     description:
       "See concepts and skills students need to master in a given state for a standard.",
+    query:
+      "Which concepts and skills map to Common Core 8.EE.A.2 in my state?",
   },
   {
     id: "b",
     label: "Connecting prior learning to a standard",
     description:
       "See prior standards that a specific standard builds on top of.",
+    query: "What standards does Common Core 8.EE.A.2 build on?",
   },
   {
     id: "c",
     label: "Adjusting content for another state",
     description:
       "See how content aligned to a state standard can be adapted for another state.",
+    query:
+      "How could Common Core 8.EE.A.2 be adapted for a different state standard?",
   },
   {
     id: "d",
     label: "Finding lessons addressing a standard",
     description:
       "See which Illustrative Math lessons support a specific standard.",
+    query: "Which lessons address Common Core 8.EE.A.2?",
+  },
+  {
+    id: "e",
+    label: "Comparing standards across grade bands",
+    description:
+      "See how a concept develops across adjacent grades and related standards.",
+    query:
+      "How does the concept in Common Core 8.EE.A.2 connect to earlier and later grade bands?",
+  },
+  {
+    id: "f",
+    label: "Identifying prerequisite gaps",
+    description:
+      "See which prerequisite standards may be missing when students struggle with a target standard.",
+    query:
+      "Which prerequisite standards might explain gaps in readiness for Common Core 8.EE.A.2?",
   },
 ] as const;
 
-function ExplorerGraphCanvas() {
+type ExplorerSegmentId = (typeof EXPLORER_SEGMENTS)[number]["id"];
+
+function ExplorerGraphCanvas({ query }: { query: string }) {
   return (
     <div className="relative -mx-6 min-h-0 w-[calc(100%+3rem)] max-w-none md:-mx-8 md:w-[calc(100%+4rem)]">
       <div
@@ -48,7 +72,7 @@ function ExplorerGraphCanvas() {
         )}
       >
         <KnowledgeGraphIllustration />
-        <FloatingGraphQuery />
+        <FloatingGraphQuery query={query} />
       </div>
     </div>
   );
@@ -144,7 +168,7 @@ function KnowledgeGraphIllustration() {
         </text>
 
         {/* black emphasis node */}
-        <circle cx="280" cy="120" r="38" fill="#1a1a1a" />
+        <circle cx="280" cy="120" r="38" fill="var(--charcoal)" />
         <text
           x="280"
           y="112"
@@ -215,23 +239,26 @@ function KnowledgeGraphIllustration() {
   );
 }
 
-function FloatingGraphQuery() {
+function FloatingGraphQuery({ query }: { query: string }) {
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center px-4">
       <div
         className="pointer-events-auto max-w-[min(100%,560px)] rounded-full border-app border-border-subtle bg-background px-5 py-3 text-center shadow-md dark:shadow-black/20"
       >
-        <p className="text-sm font-normal leading-snug text-foreground">
-          What standards does Common Core{" "}
-          <span className="font-semibold text-[#125B3A]">8.EE.A.2</span> build
-          on?
-        </p>
+        <p className="text-sm font-normal leading-snug text-foreground">{query}</p>
       </div>
     </div>
   );
 }
 
 export function KnowledgeGraphExplorerView() {
+  const [selectedScenario, setSelectedScenario] =
+    React.useState<ExplorerSegmentId>(EXPLORER_SEGMENTS[0].id);
+
+  const activeScenario =
+    EXPLORER_SEGMENTS.find((segment) => segment.id === selectedScenario) ??
+    EXPLORER_SEGMENTS[0];
+
   return (
     <PageContainer>
       <div className="flex flex-col gap-[8px]">
@@ -245,46 +272,31 @@ export function KnowledgeGraphExplorerView() {
       </div>
 
       <div className="mt-8">
-        <Tabs defaultValue={EXPLORER_SEGMENTS[0].id} className="w-full">
-          <section
-            aria-labelledby="explorer-segments-heading"
-            className="flex flex-col gap-3"
+        <section
+          aria-labelledby="explorer-segments-heading"
+          className="flex flex-col gap-3"
+        >
+          <Label
+            id="explorer-segments-heading"
+            className="block"
           >
-            <Label
-              id="explorer-segments-heading"
-              className="block"
-            >
-              Select a scenario
-            </Label>
-            <TabsList
-              aria-label="Explorer views"
-              className="flex h-auto min-h-10 w-full flex-wrap items-stretch gap-1"
-            >
-              {EXPLORER_SEGMENTS.map((seg) => (
-                <TabsTrigger
-                  key={seg.id}
-                  value={seg.id}
-                  className="group flex h-auto min-h-10 min-w-0 flex-1 flex-col items-stretch justify-start gap-1.5 whitespace-normal p-[16px] text-left font-[550]"
-                >
-                  <span>{seg.label}</span>
-                  <span className="text-[13px] font-normal leading-snug text-muted-foreground group-data-[state=active]:text-foreground/80">
-                    {seg.description}
-                  </span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </section>
-
-          {EXPLORER_SEGMENTS.map((seg) => (
-            <TabsContent
-              key={seg.id}
-              value={seg.id}
-              className="mt-6 ring-offset-background focus-visible:outline-none focus-visible:ring-0"
-            >
-              <ExplorerGraphCanvas />
-            </TabsContent>
-          ))}
-        </Tabs>
+            Select a scenario
+          </Label>
+          <SelectableCardGroup
+            aria-labelledby="explorer-segments-heading"
+            scrollable
+            value={selectedScenario}
+            onValueChange={setSelectedScenario}
+            options={EXPLORER_SEGMENTS.map((seg) => ({
+              value: seg.id,
+              label: seg.label,
+              description: seg.description,
+            }))}
+          />
+          <div className="mt-6">
+            <ExplorerGraphCanvas query={activeScenario.query} />
+          </div>
+        </section>
       </div>
     </PageContainer>
   );

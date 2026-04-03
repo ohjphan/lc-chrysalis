@@ -34,7 +34,7 @@ export function PageTitle({
   }
 
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+    <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
       {heading}
       <span className="inline-flex shrink-0 translate-y-[4px] items-center">
         {trailing}

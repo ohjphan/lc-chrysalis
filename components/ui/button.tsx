@@ -4,21 +4,23 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[4px] text-[14px] font-sans font-normal transition-[color,background-color,border-color,opacity] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[4px] text-center text-[14px] font-sans font-medium leading-none -translate-y-px transition-[color,background-color,border-color,opacity,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-[#242423] text-white hover:opacity-90",
+        primary: "bg-charcoal text-white hover:opacity-90",
         secondary:
           "border-app border-border-subtle bg-surface hover:bg-nav-active",
-        ghost: "hover:bg-nav-link-active",
-        destructive:
-          "bg-destructive-muted text-destructive hover:bg-destructive/20 dark:hover:bg-destructive/25",
+        ghost: "hover:bg-nav-active dark:hover:bg-nav-link-active",
+        destructive: "bg-[#DC2626] text-white hover:opacity-90",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 px-3 text-[12px] font-normal",
-        lg: "h-10 px-6",
+        default: "h-9 px-4 py-0",
+        sm: "h-8 px-3 text-[12px] font-medium",
+        /** Composite rows (`h-10` + `items-center`): override global `-translate-y-px` for optical centering. */
+        embed:
+          "h-8 rounded-[2px] px-3 text-[12px] font-medium translate-y-[0.5px]",
+        lg: "h-10 px-6 py-0",
         icon: "size-9",
       },
     },

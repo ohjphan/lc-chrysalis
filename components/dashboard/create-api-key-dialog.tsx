@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Copy } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -184,10 +185,11 @@ export function CreateApiKeyDialog({
                 <Button
                   type="button"
                   variant="secondary"
-                  size="sm"
-                  className="h-8 shrink-0 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
+                  size="embed"
+                  className="shrink-0 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
                   onClick={copySecret}
                 >
+                  <Copy className="size-3.5" aria-hidden />
                   {copied ? "Copied" : "Copy"}
                 </Button>
               </div>

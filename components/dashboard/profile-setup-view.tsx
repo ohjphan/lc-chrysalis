@@ -174,10 +174,10 @@ export function ProfileSetupView() {
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-      <header className="sticky top-0 z-40 flex h-[60px] shrink-0 items-center bg-[#faf9f8] px-4 dark:bg-background">
+      <header className="sticky top-0 z-40 flex h-[60px] shrink-0 items-center bg-sidebar px-4 dark:bg-background">
         <Link
           href="/"
-          className="flex min-h-0 min-w-0 flex-1 items-center gap-2 px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-[#faf9f8] dark:focus-visible:ring-offset-background"
+          className="flex min-h-0 min-w-0 flex-1 items-center gap-2 px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar dark:focus-visible:ring-offset-background"
         >
           <span className="min-w-0 flex-1 dark:hidden">
             <img

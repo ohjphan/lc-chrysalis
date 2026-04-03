@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MCP_HTTP_ENDPOINT_URL } from "@/lib/mcp-server";
 
@@ -29,10 +30,11 @@ export function McpHttpEndpointField() {
       <Button
         type="button"
         variant="secondary"
-        size="sm"
-        className="h-8 shrink-0 px-3"
+        size="embed"
+        className="shrink-0"
         onClick={copy}
       >
+        <Copy className="size-3.5" aria-hidden />
         {copied ? "Copied" : "Copy"}
       </Button>
     </div>

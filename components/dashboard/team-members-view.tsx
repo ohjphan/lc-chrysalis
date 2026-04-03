@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { PageContainer } from "@/components/dashboard/page-container";
 import { StickyTableProvider } from "@/components/dashboard/sticky-table-provider";
+import { LogomarkLoadingAnimation } from "@/components/design-system/logomark-loading-animation";
 import { Button } from "@/components/ui/button";
 import { ColorBadge } from "@/components/ui/color-badge";
 import { Field } from "@/components/ui/field";
@@ -129,7 +130,66 @@ const SEED_ROWS: MemberRow[] = [
     email: "amara@example.com",
     joined: "Dec 1, 2023",
   },
+  {
+    kind: "member",
+    id: "m10",
+    name: "Lina Patel",
+    email: "lina@example.com",
+    joined: "Apr 9, 2024",
+  },
+  {
+    kind: "member",
+    id: "m11",
+    name: "David Kim",
+    email: "david@example.com",
+    joined: "Jun 14, 2024",
+  },
+  {
+    kind: "invite",
+    id: "m12",
+    email: "olivia@example.com",
+    invitedAt: "Mar 25, 2025",
+    role: "Member",
+  },
+  {
+    kind: "member",
+    id: "m13",
+    name: "Fatima Rahman",
+    email: "fatima@example.com",
+    joined: "Oct 30, 2023",
+  },
+  {
+    kind: "member",
+    id: "m14",
+    name: "Ben Carter",
+    email: "ben@example.com",
+    joined: "May 22, 2024",
+  },
+  {
+    kind: "invite",
+    id: "m15",
+    email: "harper@example.com",
+    invitedAt: "Mar 27, 2025",
+    role: "Admin",
+  },
+  {
+    kind: "member",
+    id: "m16",
+    name: "Mina Park",
+    email: "mina@example.com",
+    joined: "Jan 8, 2024",
+  },
+  {
+    kind: "member",
+    id: "m17",
+    name: "Owen Brooks",
+    email: "owen@example.com",
+    joined: "Feb 28, 2024",
+  },
 ];
+
+const INITIAL_VISIBLE_ROWS = 8;
+const LOAD_MORE_ROWS = 4;
 
 function rowStatus(row: MemberRow): "active" | "pending" {
   return row.kind === "member" ? "active" : "pending";
@@ -190,6 +250,8 @@ export function TeamMembersView() {
   const [rows, setRows] = React.useState<MemberRow[]>(SEED_ROWS);
   const [query, setQuery] = React.useState("");
   const [statusSort, setStatusSort] = React.useState<"asc" | "desc">("asc");
+  const [visibleCount, setVisibleCount] = React.useState(INITIAL_VISIBLE_ROWS);
+  const [isLoadingMore, setIsLoadingMore] = React.useState(false);
 
   const [inviteOpen, setInviteOpen] = React.useState(false);
   const [inviteEmail, setInviteEmail] = React.useState("");
@@ -219,6 +281,53 @@ export function TeamMembersView() {
     );
     return list;
   }, [query, statusSort, rows]);
+
+  const visibleMembers = React.useMemo(
+    () => members.slice(0, visibleCount),
+    [members, visibleCount],
+  );
+  const hasMoreMembers = visibleCount < members.length;
+  const scrollAreaRef = React.useRef<HTMLDivElement | null>(null);
+  const loadMoreRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE_ROWS);
+    setIsLoadingMore(false);
+  }, [query, statusSort]);
+
+  React.useEffect(() => {
+    if (!hasMoreMembers || isLoadingMore) return;
+
+    const root = scrollAreaRef.current;
+    const target = loadMoreRef.current;
+    if (!root || !target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setIsLoadingMore(true);
+        }
+      },
+      { root, threshold: 0.25 },
+    );
+
+    observer.observe(target);
+
+    return () => observer.disconnect();
+  }, [hasMoreMembers, isLoadingMore, visibleMembers.length]);
+
+  React.useEffect(() => {
+    if (!isLoadingMore) return;
+
+    const timeoutId = window.setTimeout(() => {
+      setVisibleCount((current) =>
+        Math.min(current + LOAD_MORE_ROWS, members.length),
+      );
+      setIsLoadingMore(false);
+    }, 900);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isLoadingMore, members.length]);
 
   function openInvite() {
     setInviteEmail("");
@@ -307,112 +416,124 @@ export function TeamMembersView() {
 
       <div className="mt-6 overflow-hidden border-app-t border-border-subtle bg-transparent">
         <StickyTableProvider>
-          <table className="min-w-[720px] w-full border-collapse text-base">
-            <thead>
-              <tr>
-                <th className={tableHeadStickyCellClasses()}>Member</th>
-                <th className={tableHeadStickyCellClasses()}>Role</th>
-                <th className={tableHeadStickyCellClasses()}>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground hover:bg-nav-link-active"
-                    onClick={() =>
-                      setStatusSort((s) => (s === "asc" ? "desc" : "asc"))
-                    }
-                    aria-sort={
-                      statusSort === "asc" ? "ascending" : "descending"
-                    }
-                  >
-                    Status
-                    {statusSort === "asc" ? (
-                      <ArrowUp className="size-3.5" />
-                    ) : (
-                      <ArrowDown className="size-3.5" />
-                    )}
-                  </button>
-                </th>
-                <th className={tableHeadStickyCellClasses()}>Join / invited</th>
-                <th className={tableHeadStickyCellClasses("text-right")}>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.map((m) => {
-                const { bgClass, textClass } = brandAvatarClassesForId(m.id);
-                return (
-                <tr
-                  key={m.id}
-                  className="border-app-b border-border-subtle [&>td]:align-middle"
-                >
-                  <td className="border-app-b border-border-subtle px-4 py-6">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "flex size-9 shrink-0 items-center justify-center rounded-md text-[11px] font-semibold leading-none",
-                          bgClass,
-                          textClass,
-                        )}
-                      >
-                        {memberRowInitials(m)}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="line-clamp-2 font-parabolica text-base font-[550] text-foreground">
-                          {memberRowDisplayName(m)}
-                        </p>
-                        <p className="mt-1 text-base font-normal lowercase text-[#6A6A69]">
-                          {m.email}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
-                    {m.kind === "member" ? "Member" : m.role}
-                  </td>
-                  <td className="border-app-b border-border-subtle px-4 py-6">
-                    <StatusBadge status={rowStatus(m)} />
-                  </td>
-                  <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
-                    {m.kind === "member" ? m.joined : m.invitedAt}
-                  </td>
-                  <td className="border-app-b border-border-subtle px-4 py-6 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" aria-label="Actions">
-                          <MoreHorizontal className="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {m.kind === "invite" ? (
-                          <>
-                            <DropdownMenuItem onClick={() => reinvite(m.id)}>
-                              <Plus className="size-4" />
-                              Reinvite
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => cancelInvite(m.id)}
-                            >
-                              <Ban className="size-4" />
-                              Cancel invitation
-                            </DropdownMenuItem>
-                          </>
-                        ) : (
-                          <DropdownMenuItem
-                            className="text-destructive"
-                            onClick={() => setRemoveTarget(m)}
-                          >
-                            Remove member
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
+          <div ref={scrollAreaRef} className="max-h-[34rem] overflow-auto">
+            <table className="min-w-[720px] w-full border-collapse text-base">
+              <thead>
+                <tr>
+                  <th className={tableHeadStickyCellClasses()}>Member</th>
+                  <th className={tableHeadStickyCellClasses()}>Role</th>
+                  <th className={tableHeadStickyCellClasses()}>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground hover:bg-nav-active dark:hover:bg-nav-link-active"
+                      onClick={() =>
+                        setStatusSort((s) => (s === "asc" ? "desc" : "asc"))
+                      }
+                      aria-sort={
+                        statusSort === "asc" ? "ascending" : "descending"
+                      }
+                    >
+                      Status
+                      {statusSort === "asc" ? (
+                        <ArrowUp className="size-3.5" />
+                      ) : (
+                        <ArrowDown className="size-3.5" />
+                      )}
+                    </button>
+                  </th>
+                  <th className={tableHeadStickyCellClasses()}>Join / invited</th>
+                  <th className={tableHeadStickyCellClasses("text-right")}>
+                    Actions
+                  </th>
                 </tr>
-                );
-              })}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {visibleMembers.map((m) => {
+                  const { bgClass, textClass } = brandAvatarClassesForId(m.id);
+                  return (
+                    <tr
+                      key={m.id}
+                      className="border-app-b border-border-subtle [&>td]:align-middle"
+                    >
+                      <td className="border-app-b border-border-subtle px-4 py-6">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={cn(
+                              "flex size-9 shrink-0 items-center justify-center rounded-md text-[11px] font-semibold leading-none",
+                              bgClass,
+                              textClass,
+                            )}
+                          >
+                            {memberRowInitials(m)}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="line-clamp-2 font-parabolica text-base font-[550] text-foreground">
+                              {memberRowDisplayName(m)}
+                            </p>
+                            <p className="mt-1 text-base font-normal lowercase text-gray-4">
+                              {m.email}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
+                        {m.kind === "member" ? "Member" : m.role}
+                      </td>
+                      <td className="border-app-b border-border-subtle px-4 py-6">
+                        <StatusBadge status={rowStatus(m)} />
+                      </td>
+                      <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
+                        {m.kind === "member" ? m.joined : m.invitedAt}
+                      </td>
+                      <td className="border-app-b border-border-subtle px-4 py-6 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" aria-label="Actions">
+                              <MoreHorizontal className="size-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {m.kind === "invite" ? (
+                              <>
+                                <DropdownMenuItem onClick={() => reinvite(m.id)}>
+                                  <Plus className="size-4" />
+                                  Reinvite
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={() => cancelInvite(m.id)}
+                                >
+                                  <Ban className="size-4" />
+                                  Cancel invitation
+                                </DropdownMenuItem>
+                              </>
+                            ) : (
+                              <DropdownMenuItem
+                                className="text-destructive"
+                                onClick={() => setRemoveTarget(m)}
+                              >
+                                Remove member
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {(isLoadingMore || hasMoreMembers) && members.length > 0 ? (
+              <div
+                ref={loadMoreRef}
+                className="flex min-h-20 items-center justify-center border-app-t border-border-subtle bg-background/70 px-4"
+              >
+                {isLoadingMore ? (
+                  <LogomarkLoadingAnimation size="sm" className="scale-[0.7]" />
+                ) : null}
+              </div>
+            ) : null}
+          </div>
         </StickyTableProvider>
       </div>
 

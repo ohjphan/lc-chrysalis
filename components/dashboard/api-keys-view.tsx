@@ -167,7 +167,7 @@ export function ApiKeysView() {
                         <p className="line-clamp-2 font-parabolica text-base font-[550] text-foreground">
                           {row.name}
                         </p>
-                        <p className="mt-1 font-mono text-base font-normal text-[#6A6A69]">
+                        <p className="mt-1 font-mono text-base font-normal text-gray-4">
                           {row.masked}
                         </p>
                       </div>
@@ -177,10 +177,10 @@ export function ApiKeysView() {
                     </div>
                   </td>
                   <td className="px-4 py-8">
-                    <p className="text-base font-normal text-[#6A6A69]">
+                    <p className="text-base font-normal text-gray-4">
                       {row.createdByName}
                     </p>
-                    <p className="mt-1 text-base font-normal lowercase text-[#6A6A69]">
+                    <p className="mt-1 text-base font-normal lowercase text-gray-4">
                       {row.createdByEmail}
                     </p>
                   </td>

@@ -168,7 +168,7 @@ export function OrganizationSettingsView() {
             </Field>
           </div>
           <div className="stack-field">
-            <span className="text-base font-medium text-[#242423] dark:text-foreground">
+            <span className="text-base font-medium text-heading dark:text-foreground">
               Organization logo
             </span>
             <div

@@ -25,7 +25,7 @@ export function SettingsLayoutClient({
       <div className="flex flex-col gap-8 md:flex-row md:gap-12 lg:gap-16">
         <nav
           aria-label="Settings sections"
-          className="shrink-0 md:w-52"
+          className="sticky top-14 z-10 shrink-0 self-start bg-background/95 pb-1 pt-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:top-0 md:w-52 md:pb-0 md:pt-3"
         >
           <ul className="flex flex-row gap-1 overflow-x-auto pb-1 md:flex-col md:gap-0 md:space-y-0.5 md:overflow-visible md:pb-0">
             {NAV.map(({ href, label }) => {
@@ -52,7 +52,7 @@ export function SettingsLayoutClient({
                       {active ? (
                         <span className="size-[6px] rounded-full bg-[#1DB470]" />
                       ) : (
-                        <span className="size-[6px] scale-90 rounded-full bg-[#CCC9C6] opacity-0 transition-[opacity,transform] duration-300 ease-in-out group-hover:scale-100 group-hover:opacity-100 dark:bg-[#5c5c58]" />
+                        <span className="size-[6px] scale-90 rounded-full bg-border-subtle opacity-0 transition-[opacity,transform] duration-300 ease-in-out group-hover:scale-100 group-hover:opacity-100 dark:bg-[#5c5c58]" />
                       )}
                     </span>
                     <span className="min-w-0 flex-1 truncate">{label}</span>

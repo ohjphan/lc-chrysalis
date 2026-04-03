@@ -7,6 +7,7 @@ export type CalloutVariant = "neutral" | "success" | "warning" | "destructive";
 export interface CalloutProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   variant?: CalloutVariant;
+  bordered?: boolean;
   hideIcon?: boolean;
   headline: React.ReactNode;
   description: React.ReactNode;
@@ -17,6 +18,13 @@ const variantClass: Record<CalloutVariant, string> = {
   success: "bg-callout-success-bg border-callout-success-border",
   warning: "bg-callout-warning-bg border-callout-warning-border",
   destructive: "bg-callout-destructive-bg border-callout-destructive-border",
+};
+
+const borderlessVariantClass: Record<CalloutVariant, string> = {
+  neutral: "bg-[var(--callout-neutral-bg-strong)]",
+  success: "bg-[var(--callout-success-bg-strong)]",
+  warning: "bg-[var(--callout-warning-bg-strong)]",
+  destructive: "bg-[var(--callout-destructive-bg-strong)]",
 };
 
 /** Leading glyph only (no filled circle); hues match callout borders / toast accents. */
@@ -61,6 +69,7 @@ function CalloutIcon({ variant }: { variant: CalloutVariant }) {
 export function Callout({
   className,
   variant = "neutral",
+  bordered = true,
   hideIcon = false,
   headline,
   description,
@@ -70,8 +79,9 @@ export function Callout({
     <div
       role="note"
       className={cn(
-        "flex items-start gap-3 rounded-md border-app p-4 text-foreground",
-        variantClass[variant],
+        "flex items-start gap-3 rounded-md p-4 text-foreground",
+        bordered && "border-app",
+        bordered ? variantClass[variant] : borderlessVariantClass[variant],
         className,
       )}
       {...props}
@@ -82,7 +92,7 @@ export function Callout({
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <div className="text-base font-medium leading-normal text-foreground">
+        <div className="text-base font-medium leading-normal text-charcoal dark:text-foreground">
           {headline}
         </div>
         <div className="mt-1 text-base font-normal leading-normal text-muted-foreground">

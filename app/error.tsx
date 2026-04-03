@@ -23,7 +23,7 @@ export default function Error({
       </p>
       <button
         type="button"
-        className="rounded-md border border-border-subtle bg-field-bg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-nav-active"
+        className="rounded-md border-app border-border-subtle bg-field-bg px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-nav-active"
         onClick={() => reset()}
       >
         Try again

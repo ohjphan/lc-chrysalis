@@ -1,10 +1,5 @@
-import type { Metadata } from "next";
-import { ComponentsGallery } from "@/components/design-system/components-gallery";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Components",
-};
-
-export default function ComponentsPage() {
-  return <ComponentsGallery />;
+export default function ComponentsRedirectPage() {
+  redirect("/design-system/components/badges");
 }

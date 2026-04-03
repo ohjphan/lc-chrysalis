@@ -35,7 +35,7 @@ const DropdownMenuSubContent = React.forwardRef<
   <DropdownMenuPrimitive.SubContent
     ref={ref}
     className={cn(
-      "z-50 min-w-[10rem] overflow-hidden rounded-md border-app border-border-subtle bg-[#FAF9F8] p-1 text-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out dark:bg-background",
+      "z-50 min-w-[10rem] overflow-hidden rounded-md border-app border-border-subtle bg-sidebar p-1 text-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out dark:bg-background",
       className,
     )}
     {...props}
@@ -53,7 +53,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-50 max-h-[min(24rem,var(--radix-dropdown-menu-content-available-height))] min-w-[12rem] overflow-y-auto rounded-md border-app border-border-subtle bg-[#FAF9F8] p-1 text-foreground shadow-md dark:bg-background",
+        "z-50 max-h-[min(24rem,var(--radix-dropdown-menu-content-available-height))] min-w-[12rem] overflow-y-auto rounded-md border-app border-border-subtle bg-sidebar p-1 text-foreground shadow-md dark:bg-background",
         className,
       )}
       {...props}
@@ -105,7 +105,7 @@ const DropdownMenuSeparator = React.forwardRef<
   <DropdownMenuPrimitive.Separator
     ref={ref}
     className={cn(
-      "-mx-1 my-1 h-[length:var(--border-stroke)] shrink-0 bg-border-subtle",
+      "-mx-1 my-1 h-0 shrink-0 border-app-t border-border-subtle",
       className,
     )}
     {...props}

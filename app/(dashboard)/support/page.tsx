@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/dashboard/placeholder-page";
+import { PageContainer } from "@/components/dashboard/page-container";
+import { SupportPanel } from "@/components/dashboard/support-panel";
 
 export const metadata: Metadata = {
   title: "Support",
@@ -7,9 +8,12 @@ export const metadata: Metadata = {
 
 export default function SupportPage() {
   return (
-    <PlaceholderPage
-      title="Support"
-      description="Get help from the Learning Commons team. This is a UI placeholder — link your ticketing system when ready."
-    />
+    <PageContainer>
+      <div className="flex justify-center">
+        <div className="w-full max-w-[23.75rem] rounded-lg border-app border-border-subtle bg-background shadow-xl">
+          <SupportPanel showCloseButton={false} />
+        </div>
+      </div>
+    </PageContainer>
   );
 }

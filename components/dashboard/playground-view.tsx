@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { PageTitle } from "@/components/ui/page-title";
 import { Textarea } from "@/components/ui/textarea";
 import { LogomarkLoadingAnimation } from "@/components/design-system/logomark-loading-animation";
+import { ProgressBar } from "@/components/ui/progress-bar";
 import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
 
@@ -49,9 +50,9 @@ const CCSS_ADD_OPTIONS = [
 const CCSS_TABLE_CODE_CLASS =
   "font-parabolica text-base font-medium text-foreground";
 
-/** Parabolica + 550 for CCSS codes in result section headings. */
+/** Parabolica + 550 at 18px for CCSS result section headings. */
 const CCSS_CODE_HEADING_CLASS =
-  "font-parabolica text-base font-[550] text-foreground";
+  "font-parabolica text-[18px] font-[550] leading-[1.12] text-foreground";
 
 const EXAMPLE_QUESTION =
   "A school has 48 students going on a field trip. Each van holds 8 students. How many vans are needed? Show your reasoning using division and explain what the remainder means if there is one.";
@@ -165,33 +166,6 @@ const ALIGNMENT_GROUPS: AlignmentGroup[] = [
     ],
   },
 ];
-
-function ScoreBar({
-  current,
-  max,
-}: {
-  current: number;
-  max: number;
-}) {
-  const pct = max > 0 ? Math.round((current / max) * 100) : 0;
-  const full = current >= max;
-  return (
-    <div className="flex min-w-[120px] items-center gap-3">
-      <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-nav-active">
-        <div
-          className={cn(
-            "h-full rounded-full transition-[width]",
-            full ? "bg-accent-green" : "bg-[#C4A574]",
-          )}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <span className="shrink-0 tabular-nums text-sm font-medium text-foreground">
-        {pct}%
-      </span>
-    </div>
-  );
-}
 
 export function PlaygroundView() {
   const [evaluatorType, setEvaluatorType] = React.useState("");
@@ -520,8 +494,8 @@ export function PlaygroundView() {
                                 <span className="text-sm tabular-nums text-muted-foreground">
                                   {row.scoreCurrent}/{row.scoreMax}
                                 </span>
-                                <ScoreBar
-                                  current={row.scoreCurrent}
+                                <ProgressBar
+                                  value={row.scoreCurrent}
                                   max={row.scoreMax}
                                 />
                               </div>

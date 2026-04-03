@@ -4,11 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FileText, Github, HelpCircle } from "lucide-react";
 import { navGroups } from "@/lib/nav-config";
+import { SUPPORT_DOCS_URL } from "@/lib/support-links";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SidebarOrganizationSection } from "@/components/dashboard/sidebar-organization-section";
 
-export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
+export function AppSidebar({
+  onNavigate,
+  onOpenSupport,
+}: {
+  onNavigate?: () => void;
+  onOpenSupport?: () => void;
+}) {
   const pathname = usePathname();
 
   function isActive(href: string) {
@@ -51,7 +58,7 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
             key={group.label ?? group.items[0]?.href ?? `nav-${index}`}
           >
             {group.label ? (
-              <p className="mb-1.5 pl-0 pr-2 font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#55554E] dark:text-nav-link-idle">
+              <p className="mb-1.5 pl-0 pr-2 font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-eyebrow dark:text-nav-link-idle">
                 {group.label}
               </p>
             ) : null}
@@ -81,7 +88,7 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
                           <span className="size-[6px] rounded-full bg-[#1DB470]" />
                         ) : (
                           <span
-                            className="size-[6px] scale-90 rounded-full bg-[#CCC9C6] opacity-0 transition-[opacity,transform] duration-300 ease-in-out group-hover:scale-100 group-hover:opacity-100 dark:bg-[#5c5c58]"
+                            className="size-[6px] scale-90 rounded-full bg-border-subtle opacity-0 transition-[opacity,transform] duration-300 ease-in-out group-hover:scale-100 group-hover:opacity-100 dark:bg-[#5c5c58]"
                           />
                         )}
                       </span>
@@ -106,9 +113,14 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
               className="size-9 hover:bg-sidebar-nav-intent"
               asChild
             >
-              <Link href="/support" aria-label="Documentation">
+              <a
+                href={SUPPORT_DOCS_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Documentation"
+              >
                 <FileText className="size-[16px] text-muted-foreground" />
-              </Link>
+              </a>
             </Button>
             <Button
               variant="ghost"
@@ -129,11 +141,13 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
               variant="ghost"
               size="icon"
               className="size-9 hover:bg-sidebar-nav-intent"
-              asChild
+              onClick={() => {
+                onNavigate?.();
+                onOpenSupport?.();
+              }}
+              aria-label="Support"
             >
-              <Link href="/support" aria-label="Support" onClick={onNavigate}>
-                <HelpCircle className="size-[16px] text-muted-foreground" />
-              </Link>
+              <HelpCircle className="size-[16px] text-muted-foreground" />
             </Button>
           </div>
         </div>
@@ -142,7 +156,10 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
           aria-hidden
         />
         <div className="px-3 pb-3 pt-3">
-          <SidebarOrganizationSection onNavigate={onNavigate} />
+          <SidebarOrganizationSection
+            onNavigate={onNavigate}
+            onOpenSupport={onOpenSupport}
+          />
         </div>
       </div>
     </div>

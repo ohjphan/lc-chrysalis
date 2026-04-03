@@ -31,8 +31,7 @@ export const navGroups: NavGroup[] = [
   {
     label: "More",
     items: [
-      { href: "/foundations", label: "Foundations" },
-      { href: "/components", label: "Components" },
+      { href: "/design-system", label: "Design System" },
       { href: "/signup", label: "Sign up" },
       { href: "/profile-setup", label: "Profile setup" },
     ],

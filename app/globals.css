@@ -4,44 +4,55 @@
 
 /* Light — crisp grey borders, white canvas */
 :root {
+  /* Brand neutral ramp (names match Foundations “Brand neutrals”) */
+  --gray-1: #ccc9c6;
+  --gray-4: #55554e;
+  --gray-5: #3a3a37;
+  --charcoal: #242423;
+  --text-eyebrow: var(--gray-4);
+
   --ring-offset-background: #ffffff;
   --background: #ffffff;
-  /* Primary body / UI text */
-  --foreground: #242423;
-  --heading: #242423;
-  /* Supporting copy: derived from body so it stays a touch lighter than `--foreground` */
-  --muted-foreground: color-mix(in srgb, #242423 68%, #ffffff);
+  /* Primary body = Gray 5 (#3A3A37); supporting copy + eyebrow = Gray 4 (#55554E); headings = Charcoal */
+  --foreground: var(--gray-5);
+  --heading: var(--charcoal);
+  --muted-foreground: var(--gray-4);
   --surface: #faf9f8;
   /* Inputs, textareas, copy fields — distinct from warm sidebar/surface */
   --field-bg: #ffffff;
   --sidebar-bg: #faf9f8;
-  --border-subtle: #ccc9c6;
+  --border-subtle: var(--gray-1);
   --border-stroke: 1.5px;
-  /* Was #EFEBE7; same hue at 70% opacity for layering on sidebar/surface */
+  /* Was #EFEBE7; same hue at 70% opacity — nav row hover, ghost hovers, dropdown highlight (light) */
   --nav-active: rgba(239, 235, 231, 0.7);
-  --nav-link-active: #e8e8e8;
+  /* Light: same fill as `--nav-active` (not #E8E8E8). Dark: solid chip below. */
+  --nav-link-active: var(--nav-active);
   --nav-active-icon: #1db470;
-  --nav-link-idle: #55554e;
+  --nav-link-idle: var(--gray-4);
   --accent-green: #1db470;
   --accent-green-muted: #125b3a;
   /* Warning / yellow: badges, callouts, toasts */
   --accent-yellow: #fdd151;
   --destructive: #dc2626;
   --destructive-muted: color-mix(in srgb, var(--destructive) 12%, transparent);
-  --modal-bg: #1a1a1a;
-  --modal-border: #ccc9c6;
+  --modal-bg: var(--charcoal);
+  --modal-border: var(--gray-1);
   /* Single-line inputs, default buttons, native selects, composite copy rows */
   --control-height: 38px;
   --control-embed-inset: 6px;
   --control-embed-button-height: calc(
     var(--control-height) - 2 * var(--control-embed-inset)
   );
-  /* Callouts: neutral = #FAF9F8 + #CCC9C6; semantic rows = 4% fill + solid accent border */
+  /* Callouts: bordered set uses 4% fills; borderless set gets stronger fills for legibility */
   --callout-neutral-bg: #faf9f8;
   --callout-success-bg: rgba(29, 180, 112, 0.04);
   --callout-warning-bg: rgba(253, 209, 81, 0.04);
   --callout-destructive-bg: rgba(255, 85, 76, 0.04);
-  --callout-neutral-border: #ccc9c6;
+  --callout-neutral-bg-strong: #f3f1ef;
+  --callout-success-bg-strong: rgba(29, 180, 112, 0.08);
+  --callout-warning-bg-strong: rgba(253, 209, 81, 0.1);
+  --callout-destructive-bg-strong: rgba(255, 85, 76, 0.09);
+  --callout-neutral-border: var(--gray-1);
   --callout-success-border: #1db470;
   --callout-warning-border: var(--accent-yellow);
   --callout-destructive-border: #ff554c;
@@ -49,8 +60,14 @@
 
 /* Dark — soft warm base #242423 (surfaces stepped slightly for depth) */
 .dark {
+  --gray-1: #5c5c58;
+  --gray-4: #fafafa;
+  --gray-5: #a3a3a3;
+  --charcoal: #242423;
+  --text-eyebrow: #a3a3a3;
+
   --background: #242423;
-  --foreground: #fafafa;
+  --foreground: var(--gray-4);
   --heading: #ffffff;
   --muted-foreground: #888888;
   --surface: #242423;
@@ -59,7 +76,7 @@
   /* Match light token so DevTools always resolve stroke width in dark mode */
   --border-stroke: 1.5px;
   /* All UI borders / strokes in dark mode */
-  --border-subtle: #5c5c58;
+  --border-subtle: var(--gray-1);
   --nav-active: #32322f;
   --nav-link-active: #383835;
   --nav-active-icon: #1db470;
@@ -70,13 +87,17 @@
   --destructive: #f87171;
   --destructive-muted: color-mix(in srgb, var(--destructive) 16%, #242423);
   --modal-bg: #242423;
-  --modal-border: #5c5c58;
+  --modal-border: var(--gray-1);
   --ring-offset-background: var(--background);
   --callout-neutral-bg: var(--surface);
   --callout-neutral-border: var(--border-subtle);
   --callout-success-bg: rgba(29, 180, 112, 0.04);
   --callout-warning-bg: rgba(253, 209, 81, 0.04);
   --callout-destructive-bg: rgba(255, 85, 76, 0.04);
+  --callout-neutral-bg-strong: #30302d;
+  --callout-success-bg-strong: rgba(29, 180, 112, 0.12);
+  --callout-warning-bg-strong: rgba(253, 209, 81, 0.14);
+  --callout-destructive-bg-strong: rgba(255, 85, 76, 0.12);
   --callout-success-border: #1db470;
   --callout-warning-border: var(--accent-yellow);
   --callout-destructive-border: #ff554c;
@@ -87,6 +108,11 @@
   --color-foreground: var(--foreground);
   --color-heading: var(--heading);
   --color-muted-foreground: var(--muted-foreground);
+  --color-gray-1: var(--gray-1);
+  --color-gray-4: var(--gray-4);
+  --color-gray-5: var(--gray-5);
+  --color-charcoal: var(--charcoal);
+  --color-eyebrow: var(--text-eyebrow);
   --color-surface: var(--surface);
   --color-field-bg: var(--field-bg);
   --color-sidebar: var(--sidebar-bg);
@@ -138,19 +164,34 @@
   letter-spacing: 0.04em;
 }
 
-/** In-page section titles (`<h2>`): Parabolica, 18px weight 550, 0.5% tracking, sentence case, 112% line-height */
+/** In-page section titles (`<h2>`): Parabolica, 20px weight 550, 0.5% tracking, sentence case, 112% line-height */
 @utility font-page-h2 {
   margin: 0 0 6px 0;
   font-family: var(--font-parabolica-stack);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 550;
   letter-spacing: 0.5%;
   line-height: 1.12;
-  color: #242423;
+  color: var(--heading);
 }
 
 .dark .font-page-h2 {
-  color: var(--foreground);
+  color: var(--heading);
+}
+
+/** In-page subsection titles (`<h3>`): Parabolica, 16px medium, 0.5% tracking, sentence case */
+@utility font-page-h3 {
+  margin: 0;
+  font-family: var(--font-parabolica-stack);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5%;
+  line-height: 1.12;
+  color: var(--heading);
+}
+
+.dark .font-page-h3 {
+  color: var(--heading);
 }
 
 /** Label + input / textarea / select stacks */
@@ -248,6 +289,29 @@ body {
 [data-sonner-toast][data-styled="true"] [data-description] {
   color: #a3a3a3 !important;
 }
+
+[data-sonner-toast][data-styled="true"].toast-light {
+  background: #ffffff !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    -24px 12px 88px -16px rgba(207, 146, 236, 0.8),
+    34px 14px 72px -18px rgba(29, 180, 112, 0.8) !important;
+  color: var(--foreground) !important;
+}
+
+[data-sonner-toast][data-styled="true"].toast-light [data-title] {
+  color: var(--foreground) !important;
+}
+
+[data-sonner-toast][data-styled="true"].toast-light [data-description] {
+  color: var(--muted-foreground) !important;
+}
+
+[data-sonner-toast][data-styled="true"].toast-light [data-close-button] {
+  color: var(--muted-foreground) !important;
+}
+
 
 /* Custom leading icons (e.g. design-system toasts): 22px slot + true center (Sonner defaults flex-start + svg margins). */
 [data-sonner-toast][data-styled="true"] [data-icon] {

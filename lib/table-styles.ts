@@ -25,7 +25,7 @@ export function tableHeadStickyCellClasses(
   const surface = options?.surfaceClass ?? "bg-sidebar";
   const z = options?.zClass ?? "z-10";
   return cn(
-    "sticky border-app-b border-border-subtle px-4 py-4 text-left font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-[#55554E] dark:text-nav-link-idle",
+    "sticky border-app-b border-border-subtle px-4 py-4 text-left font-nav-eyebrow text-[11px] font-medium uppercase tracking-[0.04em] text-foreground dark:text-nav-link-idle",
     topClass,
     z,
     surface,

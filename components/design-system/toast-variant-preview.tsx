@@ -7,21 +7,43 @@ import { cn } from "@/lib/utils";
 import {
   TOAST_VARIANT_DEFAULT_COPY,
   ToastLeadingIcon,
-  type ToastLeadingVariant,
+  toastUsesLightSurface,
+  type ToastVariant,
 } from "@/lib/toast-variants";
 
-const ariaLabels: Record<ToastLeadingVariant, string> = {
+const ariaLabels: Record<ToastVariant, string> = {
   neutral: "Show live neutral toast",
   success: "Show live success toast",
   warning: "Show live warning toast",
   error: "Show live error toast",
+  lightNeutral: "Show live light neutral toast",
+  lightSuccess: "Show live light success toast",
+  lightWarning: "Show live light warning toast",
+  lightError: "Show live light error toast",
 };
+
+function leadingIconVariant(variant: ToastVariant) {
+  switch (variant) {
+    case "neutral":
+    case "lightNeutral":
+      return "neutral";
+    case "success":
+    case "lightSuccess":
+      return "success";
+    case "warning":
+    case "lightWarning":
+      return "warning";
+    case "error":
+    case "lightError":
+      return "error";
+  }
+}
 
 export function ToastVariantPreview({
   variant,
   onShow,
 }: {
-  variant: ToastLeadingVariant;
+  variant: ToastVariant;
   onShow: () => void;
 }) {
   const { message, description } = TOAST_VARIANT_DEFAULT_COPY[variant];
@@ -56,7 +78,10 @@ export function ToastVariantPreview({
         data-y-position="bottom"
         data-x-position="right"
         data-type="default"
-        className="w-full max-w-full"
+        className={cn(
+          "w-full max-w-full",
+          toastUsesLightSurface(variant) && "toast-light",
+        )}
       >
         <span
           data-close-button=""
@@ -66,7 +91,7 @@ export function ToastVariantPreview({
           <X className="size-[20px]" aria-hidden />
         </span>
         <div data-icon="">
-          <ToastLeadingIcon variant={variant} />
+          <ToastLeadingIcon variant={leadingIconVariant(variant)} />
         </div>
         <div data-content="">
           <div data-title="">{message}</div>

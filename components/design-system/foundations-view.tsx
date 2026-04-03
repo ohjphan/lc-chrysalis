@@ -6,7 +6,6 @@ import {
   type ColorSwatchEntry,
 } from "@/components/design-system/color-swatch-entry";
 import { BRAND_AVATAR_PALETTE_FOR_DOCS } from "@/lib/brand-avatar-colors";
-import { PageContainer } from "@/components/dashboard/page-container";
 import { Label } from "@/components/ui/label";
 import { PageTitle } from "@/components/ui/page-title";
 
@@ -104,117 +103,88 @@ function TypographyRow({
 }
 
 export function FoundationsView() {
-  /* Card order: light-mode luminance (surfaces → text ramp → modal) then semantic accents. */
-  const colorGroups: {
+  /**
+   * One card per distinct color (light ramp + accents). Titles use brand neutral
+   * naming; footnotes describe where each swatch is used in plain language.
+   */
+  const colorPalette: {
     title: string;
     entries: ColorSwatchEntry[];
     footnote?: string;
   }[] = [
     {
-      title: "Background",
+      title: "White",
       entries: [
-        { label: "Background", varName: "--background", className: "bg-background" },
+        {
+          label: "White",
+          varName: "--background",
+          className: "bg-background",
+        },
       ],
+      footnote: "Background.",
     },
     {
-      title: "Warm neutral",
+      title: "Light beige",
       entries: [
-        { label: "Field", varName: "--field-bg", className: "bg-field-bg" },
-        { label: "Sidebar", varName: "--sidebar-bg", className: "bg-sidebar" },
-        { label: "Surface", varName: "--surface", className: "bg-surface" },
+        {
+          label: "Light beige",
+          varName: "--sidebar-bg",
+          className: "bg-sidebar",
+        },
       ],
       footnote:
-        "Light: field #FFFFFF; sidebar and surface #FAF9F8. Dark: swatch follows each token.",
+        "Navigation, neutral background, dropdown menu background.",
     },
     {
-      title: "Nav active",
+      title: "Warm beige (nav active)",
       entries: [
-        { label: "Nav active", varName: "--nav-active", className: "bg-nav-active" },
+        {
+          label: "Warm beige @ 70%",
+          varName: "--nav-active",
+          className: "bg-nav-active",
+        },
       ],
       footnote:
-        "Light mode: #EFEBE7 at 70% opacity — rgba(239, 235, 231, 0.7). Dark mode: solid #32322F. Swatch follows the current theme.",
+        "Nav background active state; nav background hover state.",
     },
     {
-      title: "Border / stroke",
+      title: "Gray 1",
       entries: [
-        {
-          label: "Border subtle",
-          varName: "--border-subtle",
-          className: "bg-border-subtle",
-        },
-        {
-          label: "Modal border",
-          varName: "--modal-border",
-          className: "bg-modal-border",
-        },
+        { label: "Gray 1", varName: "--gray-1", className: "bg-gray-1" },
       ],
+      footnote: "Border.",
     },
     {
-      title: "Muted foreground",
+      title: "Gray 4",
       entries: [
-        {
-          label: "Muted foreground",
-          varName: "--muted-foreground",
-          className: "bg-muted-foreground",
-        },
+        { label: "Gray 4", varName: "--gray-4", className: "bg-gray-4" },
       ],
+      footnote: "Muted text, eyebrow text.",
     },
     {
-      title: "Nav link idle",
+      title: "Gray 5",
       entries: [
-        {
-          label: "Nav link idle",
-          varName: "--nav-link-idle",
-          className: "bg-nav-link-idle",
-        },
+        { label: "Gray 5", varName: "--gray-5", className: "bg-gray-5" },
       ],
-      footnote: "Light mode #55554E; dark mode #a3a3a3.",
+      footnote: "Primary body text.",
     },
     {
-      title: "Foreground / heading",
+      title: "Charcoal",
       entries: [
-        { label: "Foreground", varName: "--foreground", className: "bg-foreground" },
-        { label: "Heading", varName: "--heading", className: "bg-heading" },
+        { label: "Charcoal", varName: "--charcoal", className: "bg-charcoal" },
       ],
-      footnote:
-        "In light mode these match (#242423). In dark mode they diverge (--foreground #fafafa, --heading #ffffff); swatch follows --foreground.",
+      footnote: "Heading, primary button.",
     },
     {
-      title: "Modal background",
-      entries: [
-        {
-          label: "Modal background",
-          varName: "--modal-bg",
-          className: "bg-modal-bg",
-        },
-      ],
-    },
-    {
-      title: "Accent",
+      title: "Accent green",
       entries: [
         {
           label: "Accent green",
           varName: "--accent-green",
           className: "bg-accent-green",
         },
-        {
-          label: "Nav active icon",
-          varName: "--nav-active-icon",
-          className: "bg-nav-active-icon",
-        },
       ],
-      footnote:
-        "These match in light and dark (#1DB470); the swatch follows --accent-green.",
-    },
-    {
-      title: "Accent green muted",
-      entries: [
-        {
-          label: "Accent green muted",
-          varName: "--accent-green-muted",
-          className: "bg-accent-green-muted",
-        },
-      ],
+      footnote: "Primary accent color, success color.",
     },
     {
       title: "Accent yellow",
@@ -225,8 +195,7 @@ export function FoundationsView() {
           className: "bg-accent-yellow",
         },
       ],
-      footnote:
-        "Warning UI, yellow ColorBadge, toasts, and callouts (#FDD151); same in light and dark.",
+      footnote: "Warning color.",
     },
     {
       title: "Destructive",
@@ -237,23 +206,16 @@ export function FoundationsView() {
           className: "bg-destructive",
         },
       ],
-    },
-    {
-      title: "Destructive muted",
-      entries: [
-        {
-          label: "Destructive muted",
-          varName: "--destructive-muted",
-          className: "bg-destructive-muted",
-        },
-      ],
+      footnote: "Destructive and error color.",
     },
   ];
 
   return (
-    <PageContainer>
+    <div className="space-y-10">
       <div className="flex flex-col gap-[8px]">
-        <PageTitle>Foundations</PageTitle>
+        <h2 className="font-page-h2 text-heading dark:text-foreground">
+          Foundations
+        </h2>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
           Semantic tokens and typography used across the Learning Commons developer
           portal. Toggle light/dark under{" "}
@@ -265,7 +227,7 @@ export function FoundationsView() {
           </Link>{" "}
           to compare values. For interactive UI primitives, see{" "}
           <Link
-            href="/components"
+            href="/design-system/components/badges"
             className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             Components
@@ -292,7 +254,7 @@ export function FoundationsView() {
             <code className="font-mono text-sm text-foreground">font-page-title</code>
             ). Section headings use{" "}
             <code className="font-mono text-sm text-foreground">font-page-h2</code>{" "}
-            (same stack, 18px weight 550, 0.5% tracking, sentence case); often paired
+            (same stack, 20px weight 550, 0.5% tracking, sentence case); often paired
             with{" "}
             <code className="font-mono text-sm text-foreground">text-heading</code>{" "}
             and{" "}
@@ -340,18 +302,35 @@ export function FoundationsView() {
               spec={{
                 family: "Parabolica / parabolica-text / Inter",
                 familyVar: "var(--font-parabolica-stack)",
-                fontSize: "18px",
+                fontSize: "20px",
                 fontWeight: "550",
                 lineHeight: "1.12",
                 letterSpacing: "0.5%",
-                token: "font-page-h2 · text-heading dark:text-foreground",
+                token: "font-page-h2 · text-heading",
                 notes:
-                  "Sentence case · utility sets margin-bottom 6px · light: #242423 on heading color",
+                  "Sentence case · margin-bottom 6px · light: Charcoal via text-heading",
               }}
             >
-              <span className="font-page-h2 text-heading dark:text-foreground">
+              <span className="font-page-h2 text-heading">
                 Standards alignment overview
               </span>
+            </TypographyRow>
+            <TypographyRow
+              title="Subsection heading (H3)"
+              spec={{
+                family: "Parabolica / parabolica-text / Inter",
+                familyVar: "var(--font-parabolica-stack)",
+                fontSize: "16px",
+                fontWeight: "500 (Medium)",
+                lineHeight: "1.12",
+                letterSpacing: "0.5%",
+                token: "font-page-h3 · text-heading",
+                notes: "Sentence case",
+              }}
+            >
+              <h3 className="font-page-h3 text-heading dark:text-foreground">
+                Option 1: Borders
+              </h3>
             </TypographyRow>
             <TypographyRow
               title="Body"
@@ -364,7 +343,8 @@ export function FoundationsView() {
                 letterSpacing: "normal",
                 token:
                   "text-base font-normal · text-foreground / text-muted-foreground",
-                notes: "Muted copy for secondary hierarchy",
+                notes:
+                  "Light: #3A3A37 (`--foreground`) · #55554E muted (`--muted-foreground`)",
               }}
             >
               <p className="text-base font-normal text-foreground">
@@ -384,11 +364,12 @@ export function FoundationsView() {
                 lineHeight: "normal (default)",
                 letterSpacing: "0.04em (4%)",
                 token:
-                  "font-nav-sidebar-eyebrow uppercase text-muted-foreground",
-                notes: "Sidebar section labels (Workspace, Evaluators, …)",
+                  "font-nav-sidebar-eyebrow uppercase text-eyebrow",
+                notes:
+                  "Sidebar section labels — `--text-eyebrow` → Gray 4 (#55554E) in light; distinct from body (Gray 5)",
               }}
             >
-              <p className="font-nav-sidebar-eyebrow uppercase text-muted-foreground">
+              <p className="font-nav-sidebar-eyebrow uppercase text-eyebrow">
                 Workspace
               </p>
             </TypographyRow>
@@ -403,7 +384,7 @@ export function FoundationsView() {
                 letterSpacing: "normal",
                 token:
                   "Label · font-parabolica text-base font-[500] · components/ui/label.tsx",
-                notes: "Light: #242423 · dark: text-foreground",
+                notes: "Light: text-heading (Charcoal) · dark: text-foreground",
               }}
             >
               <div className="space-y-3">
@@ -438,17 +419,17 @@ export function FoundationsView() {
 
         <Section title="Color palettes">
           <p className="max-w-2xl text-base font-normal text-muted-foreground">
-            Colors are defined as CSS variables in{" "}
+            Colors are defined in{" "}
             <code className="font-mono text-sm text-foreground">globals.css</code>{" "}
-            (<code className="font-mono text-sm">:root</code> and{" "}
-            <code className="font-mono text-sm">.dark</code>) and exposed to Tailwind
-            via <code className="font-mono text-sm">@theme inline</code>. Cards group
-            tokens that share the same fill in the current theme where it helps;
-            hex matches the swatch. Some groups note when values diverge between light
-            and dark or between aliases.
+            and exposed via <code className="font-mono text-sm">@theme inline</code>.
+            Each card uses the{" "}
+            <strong className="font-medium text-foreground">brand neutral</strong> name
+            (White, Light beige, Gray 1, 4–5, Charcoal, …). Footnotes list every
+            semantic variable that shares that fill in light mode so the same hex is
+            not shown twice. Toggle theme to compare dark values.
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {colorGroups.map((group) => (
+            {colorPalette.map((group) => (
               <ColorSwatchCard
                 key={group.entries.map(colorSwatchEntryKey).join("-")}
                 title={group.title}
@@ -475,6 +456,7 @@ export function FoundationsView() {
               <ColorSwatchCard
                 key={p.hex}
                 title={p.label}
+                swatchOnly
                 entries={[
                   {
                     label: "Fill",
@@ -531,6 +513,6 @@ export function FoundationsView() {
           </div>
         </Section>
       </div>
-    </PageContainer>
+    </div>
   );
 }

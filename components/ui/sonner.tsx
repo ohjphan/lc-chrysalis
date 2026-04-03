@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 /** Matches `DialogPrimitive.Close` + X in [components/ui/dialog.tsx](components/ui/dialog.tsx). */
 export const toastCloseButtonClass = cn(
   "!h-auto !w-auto rounded-sm border-0 bg-transparent p-0 shadow-none",
-  "text-zinc-500 opacity-70 ring-offset-[#242423] transition-opacity hover:opacity-100",
+  "text-zinc-500 opacity-70 ring-offset-charcoal transition-opacity hover:opacity-100",
   "focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2",
 );
 

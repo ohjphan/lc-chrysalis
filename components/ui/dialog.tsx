@@ -17,7 +17,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-[#FAF9F8]/88 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 dark:bg-black/55 dark:backdrop-blur-md",
+      "fixed inset-0 z-50 bg-sidebar/88 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 dark:bg-black/55 dark:backdrop-blur-md",
       className,
     )}
     {...props}
@@ -88,7 +88,7 @@ function DialogHeader({
     <div
       className={cn(
         /* px-9 matches modal body sections (inputs, etc.) for left alignment */
-        "flex flex-col gap-2.5 px-9 pb-4 pt-6 text-left",
+        "flex flex-col gap-1.5 px-9 pb-4 pt-6 text-left",
         className,
       )}
       {...props}

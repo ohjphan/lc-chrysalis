@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { OnboardingWelcomeDialog } from "@/components/dashboard/onboarding-welcome-dialog";
 import { DASHBOARD_CONTENT_WIDTH_CLASS } from "@/components/dashboard/page-container";
+import { SupportModal } from "@/components/dashboard/support-modal";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +19,7 @@ export function DashboardLayoutClient({
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [supportOpen, setSupportOpen] = React.useState(false);
   const [welcomeOpen, setWelcomeOpen] = React.useState(false);
   const [welcomeOrgName, setWelcomeOrgName] = React.useState("");
 
@@ -49,7 +51,7 @@ export function DashboardLayoutClient({
     <div className="flex min-h-screen bg-background">
       {!isProfileSetup ? (
         <aside className="sticky top-0 z-20 hidden h-svh max-h-svh w-64 shrink-0 self-start md:block">
-          <AppSidebar />
+          <AppSidebar onOpenSupport={() => setSupportOpen(true)} />
         </aside>
       ) : null}
       {mobileOpen && !isProfileSetup ? (
@@ -72,7 +74,10 @@ export function DashboardLayoutClient({
               </Button>
             </div>
             <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-              <AppSidebar onNavigate={() => setMobileOpen(false)} />
+              <AppSidebar
+                onNavigate={() => setMobileOpen(false)}
+                onOpenSupport={() => setSupportOpen(true)}
+              />
             </div>
           </div>
         </div>
@@ -98,7 +103,7 @@ export function DashboardLayoutClient({
             // that side effect (see CSS Overflow 3).
             "relative flex min-h-0 min-w-0 flex-1 flex-col overflow-x-clip",
             isProfileSetup
-              ? "bg-[#faf9f8] dark:bg-background"
+              ? "bg-sidebar dark:bg-background"
               : useFlatMainSurface
                 ? "bg-white dark:bg-background"
                 : "bg-background",
@@ -118,11 +123,14 @@ export function DashboardLayoutClient({
         </main>
       </div>
       {!isProfileSetup ? (
-        <OnboardingWelcomeDialog
-          open={welcomeOpen}
-          onOpenChange={setWelcomeOpen}
-          orgName={welcomeOrgName}
-        />
+        <>
+          <SupportModal open={supportOpen} onOpenChange={setSupportOpen} />
+          <OnboardingWelcomeDialog
+            open={welcomeOpen}
+            onOpenChange={setWelcomeOpen}
+            orgName={welcomeOrgName}
+          />
+        </>
       ) : null}
     </div>
   );

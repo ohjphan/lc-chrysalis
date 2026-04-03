@@ -32,13 +32,13 @@ const USER_EMAIL = "jphan@magicschool.edu";
 
 /** Light popover panel (matches reference) — stays light in dark dashboard. */
 const popoverContentClass =
-  "z-[60] min-w-[17.5rem] max-w-[min(calc(100vw-2rem),20rem)] rounded-lg border-app border-[#CCC9C6] bg-[#FAF9F8] p-2 text-zinc-900 shadow-lg";
+  "z-[60] min-w-[17.5rem] max-w-[min(calc(100vw-2rem),20rem)] rounded-lg border-app border-border-subtle bg-sidebar p-2 text-foreground shadow-lg";
 
 const popoverSeparatorClass =
-  "-mx-2 my-2 h-[length:var(--border-stroke)] bg-[#CCC9C6]";
+  "-mx-2 my-2 h-0 border-app-t border-border-subtle";
 
 const popoverItemClass =
-  "cursor-pointer gap-2 rounded-md px-2 py-2 text-sm font-normal text-zinc-800 focus:bg-nav-active focus:text-zinc-900 data-[highlighted]:bg-nav-active data-[highlighted]:text-zinc-900";
+  "cursor-pointer gap-2 rounded-md px-2 py-2 text-sm font-normal text-zinc-800 focus:bg-nav-active focus:text-foreground data-[highlighted]:bg-nav-active data-[highlighted]:text-foreground";
 
 /** Matches copyright line in org menu footer */
 const orgMenuFooterCopyClass =
@@ -46,8 +46,10 @@ const orgMenuFooterCopyClass =
 
 export function SidebarOrganizationSection({
   onNavigate,
+  onOpenSupport,
 }: {
   onNavigate?: () => void;
+  onOpenSupport?: () => void;
 }) {
   const [orgId, setOrgId] = React.useState<string>(ORGS[0].id);
   const current = ORGS.find((o) => o.id === orgId) ?? ORGS[0];
@@ -147,7 +149,7 @@ export function SidebarOrganizationSection({
           className={popoverItemClass}
           onSelect={(e) => e.preventDefault()}
         >
-          <span className="flex size-[20px] shrink-0 items-center justify-center rounded-[4px] bg-[#FAF9F8] text-[#6A6A69]">
+          <span className="flex size-[20px] shrink-0 items-center justify-center rounded-[4px] bg-sidebar text-gray-4">
             <Plus className="size-3.5" strokeWidth={2} aria-hidden />
           </span>
           <span className="font-normal text-zinc-800">New organization</span>
@@ -164,14 +166,16 @@ export function SidebarOrganizationSection({
             Settings
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild className={cn(popoverItemClass, "p-0")}>
-          <Link
-            href="/support"
-            className="flex w-full cursor-pointer items-center rounded-md px-2 py-2 text-sm outline-none"
-            onClick={() => onNavigate?.()}
-          >
+        <DropdownMenuItem
+          className={popoverItemClass}
+          onSelect={() => {
+            onNavigate?.();
+            onOpenSupport?.();
+          }}
+        >
+          <span className="font-normal text-zinc-800">
             Support
-          </Link>
+          </span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator className={popoverSeparatorClass} />
@@ -194,7 +198,7 @@ export function SidebarOrganizationSection({
           >
             <Link
               href="/terms-of-use"
-              className="rounded-sm outline-none hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-[#CCC9C6] focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+              className="rounded-sm outline-none hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-1 focus-visible:ring-offset-white"
               onClick={() => onNavigate?.()}
             >
               Terms of Use
@@ -204,7 +208,7 @@ export function SidebarOrganizationSection({
             </span>
             <Link
               href="/privacy-policy"
-              className="rounded-sm outline-none hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-[#CCC9C6] focus-visible:ring-offset-1 focus-visible:ring-offset-white"
+              className="rounded-sm outline-none hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-1 focus-visible:ring-offset-white"
               onClick={() => onNavigate?.()}
             >
               Privacy Policy

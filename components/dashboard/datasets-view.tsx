@@ -369,7 +369,7 @@ function DatasetAccessDropdown({
 /** Uniform row height (tbody); keeps title + description `line-clamp` + actions aligned. */
 const DATASET_TABLE_ROW_TD_HEIGHT = "h-[8.5rem]";
 const td = cn(
-  "border-app-b border-border-subtle px-4 py-6 overflow-hidden",
+  "border-app-b border-[color:var(--nav-active)] px-4 py-6 overflow-hidden",
   DATASET_TABLE_ROW_TD_HEIGHT,
 );
 
@@ -435,7 +435,7 @@ function DatasetsTabPanel({
 
   return (
     <div>
-      <div className="overflow-hidden border-app-t border-border-subtle">
+      <div className="overflow-hidden">
         <StickyTableProvider>
           <table className="min-w-[960px] w-full border-collapse text-base">
             <caption className="sr-only">
@@ -486,7 +486,7 @@ function DatasetsTabPanel({
                 return (
                 <tr
                   key={row.id}
-                  className="border-app-b border-border-subtle [&>td]:align-middle"
+                  className="border-app-b border-[color:var(--nav-active)] [&>td]:align-middle"
                 >
                   <td className={cn(td, "max-w-md")}>
                     <div className="flex items-start gap-3">
@@ -684,27 +684,11 @@ export function DatasetsView() {
               <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <TabsList
                   aria-label="Dataset scope"
-                  className="h-auto min-h-10 w-full flex-wrap justify-start gap-1 lg:w-auto [&>button]:font-[550]"
+                  className="h-auto min-h-10 min-w-0 flex-1 flex-wrap justify-start gap-1 [&>button]:font-[550]"
                 >
                   <TabsTrigger value="all">All datasets</TabsTrigger>
-                  <TabsTrigger value="downloaded" className="gap-1.5">
-                    Downloaded
-                    <ColorBadge
-                      variant="beige"
-                      className="shrink-0 tabular-nums normal-case"
-                    >
-                      {MOCK_DOWNLOADED_DATASET_IDS.size}
-                    </ColorBadge>
-                  </TabsTrigger>
-                  <TabsTrigger value="pending" className="gap-1.5">
-                    Pending requests
-                    <ColorBadge
-                      variant="beige"
-                      className="shrink-0 tabular-nums normal-case"
-                    >
-                      {MOCK_PENDING_REQUEST_DATASET_IDS.size}
-                    </ColorBadge>
-                  </TabsTrigger>
+                  <TabsTrigger value="downloaded">Downloaded</TabsTrigger>
+                  <TabsTrigger value="pending">Pending requests</TabsTrigger>
                 </TabsList>
                 <div className="flex flex-wrap items-center justify-end gap-2">
                   <DatasetAccessDropdown

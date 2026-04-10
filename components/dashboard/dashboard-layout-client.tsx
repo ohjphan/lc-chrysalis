@@ -44,8 +44,9 @@ export function DashboardLayoutClient({
 
   const isLanding = pathname === "/";
   const isProfileSetup = pathname === "/profile-setup";
-  const isFullBleed = isLanding || isProfileSetup;
-  const useFlatMainSurface = isLanding || isProfileSetup;
+  const isErrorPage = pathname === "/error-page";
+  const isFullBleed = isLanding || isProfileSetup || isErrorPage;
+  const useFlatMainSurface = isLanding || isProfileSetup || isErrorPage;
 
   return (
     <div className="flex min-h-screen bg-background">

@@ -7,6 +7,7 @@ import { PageContainer } from "@/components/dashboard/page-container";
 import { StickyTableProvider } from "@/components/dashboard/sticky-table-provider";
 import { Button } from "@/components/ui/button";
 import { ColorBadge } from "@/components/ui/color-badge";
+import { Empty } from "@/components/ui/empty";
 import { PageTitle } from "@/components/ui/page-title";
 import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
@@ -31,56 +32,13 @@ type KeyRow = {
 
 const CURRENT_USER_IS_ADMIN = true;
 
-const SEED: KeyRow[] = [
-  {
-    id: "1",
-    name: "Production",
-    masked: "lc_live_••••••••8f3a",
-    createdByName: "Sam Rivera",
-    createdByEmail: "sam@magicschool.edu",
-    created: "Mar 12, 2025",
-    lastUsed: "2 hours ago",
-    disabled: false,
-  },
-  {
-    id: "2",
-    name: "Staging",
-    masked: "lc_test_••••••••91bc",
-    createdByName: "Jessica Phan",
-    createdByEmail: "jphan@magicschool.edu",
-    created: "Feb 3, 2025",
-    lastUsed: "Never",
-    disabled: false,
-  },
-  {
-    id: "3",
-    name: "CI / GitHub Actions",
-    masked: "lc_live_••••••••c4d1",
-    createdByName: "Sam Rivera",
-    createdByEmail: "sam@magicschool.edu",
-    created: "Jan 28, 2025",
-    lastUsed: "Yesterday",
-    disabled: false,
-  },
-  {
-    id: "4",
-    name: "Local development",
-    masked: "lc_test_••••••••7e02",
-    createdByName: "Jessica Phan",
-    createdByEmail: "jphan@magicschool.edu",
-    created: "Jan 8, 2025",
-    lastUsed: "3 days ago",
-    disabled: false,
-  },
-];
-
 function maskedFromFullSecret(fullSecret: string): string {
   const tail = fullSecret.slice(-4);
   return `lc_live_••••••••${tail}`;
 }
 
 export function ApiKeysView() {
-  const [rows, setRows] = React.useState<KeyRow[]>(SEED);
+  const [rows, setRows] = React.useState<KeyRow[]>([]);
   const [createKeyOpen, setCreateKeyOpen] = React.useState(false);
 
   function appendKeyFromDialog(payload: {
@@ -135,109 +93,134 @@ export function ApiKeysView() {
         onCreated={appendKeyFromDialog}
       />
 
-      <div className="mt-10 overflow-hidden border-app-t border-border-subtle bg-transparent">
-        <StickyTableProvider>
-          <table className="min-w-[900px] w-full border-collapse text-base">
-            <caption className="sr-only">
-              API keys: masked secret, creator, dates, actions
-            </caption>
-            <thead>
-              <tr>
-                <th className={tableHeadStickyCellClasses()}>Key</th>
-                <th className={tableHeadStickyCellClasses()}>Created by</th>
-                <th className={tableHeadStickyCellClasses()}>Created</th>
-                <th className={tableHeadStickyCellClasses()}>Last used</th>
-                {CURRENT_USER_IS_ADMIN ? (
-                  <th className={tableHeadStickyCellClasses("w-12 text-right")} />
-                ) : null}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className={cn(
-                    "border-app-b border-border-subtle [&>td]:align-middle",
-                    row.disabled && "opacity-60",
-                  )}
-                >
-                  <td className="px-4 py-8">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <div>
-                        <p className="line-clamp-2 font-parabolica text-base font-[550] text-foreground">
-                          {row.name}
-                        </p>
-                        <p className="mt-1 font-mono text-base font-normal text-gray-4">
-                          {row.masked}
-                        </p>
-                      </div>
-                      {row.disabled ? (
-                        <ColorBadge variant="beige">Disabled</ColorBadge>
-                      ) : null}
-                    </div>
-                  </td>
-                  <td className="px-4 py-8">
-                    <p className="text-base font-normal text-gray-4">
-                      {row.createdByName}
-                    </p>
-                    <p className="mt-1 text-base font-normal lowercase text-gray-4">
-                      {row.createdByEmail}
-                    </p>
-                  </td>
-                  <td className="px-4 py-8 text-muted-foreground">
-                    {row.created}
-                  </td>
-                  <td className="px-4 py-8 text-muted-foreground">
-                    {row.lastUsed}
-                  </td>
+      {rows.length === 0 ? (
+        <div className="mt-10 w-full rounded-lg border-app border-border-subtle">
+          <Empty
+            icon={
+              <img
+                src="/scene-computer-finished.svg"
+                alt=""
+                className="h-auto w-[141.5px] max-w-full"
+                aria-hidden
+              />
+            }
+            title="There are no keys"
+            description="Create a key to authenticate requests to Learning Commons APIs."
+            action={
+              <Button type="button" variant="primary" onClick={() => setCreateKeyOpen(true)}>
+                <Plus className="size-4" />
+                Create key
+              </Button>
+            }
+            className="py-20"
+            iconContainerClassName="size-auto rounded-none border-0 bg-transparent p-0"
+          />
+        </div>
+      ) : (
+        <div className="mt-10 overflow-hidden bg-transparent">
+          <StickyTableProvider>
+            <table className="min-w-[900px] w-full border-collapse text-base">
+              <caption className="sr-only">
+                API keys: masked secret, creator, dates, actions
+              </caption>
+              <thead>
+                <tr>
+                  <th className={tableHeadStickyCellClasses()}>Key</th>
+                  <th className={tableHeadStickyCellClasses()}>Created by</th>
+                  <th className={tableHeadStickyCellClasses()}>Created</th>
+                  <th className={tableHeadStickyCellClasses()}>Last used</th>
                   {CURRENT_USER_IS_ADMIN ? (
-                    <td className="px-4 py-8 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-9 hover:bg-nav-active data-[state=open]:bg-nav-active dark:hover:bg-nav-link-active dark:data-[state=open]:bg-nav-link-active"
-                            aria-label="Row actions"
-                          >
-                            <MoreHorizontal className="size-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onSelect={() =>
-                              setRows((prev) =>
-                                prev.map((k) =>
-                                  k.id === row.id
-                                    ? { ...k, disabled: !k.disabled }
-                                    : k,
-                                ),
-                              )
-                            }
-                          >
-                            {row.disabled ? "Re-enable key" : "Disable key"}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive data-[highlighted]:text-destructive"
-                            onSelect={() =>
-                              setRows((prev) =>
-                                prev.filter((k) => k.id !== row.id),
-                              )
-                            }
-                          >
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
+                    <th className={tableHeadStickyCellClasses("w-12 text-right")} />
                   ) : null}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </StickyTableProvider>
-      </div>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className={cn(
+                      "border-app-b border-[color:var(--nav-active)] [&>td]:align-middle",
+                      row.disabled && "opacity-60",
+                    )}
+                  >
+                    <td className="px-4 py-8">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <div>
+                          <p className="line-clamp-2 font-parabolica text-base font-[550] text-foreground">
+                            {row.name}
+                          </p>
+                          <p className="mt-1 font-mono text-base font-normal text-gray-4">
+                            {row.masked}
+                          </p>
+                        </div>
+                        {row.disabled ? (
+                          <ColorBadge variant="beige">Disabled</ColorBadge>
+                        ) : null}
+                      </div>
+                    </td>
+                    <td className="px-4 py-8">
+                      <p className="text-base font-normal text-gray-4">
+                        {row.createdByName}
+                      </p>
+                      <p className="mt-1 text-base font-normal lowercase text-gray-4">
+                        {row.createdByEmail}
+                      </p>
+                    </td>
+                    <td className="px-4 py-8 text-muted-foreground">
+                      {row.created}
+                    </td>
+                    <td className="px-4 py-8 text-muted-foreground">
+                      {row.lastUsed}
+                    </td>
+                    {CURRENT_USER_IS_ADMIN ? (
+                      <td className="px-4 py-8 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-9 hover:bg-nav-active data-[state=open]:bg-nav-active dark:hover:bg-nav-link-active dark:data-[state=open]:bg-nav-link-active"
+                              aria-label="Row actions"
+                            >
+                              <MoreHorizontal className="size-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onSelect={() =>
+                                setRows((prev) =>
+                                  prev.map((k) =>
+                                    k.id === row.id
+                                      ? { ...k, disabled: !k.disabled }
+                                      : k,
+                                  ),
+                                )
+                              }
+                            >
+                              {row.disabled ? "Re-enable key" : "Disable key"}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive data-[highlighted]:text-destructive"
+                              onSelect={() =>
+                                setRows((prev) =>
+                                  prev.filter((k) => k.id !== row.id),
+                                )
+                              }
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    ) : null}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </StickyTableProvider>
+        </div>
+      )}
     </PageContainer>
   );
 }

@@ -165,7 +165,7 @@ export function SignupPageClient() {
           <div className="flex flex-col gap-3">
             <Button
               type="button"
-              variant="primary"
+              variant="secondary"
               className="h-11 w-full justify-center gap-3"
             >
               <GoogleMark />
@@ -173,7 +173,7 @@ export function SignupPageClient() {
             </Button>
             <Button
               type="button"
-              variant="primary"
+              variant="secondary"
               className="h-11 w-full justify-center gap-3"
             >
               <Github className="size-5 shrink-0" aria-hidden />

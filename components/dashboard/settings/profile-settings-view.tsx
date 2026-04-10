@@ -67,10 +67,10 @@ export function ProfileSettingsView() {
 
   return (
     <div className="space-y-10">
+      <h2 className={sectionTitleClass()}>Profile</h2>
       <section className="flex flex-col gap-10">
-        <h2 className={sectionTitleClass()}>Profile</h2>
         <div className="grid gap-8 lg:grid-cols-[1fr_min(240px,100%)] lg:items-start">
-          <div className="space-y-6">
+          <div className="max-w-2xl space-y-6">
             <Field id="profile-display-name" label="Display name">
               <Input
                 value={displayName}
@@ -137,7 +137,7 @@ export function ProfileSettingsView() {
               ) : showUnverifiedButton ? (
                 <div
                   className={cn(
-                    "flex h-10 w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3 pr-1 transition-colors",
+                    "flex h-[length:var(--control-height)] w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3.5 pr-1.5 transition-colors",
                     "focus-within:outline-none focus-within:ring-2 focus-within:ring-border-subtle focus-within:ring-offset-2 focus-within:ring-offset-background",
                     "dark:border-zinc-600 dark:bg-zinc-950/80",
                   )}

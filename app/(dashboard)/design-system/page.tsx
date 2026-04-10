@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function DesignSystemIndexPage() {
-  redirect("/design-system/foundations");
+  redirect("/design-system/foundations/typography");
 }

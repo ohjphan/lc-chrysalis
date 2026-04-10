@@ -35,7 +35,7 @@ const ORG_SIZE_OPTIONS = [
 
 function modalInputClass(extra?: string) {
   return cn(
-    "w-full rounded-md border-app border-border-subtle bg-field-bg px-3 py-2.5 text-base font-normal text-foreground placeholder:text-muted-foreground focus:border-border-subtle focus:outline-none focus:ring-1 focus:ring-border-subtle dark:bg-[#141414] dark:text-zinc-100 dark:placeholder:text-zinc-600",
+    "h-[length:var(--control-height)] w-full rounded-md border-app border-border-subtle bg-field-bg px-3.5 py-2.5 text-base font-normal text-foreground placeholder:text-muted-foreground focus:border-border-subtle focus:outline-none focus:ring-1 focus:ring-border-subtle dark:bg-[#141414] dark:text-zinc-100 dark:placeholder:text-zinc-600",
     extra,
   );
 }

@@ -34,12 +34,12 @@ const Switch = React.forwardRef<
     ) : null}
     <SwitchPrimitives.Thumb
       className={cn(
-        "pointer-events-none z-10 block size-[20px] translate-x-[2px] bg-surface shadow-lg ring-0 transition-transform",
+        "pointer-events-none z-10 block size-[18px] translate-x-[3px] bg-surface shadow-lg ring-0 transition-transform",
         variant === "boxy" ||
           variant === "boxyDark" ||
           variant === "boxyDarkSimple"
-          ? "rounded-[2px] data-[state=checked]:translate-x-[19px]"
-          : "rounded-full data-[state=checked]:translate-x-[19.5px]",
+          ? "rounded-[2px] data-[state=checked]:translate-x-[18px]"
+          : "rounded-full data-[state=checked]:translate-x-[18.5px]",
       )}
     />
   </SwitchPrimitives.Root>

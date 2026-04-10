@@ -92,8 +92,7 @@ export function ProfileSetupView() {
   const [step, setStep] = React.useState(0);
 
   const [termsAccepted, setTermsAccepted] = React.useState(false);
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
+  const [name, setName] = React.useState("");
   const [role, setRole] = React.useState<Role>("software_developer");
   const [otherRole, setOtherRole] = React.useState("");
 
@@ -112,8 +111,7 @@ export function ProfileSetupView() {
   const progressPercent = Math.round(((step + 1) / STEP_COUNT) * 100);
 
   const nameOk =
-    firstName.trim().length > 0 &&
-    lastName.trim().length > 0 &&
+    name.trim().length > 0 &&
     (role !== "other" || otherRole.trim().length > 0);
 
   const canContinue = (() => {
@@ -259,22 +257,11 @@ export function ProfileSetupView() {
 
                   {step === 1 ? (
                     <>
-                      <Field id="onboard-first-name" label="First name">
+                      <Field id="onboard-name" label="Your name">
                         <Input
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          autoComplete="given-name"
-                        />
-                      </Field>
-                      <Field
-                        id="onboard-last-name"
-                        label="Last name"
-                        description={undefined}
-                      >
-                        <Input
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                          autoComplete="family-name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          autoComplete="name"
                         />
                       </Field>
                       <div className="stack-field">
@@ -414,22 +401,30 @@ export function ProfileSetupView() {
                   ) : null}
 
                   <div className="mt-4 flex flex-col gap-6">
-                    <div className="flex flex-row flex-wrap items-center gap-3">
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="lg"
-                        onClick={goBack}
-                      >
-                        <ArrowLeft />
-                        Back
-                      </Button>
+                    <div
+                      className={cn(
+                        "flex flex-row flex-wrap items-center gap-3",
+                        step === 0 && "w-full",
+                      )}
+                    >
+                      {step !== 0 ? (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="lg"
+                          onClick={goBack}
+                        >
+                          <ArrowLeft />
+                          Back
+                        </Button>
+                      ) : null}
                       <Button
                         type="button"
                         variant="primary"
                         size="lg"
                         disabled={!canContinue}
                         onClick={goNext}
+                        className={cn(step === 0 && "w-full")}
                       >
                         Continue
                       </Button>

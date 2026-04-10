@@ -24,12 +24,14 @@ export function Field({
   const control = React.cloneElement(children, { id });
   return (
     <div className={cn("stack-field", className)}>
-      <Label htmlFor={id} optional={optional}>
-        {label}
-      </Label>
-      {description ? (
-        <p className="text-base font-normal text-muted-foreground">{description}</p>
-      ) : null}
+      <div className="space-y-1">
+        <Label htmlFor={id} optional={optional}>
+          {label}
+        </Label>
+        {description ? (
+          <p className="text-base font-normal text-muted-foreground">{description}</p>
+        ) : null}
+      </div>
       {control}
       {error ? <p className="text-base font-normal text-destructive">{error}</p> : null}
     </div>

@@ -1,10 +1,5 @@
-import type { Metadata } from "next";
-import { FoundationsView } from "@/components/design-system/foundations-view";
-
-export const metadata: Metadata = {
-  title: "Foundations",
-};
+import { redirect } from "next/navigation";
 
 export default function DesignSystemFoundationsPage() {
-  return <FoundationsView />;
+  redirect("/design-system/foundations/typography");
 }

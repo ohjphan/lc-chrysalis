@@ -52,7 +52,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-app-b border-border-subtle transition-colors [&>td]:align-middle",
+      "border-app-b border-[color:var(--nav-active)] transition-colors [&>td]:align-middle",
       className,
     )}
     {...props}
@@ -79,7 +79,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={cn(
-      "border-app-b border-border-subtle px-4 py-4 text-base font-normal text-foreground",
+      "border-app-b border-[color:var(--nav-active)] px-4 py-4 text-base font-normal text-foreground",
       className,
     )}
     {...props}

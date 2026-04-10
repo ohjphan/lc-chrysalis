@@ -19,7 +19,7 @@ export function McpHttpEndpointField() {
   }
 
   return (
-    <div className="flex h-10 w-full max-w-xl items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3 pr-1 focus-within:ring-2 focus-within:ring-border-subtle focus-within:ring-offset-2 focus-within:ring-offset-background">
+    <div className="flex h-[length:var(--control-height)] w-full max-w-xl items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3.5 pr-1.5 focus-within:ring-2 focus-within:ring-border-subtle focus-within:ring-offset-2 focus-within:ring-offset-background">
       <input
         id="mcp-http-endpoint"
         readOnly

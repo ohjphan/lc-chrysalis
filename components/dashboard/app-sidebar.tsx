@@ -23,6 +23,44 @@ export function AppSidebar({
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
+  function navItemClass(active: boolean) {
+    return cn(
+      "group flex w-full items-center rounded-md py-2 pr-2 text-sm font-normal transition-[padding-left,gap,background-color,color] duration-300 ease-in-out",
+      active
+        ? "gap-1 bg-sidebar-nav-intent pl-2 text-foreground"
+        : "gap-0 pl-0 text-nav-link-idle hover:gap-1 hover:bg-sidebar-nav-intent hover:pl-2 hover:text-foreground",
+    );
+  }
+
+  function renderNavLink(item: { href: string; label: string }) {
+    const active = isActive(item.href);
+
+    return (
+      <li key={item.href}>
+        <Link
+          href={item.href}
+          onClick={onNavigate}
+          className={navItemClass(active)}
+        >
+          <span
+            className={cn(
+              "flex h-4 shrink-0 items-center justify-center overflow-hidden",
+              active ? "w-4" : "w-0 group-hover:w-4",
+            )}
+            aria-hidden
+          >
+            {active ? (
+              <span className="size-[6px] rounded-full bg-[#1DB470]" />
+            ) : (
+              <span className="size-[6px] scale-90 rounded-full bg-border-subtle opacity-0 transition-[opacity,transform] duration-300 ease-in-out group-hover:scale-100 group-hover:opacity-100 dark:bg-[#5c5c58]" />
+            )}
+          </span>
+          <span className="min-w-0 flex-1 truncate">{item.label}</span>
+        </Link>
+      </li>
+    );
+  }
+
   return (
     <div className="flex h-full min-h-0 flex-col border-app-r border-border-subtle bg-sidebar">
       <div className="flex h-16 items-start pl-5 pr-3 pt-6">
@@ -63,42 +101,7 @@ export function AppSidebar({
               </p>
             ) : null}
             <ul className="space-y-0.5">
-              {group.items.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={onNavigate}
-                      className={cn(
-                        "group flex w-full items-center rounded-md py-2 pr-2 text-sm font-normal transition-[padding-left,gap,background-color,color] duration-300 ease-in-out",
-                        active
-                          ? "gap-1 bg-sidebar-nav-intent pl-2 text-foreground"
-                          : "gap-0 pl-0 text-nav-link-idle hover:gap-1 hover:bg-sidebar-nav-intent hover:pl-2 hover:text-foreground",
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          "flex h-4 shrink-0 items-center justify-center overflow-hidden",
-                          active ? "w-4" : "w-0 group-hover:w-4",
-                        )}
-                        aria-hidden
-                      >
-                        {active ? (
-                          <span className="size-[6px] rounded-full bg-[#1DB470]" />
-                        ) : (
-                          <span
-                            className="size-[6px] scale-90 rounded-full bg-border-subtle opacity-0 transition-[opacity,transform] duration-300 ease-in-out group-hover:scale-100 group-hover:opacity-100 dark:bg-[#5c5c58]"
-                          />
-                        )}
-                      </span>
-                      <span className="min-w-0 flex-1 truncate">
-                        {item.label}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
+              {group.items.map(renderNavLink)}
             </ul>
           </div>
         ))}

@@ -79,7 +79,7 @@ export function Callout({
     <div
       role="note"
       className={cn(
-        "flex items-start gap-3 rounded-md p-4 text-foreground",
+        "flex items-start gap-3 rounded-[4px] p-4 text-foreground",
         bordered && "border-app",
         bordered ? variantClass[variant] : borderlessVariantClass[variant],
         className,

@@ -106,6 +106,10 @@ type ToastVariantOpts = {
   duration?: number;
 };
 
+type ToastActionOpts = ToastVariantOpts & {
+  actionLabel?: string;
+};
+
 /** Default title (and optional description) per variant — single source for `toast*()` and static previews. */
 export const TOAST_VARIANT_DEFAULT_COPY: Record<
   ToastVariant,
@@ -134,6 +138,25 @@ export function toastNeutral({
   });
 }
 
+/** Neutral with action — informational toast with a right-side undo action. */
+export function toastNeutralUndo({
+  message = "Neutral — general updates and context.",
+  description,
+  duration = DEFAULT_DURATION,
+  actionLabel = "Undo",
+}: ToastActionOpts = {}) {
+  toast(message, {
+    description,
+    icon: neutralIcon(),
+    duration,
+    closeButton: false,
+    action: {
+      label: actionLabel,
+      onClick: () => {},
+    },
+  });
+}
+
 /** Light neutral — same informational icon, but rendered on a white toast surface. */
 export function toastLight({
   message = TOAST_VARIANT_DEFAULT_COPY.lightNeutral.message,
@@ -145,6 +168,26 @@ export function toastLight({
     icon: iconForVariant("lightNeutral"),
     duration,
     className: LIGHT_TOAST_CLASS,
+  });
+}
+
+/** Light neutral with action — white-surface informational toast with a right-side undo action. */
+export function toastLightUndo({
+  message = "Light neutral — general updates and context.",
+  description,
+  duration = DEFAULT_DURATION,
+  actionLabel = "Undo",
+}: ToastActionOpts = {}) {
+  toast(message, {
+    description,
+    icon: iconForVariant("lightNeutral"),
+    duration,
+    className: LIGHT_TOAST_CLASS,
+    closeButton: false,
+    action: {
+      label: actionLabel,
+      onClick: () => {},
+    },
   });
 }
 

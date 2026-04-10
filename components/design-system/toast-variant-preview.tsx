@@ -42,9 +42,11 @@ function leadingIconVariant(variant: ToastVariant) {
 export function ToastVariantPreview({
   variant,
   onShow,
+  actionLabel,
 }: {
   variant: ToastVariant;
   onShow: () => void;
+  actionLabel?: string;
 }) {
   const { message, description } = TOAST_VARIANT_DEFAULT_COPY[variant];
 
@@ -62,7 +64,7 @@ export function ToastVariantPreview({
       aria-label={ariaLabels[variant]}
       data-components-toast-preview=""
       className={cn(
-        "max-w-full cursor-pointer rounded-[var(--radius-sm)] outline-none",
+        "max-w-full cursor-pointer rounded-[4px] outline-none",
         "transition-[box-shadow,opacity] focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
       )}
       onClick={onShow}
@@ -83,13 +85,15 @@ export function ToastVariantPreview({
           toastUsesLightSurface(variant) && "toast-light",
         )}
       >
-        <span
-          data-close-button=""
-          aria-hidden
-          className={toastCloseButtonClass}
-        >
-          <X className="size-[20px]" aria-hidden />
-        </span>
+        {actionLabel ? null : (
+          <span
+            data-close-button=""
+            aria-hidden
+            className={toastCloseButtonClass}
+          >
+            <X className="size-[20px]" aria-hidden />
+          </span>
+        )}
         <div data-icon="">
           <ToastLeadingIcon variant={leadingIconVariant(variant)} />
         </div>
@@ -99,6 +103,7 @@ export function ToastVariantPreview({
             <div data-description="">{description}</div>
           ) : null}
         </div>
+        {actionLabel ? <button data-button="">{actionLabel}</button> : null}
       </div>
     </div>
   );

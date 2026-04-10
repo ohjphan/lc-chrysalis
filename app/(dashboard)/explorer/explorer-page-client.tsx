@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { PageContainer } from "@/components/dashboard/page-container";
-import { LogomarkLoadingAnimation } from "@/components/design-system/logomark-loading-animation";
+import { SimpleRingLoader } from "@/components/ui/loading-indicators";
 
 /**
  * Radix Tabs + Next SSR can disagree on auto-generated DOM ids on first paint.
@@ -23,7 +23,7 @@ const KnowledgeGraphExplorerView = dynamic(
           aria-live="polite"
           aria-busy="true"
         >
-          <LogomarkLoadingAnimation />
+          <SimpleRingLoader size="lg" />
         </div>
       </PageContainer>
     ),

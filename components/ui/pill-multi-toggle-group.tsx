@@ -48,7 +48,7 @@ export function PillMultiToggleGroup<T extends string>({
             aria-pressed={isOn}
             onClick={() => toggle(opt.value)}
             className={cn(
-              "group inline-flex h-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] px-4 text-base font-normal transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              "group inline-flex h-10 shrink-0 items-center justify-center rounded-[4px] px-4 text-base font-normal transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               variant === "darkIndicator"
                 ? isOn
                   ? "border-app border-charcoal bg-charcoal font-medium text-white"

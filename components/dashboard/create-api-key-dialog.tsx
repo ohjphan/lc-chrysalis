@@ -175,7 +175,7 @@ export function CreateApiKeyDialog({
               </DialogDescription>
             </DialogHeader>
             <div className="px-9 pb-9">
-              <div className="flex h-10 w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3 pr-1 dark:border-zinc-600 dark:bg-zinc-950/80">
+              <div className="flex h-[length:var(--control-height)] w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3.5 pr-1.5 dark:border-zinc-600 dark:bg-zinc-950/80">
                 <input
                   readOnly
                   value={generatedSecret ?? ""}

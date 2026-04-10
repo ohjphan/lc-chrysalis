@@ -32,7 +32,7 @@ function sectionTitleClass() {
 
 function selectClassName() {
   return cn(
-    "flex h-10 w-full rounded-md border-app border-border-subtle bg-field-bg px-3 py-2 text-base font-normal text-foreground",
+    "flex h-[length:var(--control-height)] w-full rounded-md border-app border-border-subtle bg-field-bg px-3.5 py-2.5 text-base font-normal text-foreground",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
   );
 }
@@ -123,10 +123,10 @@ export function OrganizationSettingsView() {
 
   return (
     <div className="space-y-10">
+      <h2 className={sectionTitleClass()}>Organization</h2>
       <section className="flex flex-col gap-10">
-        <h2 className={sectionTitleClass()}>Organization profile</h2>
         <div className="grid gap-8 lg:grid-cols-[1fr_min(240px,100%)] lg:items-start">
-          <div className="space-y-6">
+          <div className="max-w-2xl space-y-6">
             <Field id="org-name" label="Organization name">
               <Input
                 value={orgName}

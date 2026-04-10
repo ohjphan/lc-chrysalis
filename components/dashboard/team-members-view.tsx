@@ -5,6 +5,7 @@ import {
   ArrowDown,
   ArrowUp,
   Ban,
+  ChevronDown,
   MoreHorizontal,
   Plus,
   Search,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 import { PageContainer } from "@/components/dashboard/page-container";
 import { StickyTableProvider } from "@/components/dashboard/sticky-table-provider";
-import { LogomarkLoadingAnimation } from "@/components/design-system/logomark-loading-animation";
+import { SimpleRingLoader } from "@/components/ui/loading-indicators";
 import { Button } from "@/components/ui/button";
 import { ColorBadge } from "@/components/ui/color-badge";
 import { Field } from "@/components/ui/field";
@@ -204,7 +205,7 @@ function StatusBadge({ status }: { status: "active" | "pending" }) {
 
 function selectClassName() {
   return cn(
-    "flex h-10 w-full rounded-md border-app border-border-subtle bg-field-bg px-3 py-2 text-base font-normal text-foreground",
+    "box-border flex h-[length:var(--control-height)] w-full rounded-md border-app border-border-subtle bg-field-bg px-3.5 py-2.5 text-base font-normal text-foreground",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
   );
 }
@@ -386,7 +387,7 @@ export function TeamMembersView() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex flex-col gap-[8px]">
           <h2 className="font-page-h2 text-heading dark:text-foreground">
-            Team members
+            Team Members
           </h2>
           <p className="max-w-xl text-base font-normal text-muted-foreground">
             Invite colleagues and manage access to this organization.
@@ -414,7 +415,7 @@ export function TeamMembersView() {
         />
       </div>
 
-      <div className="mt-6 overflow-hidden border-app-t border-border-subtle bg-transparent">
+      <div className="mt-6 overflow-hidden bg-transparent">
         <StickyTableProvider>
           <div ref={scrollAreaRef} className="max-h-[34rem] overflow-auto">
             <table className="min-w-[720px] w-full border-collapse text-base">
@@ -453,9 +454,9 @@ export function TeamMembersView() {
                   return (
                     <tr
                       key={m.id}
-                      className="border-app-b border-border-subtle [&>td]:align-middle"
+                      className="border-app-b border-[color:var(--nav-active)] [&>td]:align-middle"
                     >
-                      <td className="border-app-b border-border-subtle px-4 py-6">
+                      <td className="border-app-b border-[color:var(--nav-active)] px-4 py-6">
                         <div className="flex items-center gap-3">
                           <div
                             className={cn(
@@ -476,16 +477,16 @@ export function TeamMembersView() {
                           </div>
                         </div>
                       </td>
-                      <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
+                      <td className="border-app-b border-[color:var(--nav-active)] px-4 py-6 text-muted-foreground">
                         {m.kind === "member" ? "Member" : m.role}
                       </td>
-                      <td className="border-app-b border-border-subtle px-4 py-6">
+                      <td className="border-app-b border-[color:var(--nav-active)] px-4 py-6">
                         <StatusBadge status={rowStatus(m)} />
                       </td>
-                      <td className="border-app-b border-border-subtle px-4 py-6 text-muted-foreground">
+                      <td className="border-app-b border-[color:var(--nav-active)] px-4 py-6 text-muted-foreground">
                         {m.kind === "member" ? m.joined : m.invitedAt}
                       </td>
-                      <td className="border-app-b border-border-subtle px-4 py-6 text-right">
+                      <td className="border-app-b border-[color:var(--nav-active)] px-4 py-6 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" aria-label="Actions">
@@ -529,7 +530,7 @@ export function TeamMembersView() {
                 className="flex min-h-20 items-center justify-center border-app-t border-border-subtle bg-background/70 px-4"
               >
                 {isLoadingMore ? (
-                  <LogomarkLoadingAnimation size="sm" className="scale-[0.7]" />
+                  <SimpleRingLoader size="sm" />
                 ) : null}
               </div>
             ) : null}
@@ -559,15 +560,24 @@ export function TeamMembersView() {
               </Field>
               <div className="stack-field">
                 <Label htmlFor="invite-role">Role</Label>
-                <select
-                  id="invite-role"
-                  className={selectClassName()}
-                  value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value)}
-                >
-                  <option value="Member">Member</option>
-                  <option value="Admin">Admin</option>
-                </select>
+                <div className="relative">
+                  <select
+                    id="invite-role"
+                    className={cn(
+                      selectClassName(),
+                      "cursor-pointer appearance-none pr-10",
+                    )}
+                    value={inviteRole}
+                    onChange={(e) => setInviteRole(e.target.value)}
+                  >
+                    <option value="Member">Member</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                  <ChevronDown
+                    className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                    aria-hidden
+                  />
+                </div>
               </div>
             </div>
             <DialogFooter>

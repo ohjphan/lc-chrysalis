@@ -6,7 +6,7 @@ export function ButtonsView() {
       <div className="flex flex-col gap-[8px]">
         <h2 className="font-page-h2 text-heading dark:text-foreground">Buttons</h2>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
-          Action styles for primary tasks, secondary actions, low-emphasis ghost
+          Action styles for primary tasks, secondary actions, low-emphasis tertiary
           controls, and destructive flows.
         </p>
       </div>
@@ -16,7 +16,7 @@ export function ButtonsView() {
           <div className="flex flex-wrap gap-3">
             <Button variant="primary">Primary</Button>
             <Button variant="secondary">Secondary</Button>
-            <Button variant="ghost">Ghost</Button>
+            <Button variant="ghost">Tertiary</Button>
             <Button variant="destructive">Destructive</Button>
           </div>
         </div>
@@ -30,7 +30,7 @@ export function ButtonsView() {
               Secondary
             </Button>
             <Button variant="ghost" disabled>
-              Ghost
+              Tertiary
             </Button>
             <Button variant="destructive" disabled>
               Destructive

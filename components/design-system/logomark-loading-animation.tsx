@@ -6,6 +6,8 @@ import { BRAND_SECONDARY_PALETTE_HEX } from "@/lib/brand-avatar-colors";
 import { cn } from "@/lib/utils";
 
 const DIAMOND_PATH = "M50 18 L82 50 L50 82 L18 50 Z";
+const CIRCLE_PATH =
+  "M50 18 C67.673 18 82 32.327 82 50 C82 67.673 67.673 82 50 82 C32.327 82 18 67.673 18 50 C18 32.327 32.327 18 50 18 Z";
 const SQUARE_PATH = "M28 28 L72 28 L72 72 L28 72 Z";
 
 const BRAND_GREEN = "#1DB470";
@@ -16,7 +18,7 @@ const RING_R = 46;
 const RING_C = 2 * Math.PI * RING_R;
 const RING_ARC = RING_C * 0.24;
 
-const sequence = ["diamond", "square", "diamond"] as const;
+const sequence = ["diamond", "circle", "square", "diamond"] as const;
 
 const LOADING_MORPH_COLORS = [
   BRAND_GREEN,
@@ -90,7 +92,8 @@ export function LogomarkLoadingAnimation({
   const label = useMemo(() => {
     if (step === 0) return "Loading...";
     if (step === 1) return "Processing...";
-    return "Almost there...";
+    if (step === 2) return "Almost there...";
+    return "Loading...";
   }, [step]);
 
   const progressAccent = morphFill;
@@ -178,6 +181,27 @@ export function LogomarkLoadingAnimation({
                     fill: morphFill,
                   }}
                   exit={{ opacity: 0, scale: 1.08, rotate: 18 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                />
+              )}
+
+              {state === "circle" && (
+                <motion.path
+                  key={`circle-${step}`}
+                  d={CIRCLE_PATH}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.88,
+                    rotate: 8,
+                    fill: morphFill,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    rotate: 0,
+                    fill: morphFill,
+                  }}
+                  exit={{ opacity: 0, scale: 1.06, rotate: -8 }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 />
               )}

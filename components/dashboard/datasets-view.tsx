@@ -529,11 +529,11 @@ function DatasetsTabPanel({
                             type="button"
                             variant="primary"
                             size="sm"
-                            className="h-9 gap-1.5 [&_svg]:size-3.5 hover:brightness-110 data-[state=open]:brightness-110"
+                            className="h-9 gap-1.5 [&_svg]:size-4 hover:brightness-110 data-[state=open]:brightness-110"
                           >
-                            <Download className="size-3.5" />
+                            <Download className="size-4" />
                             Download
-                            <ChevronDown className="size-3.5 opacity-70" />
+                            <ChevronDown className="size-4 opacity-70" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
@@ -552,10 +552,10 @@ function DatasetsTabPanel({
                         type="button"
                         variant="secondary"
                         size="sm"
-                        className="h-9 gap-1.5 [&_svg]:size-3.5"
+                        className="h-9 gap-1.5 [&_svg]:size-4"
                         onClick={() => openRequest(row)}
                       >
-                        <Lock className="size-3.5" />
+                        <Lock className="size-4" />
                         Request access
                       </Button>
                     )}

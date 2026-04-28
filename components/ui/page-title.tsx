@@ -1,3 +1,4 @@
+import * as React from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -13,32 +14,47 @@ const variantClass = {
   onboarding: "font-page-title text-heading text-balance",
 } as const;
 
-export function PageTitle({
-  className,
-  children,
-  variant = "default",
-  trailing,
-}: {
+export type PageTitleProps = {
   className?: string;
   children: ReactNode;
   variant?: keyof typeof variantClass;
   /** Renders after the title on the same row; vertically centered with the heading text. */
   trailing?: ReactNode;
-}) {
-  const heading = (
-    <h1 className={cn(variantClass[variant], className)}>{children}</h1>
-  );
+  /**
+   * Use `h2` in dialogs (with Radix `DialogTitle asChild`) so the page keeps a single `h1`.
+   * @default "h1"
+   */
+  as?: "h1" | "h2";
+} & Omit<React.HTMLAttributes<HTMLHeadingElement>, "className" | "children" | "ref">;
 
-  if (!trailing) {
-    return heading;
-  }
+export const PageTitle = React.forwardRef<HTMLHeadingElement, PageTitleProps>(
+  function PageTitle(
+    { className, children, variant = "default", trailing, as = "h1", ...rest },
+    ref,
+  ) {
+    const H = (as === "h2" ? "h2" : "h1") as "h1" | "h2";
+    const heading = (
+      <H
+        ref={ref}
+        className={cn(variantClass[variant], className)}
+        {...rest}
+      >
+        {children}
+      </H>
+    );
 
-  return (
-    <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
-      {heading}
-      <span className="inline-flex shrink-0 translate-y-[4px] items-center">
-        {trailing}
-      </span>
-    </div>
-  );
-}
+    if (!trailing) {
+      return heading;
+    }
+
+    return (
+      <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
+        {heading}
+        <span className="inline-flex shrink-0 translate-y-[4px] items-center">
+          {trailing}
+        </span>
+      </div>
+    );
+  },
+);
+PageTitle.displayName = "PageTitle";

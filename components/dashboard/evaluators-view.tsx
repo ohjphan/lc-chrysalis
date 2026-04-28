@@ -8,7 +8,9 @@ import { StickyTableProvider } from "@/components/dashboard/sticky-table-provide
 import { Button } from "@/components/ui/button";
 import { ColorBadge } from "@/components/ui/color-badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PageTitle } from "@/components/ui/page-title";
+import { SelectableCardGroup } from "@/components/ui/selectable-card-group";
 import { brandAvatarClassesForId } from "@/lib/brand-avatar-colors";
 import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
@@ -68,6 +70,35 @@ const EVALUATORS: EvaluatorRow[] = [
   },
 ];
 
+const EVALUATOR_CATALOG_FILTER_OPTIONS = [
+  {
+    value: "all" as const,
+    label: "All evaluators",
+    description: "Show every evaluator in the catalog.",
+  },
+  {
+    value: "eval-1" as const,
+    label: "Literacy evaluation",
+    description:
+      "Review reading and writing tasks for clarity, text complexity, and alignment to instructional goals.",
+  },
+  {
+    value: "eval-2" as const,
+    label: "Math standards alignment",
+    description:
+      "Check math prompts against selected standards and surface where reasoning or evidence needs strengthening.",
+  },
+  {
+    value: "eval-3" as const,
+    label: "Cross-curricular alignment",
+    description:
+      "Evaluate whether tasks connect skills and concepts across subject areas while preserving academic rigor.",
+  },
+] as const;
+
+type EvaluatorCatalogFilter =
+  (typeof EVALUATOR_CATALOG_FILTER_OPTIONS)[number]["value"];
+
 const td = "border-app-b border-border-subtle px-4 py-6 align-middle";
 
 const EVALUATORS_FROSTED_STICKY_BG =
@@ -106,6 +137,8 @@ function ProvidersList({
 
 export function EvaluatorsView() {
   const [query, setQuery] = React.useState("");
+  const [typeFilter, setTypeFilter] =
+    React.useState<EvaluatorCatalogFilter>("all");
   const stickySentinelRef = React.useRef<HTMLDivElement>(null);
   const stickyControlsRef = React.useRef<HTMLDivElement>(null);
   const [stickyControlsHeight, setStickyControlsHeight] = React.useState(0);
@@ -114,6 +147,9 @@ export function EvaluatorsView() {
   const rows = React.useMemo(() => {
     const q = query.trim().toLowerCase();
     return EVALUATORS.filter((row) => {
+      if (typeFilter !== "all" && row.id !== typeFilter) {
+        return false;
+      }
       if (!q) return true;
       return (
         row.evaluatorName.toLowerCase().includes(q) ||
@@ -121,7 +157,7 @@ export function EvaluatorsView() {
         row.providerList.some((provider) => provider.toLowerCase().includes(q))
       );
     });
-  }, [query]);
+  }, [query, typeFilter]);
 
   React.useLayoutEffect(() => {
     const el = stickyControlsRef.current;
@@ -158,6 +194,20 @@ export function EvaluatorsView() {
           Explore evaluator types, see who provides them, and jump into
           integration or hands-on testing.
         </p>
+      </div>
+
+      <div className="mt-6 min-w-0 max-w-4xl">
+        <div className="stack-field">
+          <Label id="evaluators-type-filter">Filter by evaluator type</Label>
+          <SelectableCardGroup
+            aria-labelledby="evaluators-type-filter"
+            value={typeFilter}
+            onValueChange={setTypeFilter}
+            options={EVALUATOR_CATALOG_FILTER_OPTIONS}
+            className="w-full"
+            indicatorStyle="none"
+          />
+        </div>
       </div>
 
       <div
@@ -288,23 +338,23 @@ export function EvaluatorsView() {
                             <Button
                               variant="primary"
                               size="sm"
-                              className="h-9 gap-1.5 [&_svg]:size-3.5"
+                              className="h-9 gap-1.5 [&_svg]:size-4"
                               asChild
                             >
                               <Link href={row.sdkHref}>
-                                <Wrench className="size-3.5" />
+                                <Wrench className="size-4" />
                                 Integrate via SDK
                               </Link>
                             </Button>
                             <Button
                               variant="secondary"
                               size="sm"
-                              className="h-9 gap-1.5 [&_svg]:size-3.5"
+                              className="h-9 gap-1.5 [&_svg]:size-4"
                               asChild
                             >
                               <Link href={row.playgroundHref}>
                                 Play in Playground
-                                <ArrowUpRight className="size-3.5" />
+                                <ArrowUpRight className="size-4" />
                               </Link>
                             </Button>
                           </div>

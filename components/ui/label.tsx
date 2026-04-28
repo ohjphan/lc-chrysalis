@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 
 export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   optional?: boolean;
+  required?: boolean;
 }
 
 const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
-  ({ className, optional, children, ...props }, ref) => (
+  ({ className, optional, required, children, ...props }, ref) => (
     <label
       ref={ref}
       className={cn(
@@ -18,6 +19,8 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
       {children}
       {optional ? (
         <span className="ml-1 font-normal text-muted-foreground">(optional)</span>
+      ) : required ? (
+        <span className="ml-1 font-normal text-muted-foreground">(Required)</span>
       ) : null}
     </label>
   ),

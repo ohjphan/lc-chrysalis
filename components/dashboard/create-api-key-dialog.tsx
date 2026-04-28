@@ -189,7 +189,7 @@ export function CreateApiKeyDialog({
                   className="shrink-0 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
                   onClick={copySecret}
                 >
-                  <Copy className="size-3.5" aria-hidden />
+                  <Copy className="size-4" aria-hidden />
                   {copied ? "Copied" : "Copy"}
                 </Button>
               </div>

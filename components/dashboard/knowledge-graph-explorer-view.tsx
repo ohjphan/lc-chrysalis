@@ -266,8 +266,8 @@ export function KnowledgeGraphExplorerView() {
           Knowledge Graph Explorer
         </PageTitle>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
-          Assess the appropriateness of informational text for a specific grade
-          level.
+          Explore how standards, skills, and curriculum materials connect and
+          build on each other.
         </p>
       </div>
 
@@ -285,6 +285,7 @@ export function KnowledgeGraphExplorerView() {
           <SelectableCardGroup
             aria-labelledby="explorer-segments-heading"
             scrollable
+            indicatorStyle="none"
             value={selectedScenario}
             onValueChange={setSelectedScenario}
             options={EXPLORER_SEGMENTS.map((seg) => ({

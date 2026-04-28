@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MaterialSymbol } from "@/components/ui/material-symbols";
 import { MCP_HTTP_ENDPOINT_URL } from "@/lib/mcp-server";
 
 export function McpHttpEndpointField() {
@@ -34,7 +34,7 @@ export function McpHttpEndpointField() {
         className="shrink-0"
         onClick={copy}
       >
-        <Copy className="size-3.5" aria-hidden />
+        <MaterialSymbol icon="content_copy" className="size-4" aria-hidden />
         {copied ? "Copied" : "Copy"}
       </Button>
     </div>

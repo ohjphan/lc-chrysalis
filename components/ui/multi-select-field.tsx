@@ -70,14 +70,14 @@ export function MultiSelectField({
           aria-expanded={open}
           aria-disabled={disabled || undefined}
           className={cn(
-            "box-border flex min-h-[length:var(--control-height)] w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg px-3.5 py-2.5 text-base font-normal text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-border-subtle focus:ring-offset-2 focus:ring-offset-background",
+            "relative box-border flex min-h-[length:var(--control-height)] w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-1.5 pr-10 py-1.5 text-base font-normal text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-border-subtle focus:ring-offset-2 focus:ring-offset-background",
             disabled && "cursor-not-allowed opacity-50",
             !disabled && "cursor-pointer",
             className,
           )}
         >
           <div
-            className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
+            className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 pl-px"
             role={selectedOptions.length > 0 ? "list" : undefined}
             aria-labelledby={selectedOptions.length > 0 ? ariaLabelledBy : undefined}
           >
@@ -86,7 +86,7 @@ export function MultiSelectField({
                 <span
                   key={option.value}
                   role="listitem"
-                  className="inline-flex items-center gap-1.5 rounded-[4px] border-app border-border-subtle bg-sidebar px-2.5 py-1 text-sm font-normal text-foreground"
+                  className="inline-flex items-center gap-1.5 rounded-[2px] border-app border-border-subtle bg-sidebar pl-2.5 pr-[6px] py-1 text-sm font-normal text-foreground"
                 >
                   <span className="truncate">{option.label}</span>
                   <button
@@ -108,14 +108,15 @@ export function MultiSelectField({
                 </span>
               ))
             ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
+              <span className="pl-1 text-muted-foreground">{placeholder}</span>
             )}
           </div>
           <ChevronDown
             className={cn(
-              "size-4 shrink-0 text-muted-foreground transition-transform duration-200",
+              "pointer-events-none absolute right-3 size-4 -translate-y-1/2 shrink-0 text-muted-foreground transition-transform duration-200",
               open && "rotate-180",
             )}
+            style={{ top: "calc(var(--control-height) / 2)" }}
             aria-hidden
           />
         </div>

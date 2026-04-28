@@ -86,7 +86,7 @@ export function SupportPanel({
               className="h-8 px-3"
               onClick={copyEmail}
             >
-              <Copy className="size-3.5" aria-hidden />
+              <Copy className="size-4" aria-hidden />
               {copied ? "Copied" : "Copy"}
             </Button>
           }
@@ -102,7 +102,7 @@ export function SupportPanel({
                 target="_blank"
                 rel="noreferrer"
               >
-                <ExternalLink className="size-3.5" aria-hidden />
+                <ExternalLink className="size-4" aria-hidden />
                 Visit
               </a>
             </Button>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LandingBottomQuickLinks } from "@/components/landing/landing-bottom-quick-links";
 import { SpotlightBackground } from "@/components/landing/spotlight-background";
 import { PageTitle } from "@/components/ui/page-title";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ export default function HomePage() {
       className="min-h-dvh w-full flex-1"
       veilClassName="bg-white dark:bg-background"
     >
-      <div className="flex w-full flex-1 flex-col items-center justify-center px-6 py-16 md:min-h-[min(100dvh,56rem)] md:px-10 md:py-20">
+      <div className="flex w-full flex-1 flex-col items-center justify-center px-6 pb-28 pt-16 md:min-h-[min(100dvh,56rem)] md:px-10 md:pb-32 md:pt-20">
         <div className="flex w-full max-w-2xl flex-col items-center text-center">
           <img
             src="/lc-logomark.svg"
@@ -37,6 +38,7 @@ export default function HomePage() {
           </Button>
         </div>
       </div>
+      <LandingBottomQuickLinks />
     </SpotlightBackground>
   );
 }

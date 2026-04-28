@@ -2,6 +2,24 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@font-face {
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url("/fonts/material-symbols-rounded-300.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("/fonts/material-symbols-rounded-400.woff2")
+    format("woff2");
+}
+
 /* Light — crisp grey borders, white canvas */
 :root {
   /* Brand neutral ramp (names match Foundations “Brand neutrals”) */
@@ -207,6 +225,20 @@
 
 @utility font-parabolica-text {
   font-family: var(--font-sans-app);
+}
+
+.lc-material-symbol {
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
 }
 
 /** In-app page titles (`<h1>`): Parabolica, 28px regular, 0.5% tracking, sentence case */

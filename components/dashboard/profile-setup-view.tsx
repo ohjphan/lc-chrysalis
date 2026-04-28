@@ -3,31 +3,39 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/ui/page-title";
 import { PillToggleGroup } from "@/components/ui/pill-toggle-group";
-import { PillMultiToggleGroup } from "@/components/ui/pill-multi-toggle-group";
+import { SingleSelectField } from "@/components/ui/single-select-field";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { DASHBOARD_CONTENT_WIDTH_CLASS } from "@/components/dashboard/page-container";
-import { cn } from "@/lib/utils";
+import { SignupFooter } from "@/components/ui/signup-footer";
+import { AUTH_CARD_SHELL_UNIFORM } from "@/lib/auth-card-shell";
 
 const SESSION_WELCOME_KEY = "lc_onboarding_welcome";
 
-const STEP_COUNT = 6;
+const STEP_COUNT = 5;
 
 const ROLE_OPTIONS = [
-  { value: "software_developer", label: "Software Developer/Engineer" },
-  { value: "product_manager", label: "Product Manager" },
-  { value: "data_scientist", label: "Data Scientist/Data Engineer" },
-  { value: "content_creator", label: "Content Creator/Curriculum Designer" },
-  { value: "education_researcher", label: "Education Researcher" },
-  { value: "other", label: "Other" },
+  { value: "software_developer", label: "Software developer/Engineer" },
+  { value: "product_manager", label: "Product manager" },
+  { value: "data_scientist", label: "Data scientist/Data engineer" },
+  { value: "content_creator", label: "Content creator/Curriculum designer" },
+  { value: "education_researcher", label: "Education researcher" },
+  { value: "other", label: "Something else" },
 ] as const;
+
+const ORG_PROFILE_OPTIONS = [
+  { value: "k12", label: "K–12 school or district" },
+  { value: "higher_ed", label: "College or university" },
+  { value: "edtech", label: "EdTech or education company" },
+  { value: "nonprofit", label: "Non-profit or foundation" },
+  { value: "government", label: "Government or agency" },
+  { value: "other_org", label: "Something else" },
+] as const;
+
+type OrgProfile = (typeof ORG_PROFILE_OPTIONS)[number]["value"];
 
 type Role = (typeof ROLE_OPTIONS)[number]["value"];
 
@@ -64,27 +72,31 @@ const HEARD_OPTIONS = [
 
 type HeardId = (typeof HEARD_OPTIONS)[number]["value"];
 
+/** Placeholder value so no chip appears selected until the user picks one. */
+const HEARD_UNSET = "unset" as const;
+type HeardSelection = HeardId | typeof HEARD_UNSET;
+
 const STEP_TITLES = [
-  "Accept our terms",
+  "To create your account, review and accept our terms",
   "Tell us about yourself",
-  "Let's set up your new organization",
-  "Let's invite your team",
+  "Create your organization",
   "Tell us how you want to use the tools",
   "Tell us how you heard about us",
 ] as const;
 
-function calloutClass() {
-  return cn(
-    "rounded-md border-app border-border-subtle bg-field-bg/80 p-4 text-base font-normal text-muted-foreground dark:bg-field-bg/40",
-  );
-}
+/** Keeps the onboarding card height stable between steps; body scrolls if needed. */
+const ONBOARDING_CARD_FRAME =
+  "flex w-full min-w-0 max-w-[440px] h-[min(90dvh,40rem)] flex-col overflow-hidden rounded-[4px] border-app border-border-subtle bg-background shadow-none dark:bg-sidebar";
 
-function parseInviteEmails(raw: string): string[] {
-  return raw
-    .split(/[;\n]+/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+function isValidOptionalUrl(raw: string): boolean {
+  const t = raw.trim();
+  if (!t) return true;
+  try {
+    new URL(t.includes("://") ? t : `https://${t}`);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function ProfileSetupView() {
@@ -92,21 +104,20 @@ export function ProfileSetupView() {
   const [step, setStep] = React.useState(0);
 
   const [termsAccepted, setTermsAccepted] = React.useState(false);
+  const [termsError, setTermsError] = React.useState(false);
   const [name, setName] = React.useState("");
   const [role, setRole] = React.useState<Role>("software_developer");
   const [otherRole, setOtherRole] = React.useState("");
 
   const [organizationName, setOrganizationName] = React.useState("");
-
-  const [inviteEmailsRaw, setInviteEmailsRaw] = React.useState("");
+  const [organizationUrl, setOrganizationUrl] = React.useState("");
+  const [orgProfile, setOrgProfile] = React.useState<OrgProfile>("k12");
+  const [otherOrgProfile, setOtherOrgProfile] = React.useState("");
 
   const [useCases, setUseCases] = React.useState<UseCaseId[]>([]);
 
-  const [heardAbout, setHeardAbout] = React.useState<HeardId[]>([]);
-
-  const [illustrationSrc, setIllustrationSrc] = React.useState(
-    "/scene-person-profession.svg",
-  );
+  const [heardAbout, setHeardAbout] =
+    React.useState<HeardSelection>(HEARD_UNSET);
 
   const progressPercent = Math.round(((step + 1) / STEP_COUNT) * 100);
 
@@ -120,22 +131,23 @@ export function ProfileSetupView() {
         return termsAccepted;
       case 1:
         return nameOk;
-      case 2:
-        return organizationName.trim().length > 0;
+      case 2: {
+        const otherOk =
+          orgProfile !== "other_org" || otherOrgProfile.trim().length > 0;
+        return (
+          organizationName.trim().length > 0 &&
+          otherOk &&
+          isValidOptionalUrl(organizationUrl)
+        );
+      }
       case 3:
-        return true;
-      case 4:
         return useCases.length > 0;
-      case 5:
-        return heardAbout.length > 0;
+      case 4:
+        return heardAbout !== HEARD_UNSET;
       default:
         return false;
     }
   })();
-
-  function skipToHome() {
-    router.push("/");
-  }
 
   function completeOnboarding() {
     try {
@@ -143,6 +155,7 @@ export function ProfileSetupView() {
         SESSION_WELCOME_KEY,
         JSON.stringify({
           orgName: organizationName.trim() || "your organization",
+          orgUrl: organizationUrl.trim() || undefined,
         }),
       );
     } catch {
@@ -159,20 +172,135 @@ export function ProfileSetupView() {
     }
   }
 
-  function goBack() {
-    if (step > 0) setStep((s) => s - 1);
-    else router.back();
-  }
-
   function toggleUseCase(id: UseCaseId) {
     setUseCases((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   }
 
+  if (step === 0) {
+    return (
+      <div className="flex min-h-[100dvh] min-w-0 flex-1 flex-col bg-sidebar dark:bg-background">
+        <header className="sticky top-0 z-40 flex h-[60px] shrink-0 items-center bg-transparent px-4">
+          <Link
+            href="/"
+            className="flex min-h-0 min-w-0 flex-1 items-center gap-2 px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar dark:focus-visible:ring-offset-background"
+          >
+            <span className="min-w-0 flex-1 dark:hidden">
+              <img
+                src="/lc-logo.svg"
+                alt="Learning Commons"
+                width={229}
+                height={23}
+                className="h-[22px] w-auto max-w-full object-left object-contain"
+              />
+            </span>
+            <span className="hidden min-w-0 flex-1 dark:block">
+              <img
+                src="/lc-logo-white.svg"
+                alt="Learning Commons"
+                width={229}
+                height={23}
+                className="h-[22px] w-auto max-w-full object-left object-contain"
+              />
+            </span>
+          </Link>
+        </header>
+
+        <main className="flex flex-1 flex-col items-center px-6 py-6 pb-40 md:px-8 md:py-8 md:pb-44">
+          <div className="mb-6 flex justify-center">
+            <img
+              src="/scene-person-laptop-working.svg"
+              alt=""
+              width={90}
+              height={68}
+              className="h-auto w-[90px] max-w-[90px] object-contain"
+              decoding="async"
+            />
+          </div>
+
+          <p className="mb-8 max-w-lg text-balance text-center font-mono text-[28px] font-light uppercase leading-tight tracking-[5%] text-heading">
+            Build with Learning Commons
+          </p>
+
+          <div className={AUTH_CARD_SHELL_UNIFORM}>
+            <PageTitle
+              variant="onboarding"
+              className="shrink-0 text-balance text-center"
+            >
+              {STEP_TITLES[0]}
+            </PageTitle>
+            <div className="mt-10">
+              <div className="stack-field">
+                <label
+                  className="flex cursor-pointer items-start gap-3"
+                  htmlFor="onboard-terms-accept"
+                >
+                  <Checkbox
+                    id="onboard-terms-accept"
+                    checked={termsAccepted}
+                    onCheckedChange={(v) => {
+                      setTermsAccepted(Boolean(v));
+                      setTermsError(false);
+                    }}
+                    className="mt-1.5 shrink-0"
+                    aria-invalid={termsError}
+                    aria-describedby={termsError ? "onboard-terms-error" : undefined}
+                  />
+                  <span className="text-left text-base font-normal leading-relaxed text-foreground">
+                    I have read and agree to the Learning Commons{" "}
+                    <Link
+                      href="/terms-of-use"
+                      className="font-medium text-foreground underline underline-offset-4 hover:opacity-90"
+                    >
+                      Terms of Use
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="/privacy-policy"
+                      className="font-medium text-foreground underline underline-offset-4 hover:opacity-90"
+                    >
+                      Privacy Policy
+                    </Link>
+                    .
+                  </span>
+                </label>
+                {termsError ? (
+                  <p
+                    id="onboard-terms-error"
+                    className="text-sm text-destructive"
+                    role="alert"
+                  >
+                    Please check the box to accept the terms and continue.
+                  </p>
+                ) : null}
+              </div>
+              <Button
+                type="button"
+                variant="primary"
+                className="mt-8 h-11 w-full"
+                onClick={() => {
+                  if (!termsAccepted) {
+                    setTermsError(true);
+                    return;
+                  }
+                  goNext();
+                }}
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </main>
+
+        <SignupFooter fixed />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-      <header className="sticky top-0 z-40 flex h-[60px] shrink-0 items-center bg-sidebar px-4 dark:bg-background">
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-sidebar dark:bg-background">
+      <header className="sticky top-0 z-40 flex h-[60px] shrink-0 items-center bg-transparent px-4">
         <Link
           href="/"
           className="flex min-h-0 min-w-0 flex-1 items-center gap-2 px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar dark:focus-visible:ring-offset-background"
@@ -198,14 +326,9 @@ export function ProfileSetupView() {
         </Link>
       </header>
 
-      <div
-        className={cn(
-          DASHBOARD_CONTENT_WIDTH_CLASS,
-          "flex min-h-0 flex-1 flex-col overflow-y-auto py-8 pb-16",
-        )}
-      >
-        <div className="my-auto flex w-full flex-col gap-10">
-          <div className="mx-auto flex w-full min-w-0 max-w-full flex-col gap-0 overflow-hidden rounded-[4px] border-app border-border-subtle bg-background shadow-none md:w-[80%] dark:bg-sidebar">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6 md:px-8 md:py-8 pb-20">
+        <div className="mx-auto my-auto flex w-full min-w-0 max-w-2xl flex-col items-center">
+          <div className={ONBOARDING_CARD_FRAME}>
             <div
               className="h-1 w-full shrink-0 bg-nav-active dark:bg-zinc-800"
               role="progressbar"
@@ -220,52 +343,39 @@ export function ProfileSetupView() {
               />
             </div>
 
-            <div className="min-w-0 p-12">
-              <PageTitle variant="onboarding">{STEP_TITLES[step]}</PageTitle>
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col p-10">
+              <PageTitle
+                variant="onboarding"
+                className="shrink-0 text-balance text-left"
+              >
+                {STEP_TITLES[step]}
+              </PageTitle>
 
-              <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:gap-12">
-                <div className="flex min-w-0 flex-col gap-8">
-                  {step === 0 ? (
-                    <>
-                      <div className="stack-field">
-                        <p className="text-base font-normal text-muted-foreground">
-                          Please read and accept our terms to continue setting up
-                          your account.
-                        </p>
-                        <label className="flex cursor-pointer gap-3 pt-1">
-                          <Checkbox
-                            checked={termsAccepted}
-                            onCheckedChange={(v) =>
-                              setTermsAccepted(Boolean(v))
-                            }
-                            className="mt-1"
-                          />
-                          <span className="text-base font-normal leading-snug text-foreground">
-                            I agree to the{" "}
-                            <Link
-                              href="/terms-of-use"
-                              className="font-medium underline underline-offset-4 hover:opacity-90"
-                            >
-                              Terms of use
-                            </Link>
-                            .
-                          </span>
-                        </label>
-                      </div>
-                    </>
-                  ) : null}
-
+              <div className="mt-10 flex min-h-0 min-w-0 flex-1 flex-col">
+                {/* Inset so focus rings / outer borders are not clipped by overflow-y */}
+                <div className="min-h-0 flex-1 overflow-y-auto px-2 [scrollbar-gutter:stable]">
+                  <div className="flex min-w-0 flex-col gap-8">
                   {step === 1 ? (
                     <>
-                      <Field id="onboard-name" label="Your name">
+                      <div className="stack-field">
+                        <Label htmlFor="onboard-name" required>
+                          Full name
+                        </Label>
                         <Input
+                          id="onboard-name"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            if (v.length <= 40) setName(v);
+                          }}
+                          maxLength={40}
                           autoComplete="name"
                         />
-                      </Field>
+                      </div>
                       <div className="stack-field">
-                        <Label id="onboard-role-label">Your role</Label>
+                        <Label id="onboard-role-label" required>
+                          Role
+                        </Label>
                         <PillToggleGroup
                           aria-labelledby="onboard-role-label"
                           options={ROLE_OPTIONS}
@@ -289,72 +399,76 @@ export function ProfileSetupView() {
 
                   {step === 2 ? (
                     <>
-                      <Field id="onboard-org-name" label="Organization name">
+                      <div className="stack-field">
+                        <Label htmlFor="onboard-org-name" required>
+                          Organization name
+                        </Label>
                         <Input
+                          id="onboard-org-name"
                           value={organizationName}
-                          onChange={(e) => setOrganizationName(e.target.value)}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            if (v.length <= 40) setOrganizationName(v);
+                          }}
+                          maxLength={40}
                           placeholder="Your organization"
                           autoComplete="organization"
                         />
-                      </Field>
-                      <div className={calloutClass()}>
-                        <p className="font-medium text-foreground">
-                          As an Admin of this organization, you&apos;ll have…
-                        </p>
-                        <ul className="mt-3 list-disc space-y-2 pl-5">
-                          <li>Access to open datasets immediately</li>
-                          <li>Ability to request access to gated datasets</li>
-                          <li>
-                            Organization-scoped API keys for secure access
-                          </li>
-                          <li>Ability to invite and manage team members</li>
-                        </ul>
+                      </div>
+                      <div className="stack-field">
+                        <Label htmlFor="onboard-org-url" optional>
+                          URL
+                        </Label>
+                        <Input
+                          id="onboard-org-url"
+                          type="url"
+                          inputMode="url"
+                          value={organizationUrl}
+                          onChange={(e) => setOrganizationUrl(e.target.value)}
+                          autoComplete="url"
+                          placeholder="https://"
+                          aria-invalid={
+                            organizationUrl.trim().length > 0 &&
+                            !isValidOptionalUrl(organizationUrl)
+                          }
+                        />
+                        {organizationUrl.trim().length > 0 &&
+                        !isValidOptionalUrl(organizationUrl) ? (
+                          <p
+                            className="text-base font-normal text-destructive"
+                            role="alert"
+                          >
+                            Enter a valid URL.
+                          </p>
+                        ) : null}
+                      </div>
+                      <div className="stack-field">
+                        <Label htmlFor="onboard-org-profile-select" required>
+                          What describes your organization?
+                        </Label>
+                        <SingleSelectField
+                          id="onboard-org-profile-select"
+                          value={orgProfile}
+                          onValueChange={(v) => {
+                            setOrgProfile(v as OrgProfile);
+                            if (v !== "other_org") setOtherOrgProfile("");
+                          }}
+                          options={[...ORG_PROFILE_OPTIONS]}
+                          placeholder="Select a type"
+                        />
+                        {orgProfile === "other_org" ? (
+                          <Input
+                            value={otherOrgProfile}
+                            onChange={(e) => setOtherOrgProfile(e.target.value)}
+                            placeholder="Describe your organization"
+                            aria-label="Describe your organization"
+                          />
+                        ) : null}
                       </div>
                     </>
                   ) : null}
 
                   {step === 3 ? (
-                    <>
-                      <div className="stack-field">
-                        <Label htmlFor="onboard-invite-emails">
-                          Team member emails
-                        </Label>
-                        <p className="text-base font-normal text-muted-foreground">
-                          Enter one or more email addresses, separated by
-                          semicolons.
-                        </p>
-                        <Textarea
-                          id="onboard-invite-emails"
-                          className="min-h-[120px]"
-                          placeholder="e.g., john@company.com; jane@company.com"
-                          value={inviteEmailsRaw}
-                          onChange={(e) => setInviteEmailsRaw(e.target.value)}
-                        />
-                        {inviteEmailsRaw.trim() ? (
-                          <p className="text-sm text-muted-foreground">
-                            {parseInviteEmails(inviteEmailsRaw).length} valid
-                            address
-                            {parseInviteEmails(inviteEmailsRaw).length === 1
-                              ? ""
-                              : "es"}{" "}
-                            detected
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className={calloutClass()}>
-                        <p>
-                          <span className="font-medium text-foreground">
-                            Note:
-                          </span>{" "}
-                          Invited members will be added as Members by default.
-                          You can change their role to Admin on the Team Members
-                          settings.
-                        </p>
-                      </div>
-                    </>
-                  ) : null}
-
-                  {step === 4 ? (
                     <div className="stack-field">
                       <Label id="onboard-use-cases-label">
                         Select all that apply
@@ -383,83 +497,34 @@ export function ProfileSetupView() {
                     </div>
                   ) : null}
 
-                  {step === 5 ? (
+                  {step === 4 ? (
                     <div className="stack-field">
-                      <Label id="onboard-heard-label">
-                        How did you hear about us?
+                      <Label id="onboard-heard-label" required>
+                        Select one
                       </Label>
-                      <p className="text-base font-normal text-muted-foreground">
-                        Select any that apply.
-                      </p>
-                      <PillMultiToggleGroup<HeardId>
+                      <PillToggleGroup<HeardSelection>
                         aria-labelledby="onboard-heard-label"
                         options={HEARD_OPTIONS}
                         value={heardAbout}
-                        onValueChange={setHeardAbout}
+                        onValueChange={(v) => setHeardAbout(v)}
                       />
                     </div>
                   ) : null}
-
-                  <div className="mt-4 flex flex-col gap-6">
-                    <div
-                      className={cn(
-                        "flex flex-row flex-wrap items-center gap-3",
-                        step === 0 && "w-full",
-                      )}
-                    >
-                      {step !== 0 ? (
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="lg"
-                          onClick={goBack}
-                        >
-                          <ArrowLeft />
-                          Back
-                        </Button>
-                      ) : null}
-                      <Button
-                        type="button"
-                        variant="primary"
-                        size="lg"
-                        disabled={!canContinue}
-                        onClick={goNext}
-                        className={cn(step === 0 && "w-full")}
-                      >
-                        Continue
-                      </Button>
-                    </div>
-
-                    {step !== 0 ? (
-                      <button
-                        type="button"
-                        onClick={skipToHome}
-                        className="w-fit text-sm font-normal text-foreground underline underline-offset-4 hover:opacity-90"
-                      >
-                        Skip for now
-                      </button>
-                    ) : null}
                   </div>
                 </div>
-
-                <div className="flex h-full min-h-0 w-full items-center justify-center">
-                  <img
-                    src={illustrationSrc}
-                    alt=""
-                    width={432}
-                    height={324}
-                    className="w-[70%] max-w-full object-contain"
-                    decoding="async"
-                    onError={() => {
-                      setIllustrationSrc("/scene-person-laptop-working.svg");
-                    }}
-                  />
-                </div>
+                <Button
+                  type="button"
+                  variant="primary"
+                  className="mt-8 h-11 w-full shrink-0"
+                  disabled={!canContinue}
+                  onClick={goNext}
+                >
+                  Continue
+                </Button>
               </div>
             </div>
           </div>
-
-          <p className="mx-auto max-w-2xl text-center text-sm font-normal text-muted-foreground">
+          <p className="mt-8 w-full max-w-2xl text-center text-sm font-normal text-muted-foreground">
             This information helps us manage your account and improve our tools.
             <br />
             Learn more in our{" "}

@@ -13,6 +13,8 @@ export const DESIGN_SYSTEM_NAV = [
       { href: "/design-system/components/badges", label: "Tags" },
       { href: "/design-system/components/loading", label: "Loading Indicator" },
       { href: "/design-system/components/buttons", label: "Buttons" },
+      { href: "/design-system/components/icons", label: "Icons" },
+      { href: "/design-system/components/skeleton", label: "Skeleton" },
       { href: "/design-system/components/fields", label: "Fields" },
       { href: "/design-system/components/empty-state", label: "Empty state" },
       { href: "/design-system/components/checkbox", label: "Checkbox" },

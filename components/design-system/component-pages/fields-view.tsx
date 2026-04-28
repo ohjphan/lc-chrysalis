@@ -7,15 +7,8 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MultiSelectField } from "@/components/ui/multi-select-field";
+import { SingleSelectField } from "@/components/ui/single-select-field";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-
-function selectClassName() {
-  return cn(
-    "box-border flex h-[length:var(--control-height)] w-full rounded-md border-app border-border-subtle bg-field-bg px-3.5 py-2.5 text-base font-normal text-foreground",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-  );
-}
 
 const AUDIENCE_GROUP_OPTIONS = [
   { value: "family", label: "Family" },
@@ -57,45 +50,35 @@ export function FieldsView() {
       <div className="grid max-w-md gap-6">
         <Field
           id="demo-name"
-          label="Display name"
-          description="Shown on invoices and audit logs."
+          label="Field with helper text"
+          description="Use helper text to clarify purpose, expected input, or where the value appears."
         >
           <Input placeholder="Learning Commons" />
         </Field>
-        <Field id="demo-notes" label="Notes" optional>
+        <Field id="demo-notes" label="Long-form text field" optional>
           <Textarea placeholder="Optional context…" />
         </Field>
         <Field
           id="demo-scope"
-          label="Dataset scope"
-          description="Example of a selectable field using the same field shell."
+          label="Select field"
+          description="Single-select dropdown field using radio-style selection in the menu."
         >
-          <div className="relative">
-            <select
-              id="demo-scope"
-              className={cn(
-                selectClassName(),
-                "cursor-pointer appearance-none pr-10",
-                !datasetScope && "text-muted-foreground",
-              )}
-              value={datasetScope}
-              onChange={(e) => setDatasetScope(e.target.value)}
-            >
-              <option value="">Select an option</option>
-              <option value="district">District-wide</option>
-              <option value="school">School-wide</option>
-              <option value="classroom">Classroom pilot</option>
-            </select>
-            <ChevronDown
-              className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden
-            />
-          </div>
+          <SingleSelectField
+            id="demo-scope"
+            value={datasetScope}
+            onValueChange={setDatasetScope}
+            options={[
+              { value: "district", label: "District-wide" },
+              { value: "school", label: "School-wide" },
+              { value: "classroom", label: "Classroom pilot" },
+            ]}
+            placeholder="Select an option"
+          />
         </Field>
         <Field
           id="demo-audience-groups"
-          label="Audience groups"
-          description="Example of a multiselect field with chips embedded inside the control."
+          label="Multiselect field"
+          description="Multiple selection with chips embedded inside the field."
         >
           <MultiSelectField
             id="demo-audience-groups"
@@ -110,8 +93,8 @@ export function FieldsView() {
         </Field>
         <Field
           id="demo-api-key"
-          label="API key"
-          description="Example of an embedded copy action inside the field."
+          label="Field with embedded action"
+          description="Read-only field with an inline action button."
         >
           <div className="flex h-[length:var(--control-height)] w-full items-center gap-2 rounded-md border-app border-border-subtle bg-field-bg pl-3.5 pr-1.5 focus-within:ring-2 focus-within:ring-border-subtle focus-within:ring-offset-2 focus-within:ring-offset-background">
             <input
@@ -128,7 +111,7 @@ export function FieldsView() {
               className="shrink-0"
               onClick={copyFieldValue}
             >
-              <Copy className="size-3.5" aria-hidden />
+              <Copy className="size-4" aria-hidden />
               {copied ? "Copied" : "Copy"}
             </Button>
           </div>

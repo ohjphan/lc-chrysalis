@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FileText, Github, HelpCircle } from "lucide-react";
 import { navGroups } from "@/lib/nav-config";
-import { SUPPORT_DOCS_URL } from "@/lib/support-links";
+import { SUPPORT_DOCS_URL, SUPPORT_GITHUB_URL } from "@/lib/support-links";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SidebarOrganizationSection } from "@/components/dashboard/sidebar-organization-section";
@@ -132,12 +132,15 @@ export function AppSidebar({
               asChild
             >
               <a
-                href="https://github.com"
+                href={SUPPORT_GITHUB_URL}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="GitHub"
               >
-                <Github className="size-[16px] text-muted-foreground" />
+                <Github
+                  className="text-muted-foreground"
+                  style={{ width: 24, height: 24 }}
+                />
               </a>
             </Button>
             <Button

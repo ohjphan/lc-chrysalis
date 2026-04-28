@@ -14,10 +14,11 @@ export const metadata: Metadata = {
 export default function McpServerPage() {
   return (
     <PageContainer>
-      <div className="flex flex-col gap-[2px]">
+      <div className="flex flex-col gap-[8px]">
         <PageTitle trailing={<EarlyReleaseBadge />}>MCP server</PageTitle>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
-          Connect to the Learning Commons MCP server with an API key.
+          Access education standards, learning components, and progressions
+          through the Knowledge Graph MCP server.
         </p>
       </div>
       <div className="mt-10 max-w-2xl">
@@ -36,7 +37,7 @@ export default function McpServerPage() {
           </div>
         </section>
 
-        <section className="mt-10 flex flex-col gap-[12px] border-app-t border-border-subtle pt-10">
+        <section className="mt-10 flex w-full max-w-xl flex-col gap-6 border-app-t border-border-subtle pt-10">
           <div className="flex flex-col gap-[2px]">
             <h2 className="font-page-h2 text-heading dark:text-foreground">
               Authenticate

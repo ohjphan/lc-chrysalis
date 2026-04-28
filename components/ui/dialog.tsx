@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
+import { PageTitle } from "@/components/ui/page-title";
 import { cn } from "@/lib/utils";
 
 const Dialog = DialogPrimitive.Root;
@@ -17,7 +18,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-sidebar/88 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 dark:bg-black/55 dark:backdrop-blur-md",
+      "fixed inset-0 z-50 bg-sidebar/60 backdrop-blur-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 dark:bg-black/40 dark:backdrop-blur-lg",
       className,
     )}
     {...props}
@@ -67,7 +68,7 @@ const DialogContent = React.forwardRef<
         ) : null}
         {showClose ? (
           <DialogPrimitive.Close
-            className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-subtle disabled:pointer-events-none"
+            className="absolute right-6 top-6 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 disabled:pointer-events-none"
             aria-label="Close"
           >
             <X className="size-[20px] text-muted-foreground dark:text-zinc-500" />
@@ -88,7 +89,7 @@ function DialogHeader({
     <div
       className={cn(
         /* px-9 matches modal body sections (inputs, etc.) for left alignment */
-        "flex flex-col gap-1.5 px-9 pb-4 pt-6 text-left",
+        "flex flex-col gap-[12px] px-9 pb-4 pt-6 text-left",
         className,
       )}
       {...props}
@@ -112,19 +113,24 @@ function DialogFooter({
 }
 
 const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
+  HTMLHeadingElement,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={cn(
-      "font-page-h2 text-heading dark:text-foreground pr-10",
-      className,
-    )}
-    {...props}
-  />
+>(({ className, children, ...props }, ref) => (
+  <DialogPrimitive.Title asChild {...props}>
+    <PageTitle
+      ref={ref}
+      as="h2"
+      variant="onboarding"
+      className={cn(
+        "shrink-0 text-left pr-10 dark:text-foreground",
+        className,
+      )}
+    >
+      {children}
+    </PageTitle>
+  </DialogPrimitive.Title>
 ));
-DialogTitle.displayName = DialogPrimitive.Title.displayName;
+DialogTitle.displayName = "DialogTitle";
 
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,

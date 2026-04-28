@@ -8,6 +8,7 @@ import { StickyTableProvider } from "@/components/dashboard/sticky-table-provide
 import { Button } from "@/components/ui/button";
 import { ColorBadge } from "@/components/ui/color-badge";
 import { Empty } from "@/components/ui/empty";
+import { EarlyReleaseBadge } from "@/components/ui/early-release-badge";
 import { PageTitle } from "@/components/ui/page-title";
 import { tableHeadStickyCellClasses } from "@/lib/table-styles";
 import { cn } from "@/lib/utils";
@@ -71,9 +72,10 @@ export function ApiKeysView() {
     <PageContainer>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-[8px]">
-          <PageTitle>API keys</PageTitle>
+          <PageTitle trailing={<EarlyReleaseBadge />}>API keys</PageTitle>
           <p className="max-w-xl text-base font-normal text-muted-foreground">
-            Authenticate requests to Learning Commons APIs.
+            Use the API to access standards, learning components, and learning
+            progressions in Knowledge Graph and to connect to the MCP server.
           </p>
         </div>
         <Button

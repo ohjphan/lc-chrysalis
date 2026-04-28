@@ -16,6 +16,7 @@ function RadioRow({
   id,
   name,
   label,
+  description,
   checked,
   variant = "green",
   disabled = false,
@@ -24,6 +25,7 @@ function RadioRow({
   id: string;
   name: string;
   label: string;
+  description?: string;
   checked: boolean;
   variant?: RadioVariant;
   disabled?: boolean;
@@ -33,7 +35,7 @@ function RadioRow({
     <label
       htmlFor={id}
       className={cn(
-        "flex items-center gap-3",
+        "flex items-start gap-3",
         disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
       )}
     >
@@ -65,7 +67,14 @@ function RadioRow({
           )}
         />
       </span>
-      <Label htmlFor={id}>{label}</Label>
+      <div className="-translate-y-[2px] space-y-1">
+        <Label htmlFor={id}>{label}</Label>
+        {description ? (
+          <p className="text-sm font-normal leading-relaxed text-muted-foreground">
+            {description}
+          </p>
+        ) : null}
+      </div>
     </label>
   );
 }
@@ -115,6 +124,40 @@ export function RadioButtonsView() {
             checked={false}
             disabled
             onChange={() => {}}
+          />
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex flex-col gap-[2px]">
+          <h3 className="font-page-h3 text-heading dark:text-foreground">
+            With description
+          </h3>
+          <p className="max-w-2xl text-base font-normal text-muted-foreground">
+            Use a stacked label block when each option needs supporting context
+            beneath the label.
+          </p>
+        </div>
+        <div
+          className="max-w-md space-y-4"
+          role="radiogroup"
+          aria-label="Radio button example with descriptions"
+        >
+          <RadioRow
+            id="ds-radio-description-email"
+            name="design-system-radio-described"
+            label="Email summary"
+            description="Get a weekly digest of new evaluator activity and notable changes."
+            checked={selectedGreen === "product"}
+            onChange={() => setSelectedGreen("product")}
+          />
+          <RadioRow
+            id="ds-radio-description-instant"
+            name="design-system-radio-described"
+            label="Instant alerts"
+            description="Receive real-time notifications whenever a connected workflow fails."
+            checked={selectedGreen === "bug"}
+            onChange={() => setSelectedGreen("bug")}
           />
         </div>
       </section>

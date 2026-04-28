@@ -2,38 +2,31 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Key, LayoutGrid, UserPlus } from "lucide-react";
+import {
+  Key,
+  LayoutGrid,
+  UserPlus,
+} from "@/components/ui/material-symbols";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 const iconWrapClass =
-  "flex size-10 shrink-0 items-center justify-center rounded-md bg-accent-green/15 text-accent-green";
+  "flex size-10 shrink-0 items-center justify-center rounded-md bg-accent-green/10 text-accent-green";
 
-function NextStepRow({
-  icon,
-  title,
-  description,
-}: {
-  icon: ReactNode;
-  title: string;
-  description: string;
-}) {
+function NextStepRow({ icon, title }: { icon: ReactNode; title: string }) {
   return (
-    <div className="flex gap-4">
+    <div className="flex items-center gap-4">
       <div className={iconWrapClass}>{icon}</div>
-      <div className="min-w-0">
-        <p className="font-parabolica text-base font-[550] text-foreground">
-          {title}
-        </p>
-        <p className="mt-1 text-base font-normal text-muted-foreground">
-          {description}
-        </p>
-      </div>
+      <p className="min-w-0 font-parabolica text-base font-[550] text-foreground">
+        {title}
+      </p>
     </div>
   );
 }
@@ -49,56 +42,71 @@ export function OnboardingWelcomeDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg gap-6 px-9 pb-8 pt-6 sm:max-w-lg">
-        <DialogHeader className="px-0 pb-2 pt-0">
-          <DialogTitle className="font-page-title text-2xl font-normal tracking-[0.005em] text-heading">
-            You&apos;re all set!
-          </DialogTitle>
+      <DialogContent className="max-w-lg gap-0 sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>You&apos;re all set!</DialogTitle>
+          <DialogDescription asChild>
+            <div className="flex flex-col gap-3 pr-10 text-base font-normal leading-relaxed text-muted-foreground dark:text-zinc-400">
+              <p className="m-0">
+                Your organization{" "}
+                <span className="font-parabolica font-[550] text-foreground">
+                  {orgName || "your organization"}
+                </span>{" "}
+                has been created.
+              </p>
+              <p className="m-0">Now you can:</p>
+            </div>
+          </DialogDescription>
         </DialogHeader>
-        <p className="text-base font-normal text-muted-foreground">
-          Your organization{" "}
-          <span className="font-parabolica font-[550] text-foreground">
-            {orgName || "your organization"}
-          </span>{" "}
-          has been created.
-        </p>
-        <div className="space-y-6 border-app-t border-border-subtle pt-2">
-          <p className="font-parabolica text-base font-[550] text-foreground">
-            Next steps…
-          </p>
+
+        <div className="px-9 pb-6">
           <ul className="space-y-5">
             <li>
-              <NextStepRow
-                icon={<Key className="size-5" strokeWidth={2} aria-hidden />}
-                title="Create an API key"
-                description="Generate your first API key to start accessing datasets."
-              />
-            </li>
-            <li>
-              <NextStepRow
+                <NextStepRow
                 icon={
-                  <LayoutGrid className="size-5" strokeWidth={2} aria-hidden />
+                  <Key
+                    className="size-5"
+                    weight={300}
+                    aria-hidden
+                  />
                 }
-                title="Browse datasets"
-                description="Explore available datasets and request access to gated ones."
-              />
-            </li>
-            <li>
-              <NextStepRow
+                  title="Create an API key"
+                />
+              </li>
+              <li>
+                <NextStepRow
                 icon={
-                  <UserPlus className="size-5" strokeWidth={2} aria-hidden />
+                  <LayoutGrid
+                    className="size-5"
+                    weight={300}
+                    aria-hidden
+                  />
                 }
-                title="Invite team members"
-                description="Add colleagues to collaborate on your organization."
-              />
-            </li>
+                  title="Browse datasets"
+                />
+              </li>
+              <li>
+                <NextStepRow
+                icon={
+                  <UserPlus
+                    className="size-5"
+                    weight={300}
+                    aria-hidden
+                  />
+                }
+                  title="Invite team members"
+                />
+              </li>
           </ul>
         </div>
-        <Button variant="primary" size="lg" className="w-full" asChild>
-          <Link href="/" onClick={() => onOpenChange(false)}>
-            Go to dashboard
-          </Link>
-        </Button>
+
+        <DialogFooter className="mt-0 flex w-full flex-col sm:flex sm:flex-col sm:items-stretch">
+          <Button variant="primary" size="lg" className="w-full" asChild>
+            <Link href="/" onClick={() => onOpenChange(false)}>
+              Got it
+            </Link>
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

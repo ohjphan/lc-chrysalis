@@ -11,6 +11,9 @@ export type SelectableCardOption<T extends string> = {
 };
 
 export type SelectableCardGroupVariant = "green" | "dark";
+export type SelectableCardIndicatorStyle = "radio" | "check" | "none";
+
+export type GreenInsetBorderColor = "accent-green" | "gray-5";
 
 export function SelectableCardGroup<T extends string>({
   options,
@@ -19,6 +22,35 @@ export function SelectableCardGroup<T extends string>({
   className,
   scrollable = false,
   variant = "green",
+  indicatorStyle = "radio",
+  /**
+   * When set with `greenInsetBorderColor: "accent-green"`, selected green cards
+   * use a green outer border and 1px green inset. Use with `activeTopAccent={false}`
+   * if you also need the Gray 5+inset layout without the top bar.
+   */
+  greenInsetBorder = false,
+  /**
+   * Only with `greenInsetBorder`: `"accent-green"` = green line treatment;
+   * `"gray-5"` matches the default look.
+   */
+  greenInsetBorderColor = "gray-5",
+  /**
+   * Top accent row (`h-1`), modal-style. When unselected, warm top bar on hover/focus.
+   * @default true — product default. Pass `false` for Gray 5 border + 1px inset
+   * on light beige (no top bar).
+   */
+  activeTopAccent = true,
+  /**
+   * When false (and default Gray 5 path), the selected state uses the same
+   * Gray 5 outer border + light beige fill, but no 1px inner inset. Default true.
+   */
+  innerInsetOnSelected = true,
+  /**
+   * Replaces the default `border-[var(--gray-5)]` on the selected card when
+   * using the Gray 5+inset path (`activeTopAccent={false}`, not accent-green inset).
+   * E.g. `border-[#CCC9C6]`.
+   */
+  selectedOuterBorderClassName,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
 }: {
@@ -28,6 +60,12 @@ export function SelectableCardGroup<T extends string>({
   className?: string;
   scrollable?: boolean;
   variant?: SelectableCardGroupVariant;
+  indicatorStyle?: SelectableCardIndicatorStyle;
+  greenInsetBorder?: boolean;
+  greenInsetBorderColor?: GreenInsetBorderColor;
+  activeTopAccent?: boolean;
+  innerInsetOnSelected?: boolean;
+  selectedOuterBorderClassName?: string;
   "aria-label"?: string;
   "aria-labelledby"?: string;
 }) {
@@ -77,8 +115,22 @@ export function SelectableCardGroup<T extends string>({
           const selected = option.value === value;
           const selectedCardClass =
             variant === "dark"
-              ? "border-solid border-[length:var(--border-stroke)] border-charcoal bg-charcoal shadow-none"
-              : "border-solid border-[length:var(--border-stroke)] border-border-subtle bg-nav-active shadow-none";
+              ? cn(
+                  "border-solid border-[length:var(--border-stroke)] border-charcoal bg-charcoal",
+                  !greenInsetBorder && "shadow-none",
+                )
+              : activeTopAccent
+                ? cn(
+                    "border-solid border-[length:var(--border-stroke)] border-border-subtle bg-sidebar",
+                    "shadow-none",
+                  )
+                : greenInsetBorder && greenInsetBorderColor === "accent-green"
+                  ? "border-solid border-[length:var(--border-stroke)] border-[var(--accent-green)] bg-sidebar"
+                  : cn(
+                      "border-solid border-[length:var(--border-stroke)] bg-sidebar",
+                      selectedOuterBorderClassName ?? "border-[var(--gray-5)]",
+                      !innerInsetOnSelected && "shadow-none",
+                    );
           const selectedTitleClass =
             variant === "dark" ? "text-white" : "text-charcoal";
           const selectedDescriptionClass =
@@ -92,36 +144,88 @@ export function SelectableCardGroup<T extends string>({
               aria-checked={selected}
               onClick={() => onValueChange(option.value)}
               className={cn(
-                "group relative flex min-h-10 min-w-0 flex-col items-stretch justify-start gap-1.5 rounded-md bg-background p-4 text-left transition-[border-color,box-shadow,background-color] duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                "group relative flex min-h-10 min-w-0 flex-col items-stretch justify-start rounded-[var(--radius-md)] bg-background text-left transition-[border-color,box-shadow,background-color] duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                activeTopAccent
+                  ? "overflow-hidden p-0"
+                  : "gap-1.5 p-4",
                 scrollable ? "w-[17rem] flex-none" : "flex-1",
                 selected
                   ? selectedCardClass
-                  : "border-app border-border-subtle hover:border-border-subtle hover:bg-sidebar",
+                  : cn(
+                      "border-app border-border-subtle hover:border-border-subtle",
+                      !activeTopAccent && "hover:bg-sidebar",
+                    ),
+                selected &&
+                  variant === "green" &&
+                  !activeTopAccent &&
+                  innerInsetOnSelected &&
+                  (greenInsetBorder && greenInsetBorderColor === "accent-green"
+                    ? "shadow-[inset_0_0_0_1px_var(--accent-green)]"
+                    : "shadow-[inset_0_0_0_1px_var(--gray-5)]"),
               )}
             >
-              {selected ? (
-                <span className="absolute right-3 top-3 flex size-5 items-center justify-center rounded-full bg-accent-green text-white">
-                  <Check className="size-3" strokeWidth={2.5} aria-hidden />
-                </span>
+              {activeTopAccent ? (
+                <div
+                  className={cn(
+                    "h-1 w-full shrink-0 transition-colors",
+                    selected
+                      ? "bg-accent-green"
+                      : "bg-transparent group-focus-visible:bg-nav-active group-hover:bg-nav-active",
+                  )}
+                  aria-hidden
+                />
               ) : null}
-              <span
+              <div
                 className={cn(
-                  "pr-8 text-base font-[550] text-foreground",
-                  selected && selectedTitleClass,
+                  "min-w-0",
+                  activeTopAccent
+                    ? "flex flex-1 flex-col gap-1.5 p-4"
+                    : "contents",
                 )}
               >
-                {option.label}
-              </span>
-              {option.description ? (
+                {indicatorStyle === "radio" ? (
+                  <span
+                    className={cn(
+                      "absolute right-3 top-3 flex size-5 items-center justify-center rounded-full border-app border-border-subtle bg-background",
+                      selected && "border-accent-green bg-accent-green",
+                    )}
+                    aria-hidden
+                  >
+                    <span
+                      className={cn(
+                        "size-2 rounded-full transition-opacity",
+                        selected ? "bg-white opacity-100" : "opacity-0",
+                      )}
+                    />
+                  </span>
+                ) : indicatorStyle === "check" && selected ? (
+                  <span
+                    className="absolute right-3 top-3 flex size-5 items-center justify-center rounded-full bg-accent-green text-white"
+                    aria-hidden
+                  >
+                    <Check className="size-3 translate-y-[0.5px]" strokeWidth={2.5} />
+                  </span>
+                ) : null}
                 <span
                   className={cn(
-                    "text-[13px] font-normal leading-snug text-muted-foreground",
-                    selected && selectedDescriptionClass,
+                    "text-base font-[550] text-foreground",
+                    indicatorStyle !== "none" && "pr-8",
+                    selected && selectedTitleClass,
                   )}
                 >
-                  {option.description}
+                  {option.label}
                 </span>
-              ) : null}
+                {option.description ? (
+                  <span
+                    className={cn(
+                      "text-[13px] font-normal leading-snug text-muted-foreground",
+                      selected && selectedDescriptionClass,
+                    )}
+                  >
+                    {option.description}
+                  </span>
+                ) : null}
+              </div>
             </button>
           );
         })}

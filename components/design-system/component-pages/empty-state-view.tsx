@@ -16,7 +16,8 @@ export function EmptyStateView() {
           action.
         </p>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
-          Illustration is currently a placeholder.
+          Illustration is currently a placeholder. The illustration is using a
+          16:9 ratio.
         </p>
       </div>
 

@@ -8,6 +8,8 @@ const Tabs = TabsPrimitive.Root;
 
 type IndicatorState = { left: number; width: number };
 type TabsVariant = "underline" | "underlineDot" | "dark" | "surface";
+const UNDERLINE_LEFT_INSET_PX = 0;
+const UNDERLINE_RIGHT_INSET_PX = 2;
 
 function useTabIndicator(listRef: React.RefObject<HTMLDivElement | null>) {
   const [indicator, setIndicator] = React.useState<IndicatorState>({
@@ -75,7 +77,7 @@ const TabsList = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
     variant?: TabsVariant;
   }
->(({ className, children, variant = "underlineDot", ...props }, forwardedRef) => {
+>(({ className, children, variant = "underline", ...props }, forwardedRef) => {
   const listRef = React.useRef<HTMLDivElement | null>(null);
   const { indicator, transitionOn } = useTabIndicator(listRef);
 
@@ -118,8 +120,14 @@ const TabsList = React.forwardRef<
               "transition-[left,width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           )}
           style={{
-            left: indicator.left,
-            width: indicator.width,
+            left:
+              indicator.width > 0
+                ? indicator.left + UNDERLINE_LEFT_INSET_PX
+                : indicator.left,
+            width: Math.max(
+              0,
+              indicator.width - UNDERLINE_LEFT_INSET_PX - UNDERLINE_RIGHT_INSET_PX,
+            ),
           }}
         />
       ) : variant === "dark" ? (
@@ -159,12 +167,12 @@ const TabsTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> & {
     variant?: TabsVariant;
   }
->(({ className, variant = "underlineDot", children, ...props }, ref) => (
+>(({ className, variant = "underline", children, ...props }, ref) => (
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
       variant === "underline"
-        ? "relative z-0 -mb-[1.5px] inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-none border-b-[3px] border-transparent bg-transparent px-4 pb-5 pt-2 text-base font-medium text-muted-foreground ring-offset-background transition-[color] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:font-bold data-[state=active]:text-foreground"
+        ? "relative z-0 -mb-[1.5px] inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-none border-b-[3px] border-transparent bg-transparent px-4 pb-5 pt-2 text-base font-medium text-muted-foreground ring-offset-background transition-[color] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:font-bold data-[state=active]:text-charcoal"
         : variant === "underlineDot"
           ? "group relative z-0 -mb-[1.5px] inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-none border-b-[3px] border-transparent bg-transparent px-4 pb-5 pt-2 text-base font-medium text-muted-foreground ring-offset-background transition-[color] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:font-bold data-[state=active]:text-charcoal dark:data-[state=active]:text-foreground"
           : variant === "dark"

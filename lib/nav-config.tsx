@@ -28,13 +28,4 @@ export const navGroups: NavGroup[] = [
       { href: "/mcp-server", label: "MCP server" },
     ],
   },
-  {
-    label: "More",
-    items: [
-      { href: "/design-system", label: "Design System" },
-      { href: "/signup", label: "Sign up" },
-      { href: "/profile-setup", label: "Profile setup" },
-      { href: "/error-page", label: "Error Page" },
-    ],
-  },
 ];

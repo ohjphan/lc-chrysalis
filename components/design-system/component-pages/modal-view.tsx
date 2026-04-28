@@ -20,8 +20,11 @@ export function ModalView() {
         <h2 className="font-page-h2 text-heading dark:text-foreground">Modal</h2>
         <p className="max-w-2xl text-base font-normal text-muted-foreground">
           Modals use the shared dialog primitives for the overlay, surface,
-          header, body, and footer actions. Use them for focused tasks that need
-          temporary interruption without leaving the current page.
+          header, body, and footer actions. The dimmed backdrop uses a lighter
+          scrim with <code className="font-mono text-sm text-foreground">backdrop-blur-lg</code>{" "}
+          so the page behind reads as frosted glass rather than a flat wash. Use
+          them for focused tasks that need temporary interruption without leaving
+          the current page.
         </p>
       </div>
 

@@ -22,6 +22,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { MultiSelectField } from "@/components/ui/multi-select-field";
 import { PageTitle } from "@/components/ui/page-title";
+import { SingleSelectField } from "@/components/ui/single-select-field";
 import { SelectableCardGroup } from "@/components/ui/selectable-card-group";
 import { Textarea } from "@/components/ui/textarea";
 import { SimpleRingLoader } from "@/components/ui/loading-indicators";
@@ -47,8 +48,9 @@ const EVALUATOR_OPTIONS = [
   },
 ] as const;
 
+type EvaluatorTypeValue = (typeof EVALUATOR_OPTIONS)[number]["value"];
+
 const GRADE_OPTIONS = [
-  { value: "", label: "Select an option" },
   { value: "K", label: "Kindergarten" },
   { value: "1", label: "Grade 1" },
   { value: "2", label: "Grade 2" },
@@ -73,13 +75,6 @@ const CCSS_TABLE_CODE_CLASS =
 
 const EXAMPLE_QUESTION =
   "A school has 48 students going on a field trip. Each van holds 8 students. How many vans are needed? Show your reasoning using division and explain what the remainder means if there is one.";
-
-function selectClassName() {
-  return cn(
-    "box-border flex h-[length:var(--control-height)] w-full rounded-md border-app border-border-subtle bg-field-bg px-3.5 py-2.5 text-base font-normal text-foreground",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-subtle focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-  );
-}
 
 type AlignmentItem = {
   id: string;
@@ -174,7 +169,9 @@ const ALIGNMENT_RESULTS: AlignmentResult[] = [
 ];
 
 export function PlaygroundView() {
-  const [evaluatorType, setEvaluatorType] = React.useState("");
+  const [evaluatorType, setEvaluatorType] = React.useState<EvaluatorTypeValue>(
+    "literacy",
+  );
   const [grade, setGrade] = React.useState("");
   const [standards, setStandards] = React.useState<string[]>([]);
   const [text, setText] = React.useState("");
@@ -227,7 +224,7 @@ export function PlaygroundView() {
     setExpandedStandards(new Set());
     setActiveReasoningItem(null);
     setEvaluationStatus("idle");
-    setEvaluatorType("");
+    setEvaluatorType("literacy");
     setGrade("");
     setStandards([]);
     setText("");
@@ -257,129 +254,114 @@ export function PlaygroundView() {
         </p>
       </div>
 
-      <div className="mt-6 space-y-10">
+      <div className="mt-6 max-w-[760px] space-y-10">
         <div className="relative min-w-0">
           <section className="space-y-6">
-            <div className="stack-field min-w-0">
-              <Label id="playground-evaluator-label">Evaluator type</Label>
-              <SelectableCardGroup
-                aria-labelledby="playground-evaluator-label"
-                value={evaluatorType}
-                onValueChange={setEvaluatorType}
-                options={EVALUATOR_OPTIONS}
-                className="w-full"
-              />
-            </div>
-
             <AnimatePresence initial={false}>
-              {evaluatorType ? (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                  className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start"
-                >
-                  <div className="space-y-6 lg:col-span-4">
-                    <div className="stack-field min-w-0">
-                      <Label htmlFor="playground-grade">Target grade level</Label>
-                      <div className="relative">
-                        <select
-                          id="playground-grade"
-                          className={cn(
-                            selectClassName(),
-                            "cursor-pointer appearance-none pr-10",
-                            grade === "" && "text-muted-foreground",
-                          )}
-                          value={grade}
-                          onChange={(e) => setGrade(e.target.value)}
-                        >
-                          {GRADE_OPTIONS.map((o) => (
-                            <option key={o.value || "placeholder"} value={o.value}>
-                              {o.label}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown
-                          className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                          aria-hidden
-                        />
-                      </div>
-                    </div>
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-6"
+              >
+                <div className="stack-field min-w-0">
+                  <Label id="playground-evaluator-label">Evaluator type</Label>
+                  <SelectableCardGroup
+                    aria-labelledby="playground-evaluator-label"
+                    value={evaluatorType}
+                    onValueChange={setEvaluatorType}
+                    options={EVALUATOR_OPTIONS}
+                    className="w-full"
+                    indicatorStyle="none"
+                  />
+                </div>
 
-                    <div className="stack-field min-w-0">
-                      <Label id="playground-ccss-label">
-                        CCSS standards to test against
-                      </Label>
-                      <MultiSelectField
-                        id="playground-ccss-add"
-                        ariaLabelledBy="playground-ccss-label"
-                        value={standards}
-                        onValueChange={setStandards}
-                        options={CCSS_ADD_OPTIONS.map((option) => ({
-                          value: option.value,
-                          label: option.label,
-                        }))}
-                        placeholder="Add a standard…"
+                <div className="stack-field min-w-0">
+                  <Label htmlFor="playground-grade">Target grade level</Label>
+                  <SingleSelectField
+                    id="playground-grade"
+                    value={grade}
+                    onValueChange={setGrade}
+                    options={GRADE_OPTIONS.map((o) => ({
+                      value: o.value,
+                      label: o.label,
+                    }))}
+                    placeholder="Select an option"
+                  />
+                </div>
+
+                <div className="stack-field min-w-0">
+                  <Label id="playground-ccss-label">
+                    CCSS standards to test against
+                  </Label>
+                  <MultiSelectField
+                    id="playground-ccss-add"
+                    ariaLabelledBy="playground-ccss-label"
+                    value={standards}
+                    onValueChange={setStandards}
+                    options={CCSS_ADD_OPTIONS.map((option) => ({
+                      value: option.value,
+                      label: option.label,
+                    }))}
+                    placeholder="Add a standard..."
+                  />
+                </div>
+
+                <div className="stack-field min-w-0">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <Label htmlFor="playground-text">Math question or problem</Label>
+                    <button
+                      type="button"
+                      onClick={useExampleQuestion}
+                      className="shrink-0 text-sm font-normal text-foreground underline underline-offset-4 hover:opacity-90"
+                    >
+                      Use example question
+                    </button>
+                  </div>
+                  <Textarea
+                    id="playground-text"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Enter a question or problem to evaluate against your selected standards."
+                    rows={5}
+                    className="min-h-[132px] resize-y"
+                  />
+                  <div className="flex flex-col gap-3 pt-1 md:flex-row md:items-center md:justify-between">
+                    <p className="flex gap-2 text-sm font-normal text-muted-foreground">
+                      <Info
+                        className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                        aria-hidden
                       />
-                    </div>
-                  </div>
-
-                  <div className="stack-field min-w-0 lg:col-span-8">
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                      <Label htmlFor="playground-text">Math question or problem</Label>
-                      <button
+                      <span>
+                        Please do not enter any personally identifiable information
+                        (PII).
+                      </span>
+                    </p>
+                    <div className="flex flex-wrap items-center justify-end gap-3">
+                      <Button
                         type="button"
-                        onClick={useExampleQuestion}
-                        className="shrink-0 text-sm font-normal text-foreground underline underline-offset-4 hover:opacity-90"
+                        variant="secondary"
+                        size="lg"
+                        disabled={!canClearAll}
+                        onClick={clearAll}
                       >
-                        Use example question
-                      </button>
-                    </div>
-                    <Textarea
-                      id="playground-text"
-                      value={text}
-                      onChange={(e) => setText(e.target.value)}
-                      placeholder="Enter a question or problem to evaluate against your selected standards."
-                      rows={5}
-                      className="min-h-[140px] resize-y"
-                    />
-                    <div className="flex flex-col gap-3 pt-1 md:flex-row md:items-center md:justify-between">
-                      <p className="flex gap-2 text-sm font-normal text-muted-foreground">
-                        <Info
-                          className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                          aria-hidden
-                        />
-                        <span>
-                          Please do not enter any personally identifiable information
-                          (PII).
-                        </span>
-                      </p>
-                      <div className="flex flex-wrap items-center justify-end gap-3">
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="lg"
-                          disabled={!canClearAll}
-                          onClick={clearAll}
-                        >
-                          <Trash2 className="size-4" aria-hidden />
-                          Clear all
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="primary"
-                          size="lg"
-                          disabled={!canEvaluate}
-                          onClick={evaluate}
-                        >
-                          Evaluate
-                        </Button>
-                      </div>
+                        <Trash2 className="size-4" aria-hidden />
+                        Clear all
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="primary"
+                        size="lg"
+                        disabled={!canEvaluate}
+                        onClick={evaluate}
+                      >
+                        Evaluate
+                      </Button>
                     </div>
                   </div>
-                </motion.div>
-              ) : null}
+                </div>
+              </motion.div>
             </AnimatePresence>
           </section>
         </div>

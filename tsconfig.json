@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "lucide-react": ["./components/ui/material-symbols"]
     }
   },
   "include": [

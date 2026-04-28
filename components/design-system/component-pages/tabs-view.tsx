@@ -19,19 +19,19 @@ export function TabsView() {
               Default
             </h3>
             <p className="max-w-2xl text-base font-normal text-muted-foreground">
-              Uses the same underline tab layout, but swaps the active bar to
-              charcoal and adds a green selected-state dot before the tab title.
+              Uses a simple underline tab layout with a green active bar and
+              no leading indicator.
             </p>
           </div>
           <Tabs defaultValue="one" className="max-w-md">
-            <TabsList variant="underlineDot">
-              <TabsTrigger variant="underlineDot" value="one">
+            <TabsList variant="underline">
+              <TabsTrigger variant="underline" value="one">
                 Overview
               </TabsTrigger>
-              <TabsTrigger variant="underlineDot" value="two">
+              <TabsTrigger variant="underline" value="two">
                 API
               </TabsTrigger>
-              <TabsTrigger variant="underlineDot" value="three">
+              <TabsTrigger variant="underline" value="three">
                 Events
               </TabsTrigger>
             </TabsList>

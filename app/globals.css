@@ -230,7 +230,9 @@
 .lc-material-symbol {
   font-family: "Material Symbols Rounded";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
+  /* Avoid browser-synthesized weight that can mask the real 300/400 font files. */
+  font-synthesis: none;
   letter-spacing: normal;
   line-height: 1;
   text-transform: none;

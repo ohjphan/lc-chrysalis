@@ -99,7 +99,7 @@ export function CreateApiKeyDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent topAccent={false} className="gap-0 overflow-hidden">
+      <DialogContent variant="single" className="gap-0 overflow-hidden">
         <div
           role="progressbar"
           aria-valuemin={1}

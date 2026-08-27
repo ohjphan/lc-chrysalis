@@ -1,17 +1,18 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { AlertTriangle, Check, Info, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Info,
+  XCircle,
+} from "@/lib/lucide-svg";
 import { toast } from "sonner";
 
 const DEFAULT_DURATION = 6000;
 const LIGHT_TOAST_CLASS = "toast-light";
 
-/** Filled circle + Lucide glyph; grid + block svg avoids baseline / Sonner flex-start drift. */
-const badgeClass =
-  "grid size-[22px] shrink-0 place-items-center rounded-full leading-none";
-
-const glyphClass = "size-[14px] shrink-0 text-white block";
+const toastIconClass = "size-[22px] shrink-0 block";
 
 export type ToastVariant =
   | "neutral"
@@ -29,75 +30,75 @@ export function toastUsesLightSurface(variant: ToastVariant) {
   return variant.startsWith("light");
 }
 
-/** Same leading badge as Sonner toasts; safe to use in docs / trigger buttons. */
-export function ToastLeadingIcon({ variant }: { variant: ToastLeadingVariant }) {
+/** Leading icons only (no badge); hues match callouts. Pass `light` for white-surface toasts. */
+export function ToastLeadingIcon({
+  variant,
+  light = false,
+}: {
+  variant: ToastLeadingVariant;
+  light?: boolean;
+}) {
+  const stroke = 2.5;
   switch (variant) {
     case "neutral":
       return (
-        <span className={cn(badgeClass, "bg-[#CCC9C6]")}>
-          <Info
-            className="size-[14px] shrink-0 text-[#55554E] block"
-            strokeWidth={2.5}
-            aria-hidden
-          />
-        </span>
+        <Info
+          className={cn(
+            toastIconClass,
+            light ? "text-[#55554E]" : "text-[#a3a3a3]",
+          )}
+          strokeWidth={stroke}
+          aria-hidden
+        />
       );
     case "success":
       return (
-        <span className={cn(badgeClass, "bg-accent-green")}>
-          <Check className={glyphClass} strokeWidth={2.5} aria-hidden />
-        </span>
+        <CheckCircle2
+          className={cn(toastIconClass, "text-accent-green")}
+          strokeWidth={stroke}
+          aria-hidden
+        />
       );
     case "warning":
       return (
-        <span className={cn(badgeClass, "bg-accent-yellow")}>
-          <AlertTriangle
-            className="size-[14px] shrink-0 text-charcoal block"
-            strokeWidth={2.5}
-            aria-hidden
-          />
-        </span>
+        <XCircle
+          className={cn(
+            toastIconClass,
+            light ? "text-charcoal" : "text-[#fdd151]",
+          )}
+          strokeWidth={stroke}
+          aria-hidden
+        />
       );
     case "error":
       return (
-        <span className={cn(badgeClass, "bg-[#FF554C]")}>
-          <X className={glyphClass} strokeWidth={2.5} aria-hidden />
-        </span>
+        <AlertCircle
+          className={cn(toastIconClass, "text-[#FF554C]")}
+          strokeWidth={stroke}
+          aria-hidden
+        />
       );
   }
 }
 
-function neutralIcon() {
-  return <ToastLeadingIcon variant="neutral" />;
-}
-
-function successIcon() {
-  return <ToastLeadingIcon variant="success" />;
-}
-
-function warningIcon() {
-  return <ToastLeadingIcon variant="warning" />;
-}
-
-function errorIcon() {
-  return <ToastLeadingIcon variant="error" />;
-}
+const VARIANT_TO_LEADING: Record<ToastVariant, ToastLeadingVariant> = {
+  neutral: "neutral",
+  lightNeutral: "neutral",
+  success: "success",
+  lightSuccess: "success",
+  warning: "warning",
+  lightWarning: "warning",
+  error: "error",
+  lightError: "error",
+};
 
 function iconForVariant(variant: ToastVariant) {
-  switch (variant) {
-    case "neutral":
-    case "lightNeutral":
-      return neutralIcon();
-    case "success":
-    case "lightSuccess":
-      return successIcon();
-    case "warning":
-    case "lightWarning":
-      return warningIcon();
-    case "error":
-    case "lightError":
-      return errorIcon();
-  }
+  return (
+    <ToastLeadingIcon
+      variant={VARIANT_TO_LEADING[variant]}
+      light={toastUsesLightSurface(variant)}
+    />
+  );
 }
 
 type ToastVariantOpts = {
@@ -125,7 +126,7 @@ export const TOAST_VARIANT_DEFAULT_COPY: Record<
   lightError: { message: "Light error — something went wrong. Try again." },
 };
 
-/** Neutral — filled border-subtle + charcoal info (general / informational). */
+/** Neutral — Info icon (no badge). */
 export function toastNeutral({
   message = TOAST_VARIANT_DEFAULT_COPY.neutral.message,
   description = TOAST_VARIANT_DEFAULT_COPY.neutral.description,
@@ -133,7 +134,7 @@ export function toastNeutral({
 }: ToastVariantOpts = {}) {
   toast(message, {
     description,
-    icon: neutralIcon(),
+    icon: iconForVariant("neutral"),
     duration,
   });
 }
@@ -147,7 +148,7 @@ export function toastNeutralUndo({
 }: ToastActionOpts = {}) {
   toast(message, {
     description,
-    icon: neutralIcon(),
+    icon: iconForVariant("neutral"),
     duration,
     closeButton: false,
     action: {
@@ -191,7 +192,7 @@ export function toastLightUndo({
   });
 }
 
-/** Success — filled #1DB470 (accent) circle + white check. */
+/** Success — CheckCircle2 (Lucide circle + check). */
 export function toastSuccess({
   message = TOAST_VARIANT_DEFAULT_COPY.success.message,
   description = TOAST_VARIANT_DEFAULT_COPY.success.description,
@@ -199,7 +200,7 @@ export function toastSuccess({
 }: ToastVariantOpts = {}) {
   toast(message, {
     description,
-    icon: successIcon(),
+    icon: iconForVariant("success"),
     duration,
   });
 }
@@ -218,7 +219,7 @@ export function toastLightSuccess({
   });
 }
 
-/** Warning — filled accent yellow (#FDD151) circle + charcoal triangle (dark glyph for contrast). */
+/** Warning — XCircle (cancel-style). */
 export function toastWarning({
   message = TOAST_VARIANT_DEFAULT_COPY.warning.message,
   description = TOAST_VARIANT_DEFAULT_COPY.warning.description,
@@ -226,7 +227,7 @@ export function toastWarning({
 }: ToastVariantOpts = {}) {
   toast(message, {
     description,
-    icon: warningIcon(),
+    icon: iconForVariant("warning"),
     duration,
   });
 }
@@ -245,7 +246,7 @@ export function toastLightWarning({
   });
 }
 
-/** Error — filled #FF554C circle + white X. */
+/** Error — AlertCircle. */
 export function toastError({
   message = TOAST_VARIANT_DEFAULT_COPY.error.message,
   description = TOAST_VARIANT_DEFAULT_COPY.error.description,
@@ -253,12 +254,12 @@ export function toastError({
 }: ToastVariantOpts = {}) {
   toast(message, {
     description,
-    icon: errorIcon(),
+    icon: iconForVariant("error"),
     duration,
   });
 }
 
-/** Light error — red X icon on a white toast surface. */
+/** Light error — AlertCircle on a white toast surface. */
 export function toastLightError({
   message = TOAST_VARIANT_DEFAULT_COPY.lightError.message,
   description = TOAST_VARIANT_DEFAULT_COPY.lightError.description,

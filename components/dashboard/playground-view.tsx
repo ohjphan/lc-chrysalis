@@ -195,8 +195,7 @@ export function PlaygroundView() {
     };
   }, []);
 
-  const canEvaluate =
-    evaluatorType !== "" && grade !== "" && text.trim().length > 0;
+  const canEvaluate = grade !== "" && text.trim().length > 0;
 
   const canClearAll = text.trim().length > 0;
 

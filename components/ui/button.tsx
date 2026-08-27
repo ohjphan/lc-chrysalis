@@ -12,11 +12,11 @@ const buttonVariants = cva(
         secondary:
           "border-app border-border-subtle bg-surface hover:bg-nav-active",
         ghost: "hover:bg-nav-active dark:hover:bg-nav-link-active",
-        destructive: "bg-[#DC2626] text-white hover:opacity-90",
+        destructive: "bg-[#9D1F18] text-white hover:opacity-90",
       },
       size: {
         default: "h-9 px-4 py-0",
-        sm: "h-8 px-3 text-[12px] font-medium",
+        sm: "px-4 py-2 text-[12px] font-medium",
         /** Composite rows (`h-10` + `items-center`): override global `-translate-y-px` for optical centering. */
         embed:
           "h-8 rounded-[2px] px-3 text-[12px] font-medium translate-y-[0.5px] [&_.lc-material-symbol]:translate-y-[0.5px]",
@@ -42,7 +42,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size }), className)}
         ref={ref}
         {...props}
       />

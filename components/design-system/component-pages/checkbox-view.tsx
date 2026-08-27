@@ -32,7 +32,7 @@ export function CheckboxView() {
             <Checkbox
               id="ds-checkbox-default"
               checked={greenDefaultChecked}
-              onCheckedChange={setGreenDefaultChecked}
+              onCheckedChange={(c) => setGreenDefaultChecked(c === true)}
             />
             <Label htmlFor="ds-checkbox-default" className="-translate-y-[1.5px]">
               Unchecked by default
@@ -43,7 +43,7 @@ export function CheckboxView() {
             <Checkbox
               id="ds-checkbox-selected"
               checked={greenSelectedChecked}
-              onCheckedChange={setGreenSelectedChecked}
+              onCheckedChange={(c) => setGreenSelectedChecked(c === true)}
             />
             <Label htmlFor="ds-checkbox-selected" className="-translate-y-[1.5px]">
               Checked by default
@@ -77,7 +77,7 @@ export function CheckboxView() {
             <Checkbox
               id="ds-checkbox-description"
               checked={describedChecked}
-              onCheckedChange={setDescribedChecked}
+              onCheckedChange={(c) => setDescribedChecked(c === true)}
               className="mt-0.5"
             />
             <div className="-translate-y-[1.5px] space-y-1">

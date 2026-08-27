@@ -1,5 +1,10 @@
 import * as React from "react";
-import { AlertTriangle, Check, Info, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Info,
+  XCircle,
+} from "@/lib/lucide-svg";
 import { cn } from "@/lib/utils";
 
 export type CalloutVariant = "neutral" | "success" | "warning" | "destructive";
@@ -27,21 +32,24 @@ const borderlessVariantClass: Record<CalloutVariant, string> = {
   destructive: "bg-[var(--callout-destructive-bg-strong)]",
 };
 
-/** Leading glyph only (no filled circle); hues match callout borders / toast accents. */
+/** Leading glyphs only; icons match toast notifications. */
 function CalloutIcon({ variant }: { variant: CalloutVariant }) {
   const iconClass = "size-[18px] shrink-0 block";
   switch (variant) {
     case "neutral":
       return (
         <Info
-          className={cn(iconClass, "text-border-subtle")}
+          className={cn(
+            iconClass,
+            "text-[#55554E] dark:text-[#a3a3a3]",
+          )}
           strokeWidth={2.5}
           aria-hidden
         />
       );
     case "success":
       return (
-        <Check
+        <CheckCircle2
           className={cn(iconClass, "text-accent-green")}
           strokeWidth={2.5}
           aria-hidden
@@ -49,15 +57,15 @@ function CalloutIcon({ variant }: { variant: CalloutVariant }) {
       );
     case "warning":
       return (
-        <AlertTriangle
-          className={cn(iconClass, "text-accent-yellow")}
+        <XCircle
+          className={cn(iconClass, "text-[#FDD151]")}
           strokeWidth={2.5}
           aria-hidden
         />
       );
     case "destructive":
       return (
-        <X
+        <AlertCircle
           className={cn(iconClass, "text-[#FF554C]")}
           strokeWidth={2.5}
           aria-hidden

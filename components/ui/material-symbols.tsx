@@ -2,7 +2,7 @@ import * as React from "react";
 import { GitHubMark } from "@/components/ui/app-brand-icons";
 import { cn } from "@/lib/utils";
 
-const MATERIAL_SYMBOL_DEFAULT_WEIGHT = 400;
+const MATERIAL_SYMBOL_DEFAULT_WEIGHT = 300;
 const MATERIAL_SYMBOL_DEFAULT_OPTICAL_SIZE = 24;
 const MATERIAL_SYMBOL_SIZE_SCALE = 1.125;
 
@@ -65,8 +65,9 @@ export type LucideProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "children"
   fill?: boolean;
   grade?: number;
   /**
-   * Material Symbols axis (1–1000). Lighter (e.g. 300) for modal list rows, etc. Use with matching `@font-face` in `app/globals.css`.
-   * @default 400
+   * Material Symbols axis (1–1000). Heavier (e.g. 400) for emphasis when needed.
+   * Use with matching `@font-face` in `app/globals.css`.
+   * @default 300
    */
   weight?: number;
   opticalSize?: number;
@@ -112,7 +113,10 @@ function scaleIconSize(size: string) {
   return `calc(${size} * ${MATERIAL_SYMBOL_SIZE_SCALE})`;
 }
 
-function MaterialSymbolBase(
+const MaterialSymbolBase = React.forwardRef<
+  HTMLSpanElement,
+  LucideProps & { icon: MaterialSymbolName }
+>(function MaterialSymbolBase(
   {
     icon,
     className,
@@ -126,8 +130,8 @@ function MaterialSymbolBase(
     strokeWidth,
     absoluteStrokeWidth,
     ...props
-  }: LucideProps & { icon: MaterialSymbolName },
-  ref: React.ForwardedRef<HTMLSpanElement>,
+  },
+  ref,
 ) {
   void strokeWidth;
   void absoluteStrokeWidth;
@@ -144,10 +148,11 @@ function MaterialSymbolBase(
         "lc-material-symbol notranslate inline-flex shrink-0 items-center justify-center align-middle leading-none",
         className,
       )}
+      {...props}
       style={{
         color,
         fontSize: scaleIconSize(resolvedSize),
-        /* Pick correct static @font-face; pairs with "wght" in variation */
+        /* After {...props} so weight / axes are never overridden by accidental props. */
         fontWeight: weight,
         fontVariationSettings: symbolVariationSettings({
           fill,
@@ -157,12 +162,11 @@ function MaterialSymbolBase(
         }),
         ...style,
       }}
-      {...props}
     >
       {icon}
     </span>
   );
-}
+});
 
 function createMaterialSymbol(
   displayName: keyof typeof MATERIAL_SYMBOL_MAP,

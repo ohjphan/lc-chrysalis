@@ -123,23 +123,60 @@ function hashStringToIndex(id: string, modulo: number): number {
   return Math.abs(h) % modulo;
 }
 
+/** Stable index into `BRAND_AVATAR_SWATCHES` (0–11); same input as `brandAvatarClassForId`. */
+export function brandAvatarSwatchIndexForId(id: string): number {
+  return hashStringToIndex(id, BRAND_AVATAR_SWATCHES.length);
+}
+
+export function brandAvatarHexForId(id: string): string {
+  return BRAND_AVATAR_SWATCHES[brandAvatarSwatchIndexForId(id)].hex;
+}
+
+/** Another palette hex for multi-stop meshes (offset in swatch ring, same base index as avatar). */
+export function brandAvatarSwatchHexAt(id: string, ringOffset: number): string {
+  const i = brandAvatarSwatchIndexForId(id);
+  const n = BRAND_AVATAR_SWATCHES.length;
+  const j = ((i + ringOffset) % n + n) % n;
+  return BRAND_AVATAR_SWATCHES[j].hex;
+}
+
 export function brandAvatarClassForId(id: string): string {
-  return BRAND_AVATAR_SWATCHES[
-    hashStringToIndex(id, BRAND_AVATAR_SWATCHES.length)
-  ].bg;
+  return BRAND_AVATAR_SWATCHES[brandAvatarSwatchIndexForId(id)].bg;
 }
 
 export function brandAvatarTextClassForId(id: string): string {
-  return BRAND_AVATAR_SWATCHES[
-    hashStringToIndex(id, BRAND_AVATAR_SWATCHES.length)
-  ].text;
+  return BRAND_AVATAR_SWATCHES[brandAvatarSwatchIndexForId(id)].text;
 }
 
 export function brandAvatarClassesForId(id: string): {
   bgClass: string;
   textClass: string;
 } {
-  const i = hashStringToIndex(id, BRAND_AVATAR_SWATCHES.length);
+  const i = brandAvatarSwatchIndexForId(id);
+  const s = BRAND_AVATAR_SWATCHES[i];
+  return { bgClass: s.bg, textClass: s.text };
+}
+
+const BERRY_SWATCH_INDEX = 7;
+const RED_SWATCH_INDEX = 2;
+const ORANGE_SWATCH_INDEX = 5;
+
+/**
+ * Opaque /demos project tiles: Red (#FF554C) maps to Berry (#CF92EC).
+ * Intervention / early-warning is pinned to Orange (#F97248).
+ */
+export function brandAvatarClassesForDemosCard(slug: string): {
+  bgClass: string;
+  textClass: string;
+} {
+  if (slug === "intervention-early-warning-graph") {
+    const s = BRAND_AVATAR_SWATCHES[ORANGE_SWATCH_INDEX];
+    return { bgClass: s.bg, textClass: s.text };
+  }
+  let i = brandAvatarSwatchIndexForId(slug);
+  if (i === RED_SWATCH_INDEX) {
+    i = BERRY_SWATCH_INDEX;
+  }
   const s = BRAND_AVATAR_SWATCHES[i];
   return { bgClass: s.bg, textClass: s.text };
 }

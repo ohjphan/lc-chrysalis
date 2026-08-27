@@ -92,7 +92,7 @@ export function RequestAccessModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        topAccent={false}
+        variant="single"
         className="flex max-h-[min(90dvh,720px)] flex-col gap-0 overflow-hidden"
       >
         <div className="h-1 w-full shrink-0 bg-nav-active dark:bg-zinc-800">

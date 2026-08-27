@@ -3,7 +3,6 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { PageTitle } from "@/components/ui/page-title";
 import { cn } from "@/lib/utils";
 
 const Dialog = DialogPrimitive.Root;
@@ -31,11 +30,17 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showClose?: boolean;
     /**
-     * Full-width green top bar (same fill as a completed progress segment).
-     * Set `false` when the dialog renders its own progress bar (multi-step flows).
-     * @default true
+     * **Progressive** — green top progress accent (multi-step flows, wizard CTAs).
+     * **Single** — no accent bar (confirmations, simple one-screen tasks).
+     * @default "progressive"
      */
-    topAccent?: boolean;
+    variant?: "progressive" | "single";
+    /**
+     * Fill ratio for the progressive top accent (0–100). Ignored when `variant` is `"single"`.
+     * Use values under 100 for mid-flow steps; defaults to a full bar.
+     * @default 100
+     */
+    accentProgress?: number;
   }
 >(
   (
@@ -43,11 +48,18 @@ const DialogContent = React.forwardRef<
       className,
       children,
       showClose = true,
-      topAccent = true,
+      variant = "progressive",
+      accentProgress = 100,
       ...props
     },
     ref,
-  ) => (
+  ) => {
+    const showAccent = variant === "progressive";
+    const accentPct = Math.min(
+      100,
+      Math.max(0, Number.isFinite(accentProgress) ? accentProgress : 100),
+    );
+    return (
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Content
@@ -55,16 +67,32 @@ const DialogContent = React.forwardRef<
         className={cn(
           // Platform-wide modal width; override with className when a dialog must differ.
           "fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-0 rounded-lg border-app border-border-subtle bg-background p-0 text-foreground shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 dark:bg-modal-bg dark:text-zinc-100 sm:max-w-xl",
-          topAccent && "overflow-hidden",
+          showAccent && "overflow-hidden",
           className,
         )}
         {...props}
       >
-        {topAccent ? (
-          <div
-            className="h-1 w-full shrink-0 bg-accent-green"
-            aria-hidden
-          />
+        {showAccent ? (
+          accentPct >= 100 ? (
+            <div
+              className="h-1 w-full shrink-0 bg-accent-green"
+              aria-hidden
+            />
+          ) : (
+            <div
+              className="flex h-1 w-full shrink-0 bg-border-subtle dark:bg-zinc-700"
+              aria-hidden
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={accentPct}
+            >
+              <div
+                className="h-full shrink-0 bg-accent-green transition-[width] duration-300 ease-out"
+                style={{ width: `${accentPct}%` }}
+              />
+            </div>
+          )
         ) : null}
         {showClose ? (
           <DialogPrimitive.Close
@@ -77,7 +105,8 @@ const DialogContent = React.forwardRef<
         {children}
       </DialogPrimitive.Content>
     </DialogPortal>
-  ),
+  );
+  },
 );
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
@@ -116,18 +145,15 @@ const DialogTitle = React.forwardRef<
   HTMLHeadingElement,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, children, ...props }, ref) => (
-  <DialogPrimitive.Title asChild {...props}>
-    <PageTitle
-      ref={ref}
-      as="h2"
-      variant="onboarding"
-      className={cn(
-        "shrink-0 text-left pr-10 dark:text-foreground",
-        className,
-      )}
-    >
-      {children}
-    </PageTitle>
+  <DialogPrimitive.Title
+    ref={ref}
+    className={cn(
+      "font-page-h2 text-heading text-balance shrink-0 text-left pr-10 dark:text-foreground",
+      className,
+    )}
+    {...props}
+  >
+    {children}
   </DialogPrimitive.Title>
 ));
 DialogTitle.displayName = "DialogTitle";

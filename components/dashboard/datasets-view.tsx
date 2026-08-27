@@ -7,6 +7,7 @@ import {
   Lock,
   Search,
 } from "lucide-react";
+import type { SubjectSlug } from "@/lib/dataset/subject-slugs";
 import {
   RequestAccessModal,
   type DatasetRequestTarget,
@@ -33,13 +34,6 @@ import { cn } from "@/lib/utils";
 
 export type DatasetScope = "all" | "downloaded" | "pending";
 export type AccessFilterValue = "all" | "open" | "gated";
-
-export type SubjectSlug =
-  | "math"
-  | "english"
-  | "science"
-  | "social-studies"
-  | "cross-curricular";
 
 export type DatasetType = "knowledge-graph" | "evaluator";
 

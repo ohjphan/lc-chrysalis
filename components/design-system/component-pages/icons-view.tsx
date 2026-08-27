@@ -99,10 +99,36 @@ export function IconsView() {
             Material Symbols Rounded
           </code>{" "}
           with a default weight of{" "}
-          <code className="font-mono text-sm text-foreground">300</code> and inherit{" "}
-          <code className="font-mono text-sm text-foreground">currentColor</code>.
+          <code className="font-mono text-sm text-foreground">300</code>. Stroke
+          thickness is controlled by the{" "}
+          <code className="font-mono text-sm text-foreground">weight</code> prop
+          (and matching{" "}
+          <code className="font-mono text-sm text-foreground">@font-face</code>{" "}
+          files)—not by{" "}
+          <code className="font-mono text-sm text-foreground">strokeWidth</code>{" "}
+          (that Lucide prop is ignored here). Icons inherit{" "}
+          <code className="font-mono text-sm text-foreground">currentColor</code>
+          .
           Custom brand marks remain reserved for partner and auth surfaces.
         </p>
+        <div className="flex max-w-xl flex-wrap items-end gap-8 rounded-md border-app border-border-subtle bg-surface px-4 py-4">
+          <div className="flex flex-col items-center gap-2">
+            <Search className="size-10 text-foreground" aria-hidden />
+            <span className="text-center text-xs font-normal text-muted-foreground">
+              Default (300)
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Search
+              className="size-10 text-foreground"
+              weight={400}
+              aria-hidden
+            />
+            <span className="text-center text-xs font-normal text-muted-foreground">
+              weight 400
+            </span>
+          </div>
+        </div>
       </div>
 
       <section className="space-y-4">
@@ -140,7 +166,7 @@ export function IconsView() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PRODUCT_ICONS.map(({ name, Icon }) => (
             <IconTile key={name} name={name}>
-              <Icon className="size-5 text-foreground" strokeWidth={2} aria-hidden />
+              <Icon className="size-5 text-foreground" aria-hidden />
             </IconTile>
           ))}
         </div>

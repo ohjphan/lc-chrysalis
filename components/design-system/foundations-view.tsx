@@ -169,6 +169,25 @@ export function FoundationsView() {
               </PageTitle>
             </TypographyRow>
             <TypographyRow
+              title="Demo card title"
+              spec={{
+                family: "Parabolica",
+                familyVar: "var(--font-parabolica-stack)",
+                fontSize: "28px",
+                fontWeight: "400 (Regular)",
+                lineHeight: "1.12",
+                letterSpacing: "0.5%",
+                token:
+                  "font-page-title · text-left · text-balance · text-heading (neutral preview); Demos tiles pair swatch contrast instead of text-heading",
+                notes:
+                  "Sentence case · left-aligned · same scale as PageTitle; Demos project cards on brand swatches",
+              }}
+            >
+              <p className="max-w-sm text-left font-page-title text-balance text-heading">
+                Student writing feedback loop
+              </p>
+            </TypographyRow>
+            <TypographyRow
               title="Page title"
               spec={{
                 family: "Parabolica",

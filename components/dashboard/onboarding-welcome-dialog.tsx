@@ -66,7 +66,6 @@ export function OnboardingWelcomeDialog({
                 icon={
                   <Key
                     className="size-5"
-                    weight={300}
                     aria-hidden
                   />
                 }
@@ -78,7 +77,6 @@ export function OnboardingWelcomeDialog({
                 icon={
                   <LayoutGrid
                     className="size-5"
-                    weight={300}
                     aria-hidden
                   />
                 }
@@ -90,7 +88,6 @@ export function OnboardingWelcomeDialog({
                 icon={
                   <UserPlus
                     className="size-5"
-                    weight={300}
                     aria-hidden
                   />
                 }

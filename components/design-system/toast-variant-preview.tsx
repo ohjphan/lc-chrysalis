@@ -95,7 +95,10 @@ export function ToastVariantPreview({
           </span>
         )}
         <div data-icon="">
-          <ToastLeadingIcon variant={leadingIconVariant(variant)} />
+          <ToastLeadingIcon
+            variant={leadingIconVariant(variant)}
+            light={toastUsesLightSurface(variant)}
+          />
         </div>
         <div data-content="">
           <div data-title="">{message}</div>

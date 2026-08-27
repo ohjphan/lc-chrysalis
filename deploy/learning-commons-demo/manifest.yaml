@@ -1,0 +1,24 @@
+slug: edu-project-chrysalis-demos
+name: Learning Commons Demos
+description: "Interactive demos that show developers what they can build with Evaluators and Knowledge Graph—and how to integrate them into real products."
+longDescription: |
+  An external demo experience that shows developers what they can build with Learning Commons, lets them try real outputs, and gives them a clear path from inspiration to integration.
+url: "https://edu-project-chrysalis.staging-edu-platform.staging.czi.team/demos"
+category: Education
+icon: "🔌"
+tags:
+  - evaluators
+  - knowledge-graph
+  - integration
+  - api
+author: jphan
+visible: false
+featured: false
+order: 0
+techStack:
+  - name: Next.js
+    description: Demo hub UI and playground layouts
+  - name: Learning Commons Evaluators
+    description: Rubric scoring and coaching signals from unstructured inputs
+  - name: Knowledge Graph
+    description: Curriculum, pathway, and early-warning graph traversals
